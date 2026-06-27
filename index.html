@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>NEXUS — Art · Ads · Entertainment Marketplace</title>
+  <meta name="description" content="NEXUS is the premier marketplace for digital art, advertising services, and entertainment."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Syne:wght@400;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+
+<!-- ═══════ FLOATING PILL NAV ═══════ -->
+<nav class="nav" id="mainNav">
+  <div class="nav-inner">
+    <a href="#home" class="nav-logo">
+      <div class="logo-3d-wrap" id="logoWrap">
+        <div class="logo-3d-inner" id="logo3d">
+          <img src="logo.png" alt="NEXUS"/>
+        </div>
+      </div>
+      <span class="logo-text">NEXUS</span>
+    </a>
+
+    <ul class="nav-links">
+      <li><a href="#home">Home</a></li>
+      <li><a href="#marketplace">Marketplace</a></li>
+      <li><a href="#categories">Categories</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+
+    <div class="nav-actions">
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme" title="Switch theme">🌙</button>
+      <button class="btn-ghost" onclick="location.href='contact.html'">Sign In</button>
+      <button class="btn-primary" onclick="location.href='contact.html'">Join Free</button>
+    </div>
+
+    <div style="display:flex;align-items:center;gap:8px;margin-left:auto">
+      <button class="theme-toggle" id="themeToggleMob" aria-label="Toggle theme" style="display:none">🌙</button>
+      <button class="nav-burger" id="navBurger" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Mobile slide-down menu -->
+  <div class="mobile-menu" id="mobileMenu">
+    <div class="mobile-menu-inner">
+      <a href="#home"         class="mobile-link">Home</a>
+      <a href="#marketplace"  class="mobile-link">Marketplace</a>
+      <a href="#categories"   class="mobile-link">Categories</a>
+      <a href="contact.html"  class="mobile-link">Contact</a>
+      <div class="mobile-divider"></div>
+      <a href="privacy.html"      class="mobile-link mobile-link--sm">Privacy Policy</a>
+      <a href="terms.html"        class="mobile-link mobile-link--sm">Terms of Service</a>
+      <a href="refund.html"       class="mobile-link mobile-link--sm">Refund Policy</a>
+      <a href="shipping.html"     class="mobile-link mobile-link--sm">Shipping Policy</a>
+      <a href="cancellation.html" class="mobile-link mobile-link--sm">Cancellation Policy</a>
+      <div class="mobile-actions">
+        <button class="btn-ghost w-full" onclick="location.href='contact.html'">Sign In</button>
+        <button class="btn-primary w-full" onclick="location.href='contact.html'">Join Free</button>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- ═══════ HERO ═══════ -->
+<section class="hero" id="home">
+  <canvas id="heroCanvas"></canvas>
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <div class="hero-eyebrow">
+      <span class="pulse-dot"></span>
+      <span>Live Marketplace · 12,400+ Creators</span>
+    </div>
+    <h1 class="hero-title">
+      Where <em>Art</em> Meets<br/>
+      <span class="hero-gradient">Infinite Possibility</span>
+    </h1>
+    <p class="hero-sub">
+      The premier marketplace for digital art, advertising services,<br class="desktop-only"/>
+      and entertainment — powered by creators, built for culture.
+    </p>
+    <div class="hero-cta">
+      <button class="btn-hero-primary" onclick="document.getElementById('marketplace').scrollIntoView({behavior:'smooth'})">
+        Explore Marketplace
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </button>
+      <button class="btn-hero-ghost" onclick="location.href='contact.html'">Sell Your Work</button>
+    </div>
+    <div class="hero-stats">
+      <div class="stat"><span class="stat-num" data-target="12400">0</span><span class="stat-label">Creators</span></div>
+      <div class="stat-divider"></div>
+      <div class="stat"><span class="stat-num" data-target="89000">0</span><span class="stat-label">Artworks</span></div>
+      <div class="stat-divider"></div>
+      <div class="stat"><span class="stat-num" data-target="340">0</span><span class="stat-label">Advertisers</span></div>
+    </div>
+  </div>
+  <div class="hero-scroll-hint">
+    <span>Scroll</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- ═══════ CATEGORIES ═══════ -->
+<section class="section categories" id="categories">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-eyebrow">WHAT WE OFFER</span>
+      <h2 class="section-title">Three Worlds,<br/><em>One Platform</em></h2>
+    </div>
+    <div class="category-grid">
+      <div class="category-card" data-tilt>
+        <div class="cat-canvas-wrap"><canvas class="cat-canvas" id="catCanvas0"></canvas></div>
+        <div class="cat-content">
+          <div class="cat-icon">🎨</div>
+          <h3>Digital Art</h3>
+          <p>Original works, NFTs, illustrations, photography, and generative pieces from 8,000+ global artists.</p>
+          <a href="#marketplace" class="cat-link">Browse Art →</a>
+        </div>
+        <div class="cat-glow cat-glow--green"></div>
+      </div>
+      <div class="category-card" data-tilt>
+        <div class="cat-canvas-wrap"><canvas class="cat-canvas" id="catCanvas1"></canvas></div>
+        <div class="cat-content">
+          <div class="cat-icon">📡</div>
+          <h3>Ad Services</h3>
+          <p>Connect with premium creators for campaigns, branded content, influencer partnerships, and media buys.</p>
+          <a href="#marketplace" class="cat-link">Browse Services →</a>
+        </div>
+        <div class="cat-glow cat-glow--teal"></div>
+      </div>
+      <div class="category-card" data-tilt>
+        <div class="cat-canvas-wrap"><canvas class="cat-canvas" id="catCanvas2"></canvas></div>
+        <div class="cat-content">
+          <div class="cat-icon">🎬</div>
+          <h3>Entertainment</h3>
+          <p>Music, film, live performance, immersive AR/VR experiences, and interactive digital entertainment.</p>
+          <a href="#marketplace" class="cat-link">Browse Entertainment →</a>
+        </div>
+        <div class="cat-glow cat-glow--blue"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ MARKETPLACE ═══════ -->
+<section class="section marketplace" id="marketplace">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-eyebrow">FEATURED LISTINGS</span>
+      <h2 class="section-title">Trending Now</h2>
+      <div class="filter-bar">
+        <button class="filter-btn active" data-filter="all">All</button>
+        <button class="filter-btn" data-filter="art">Art</button>
+        <button class="filter-btn" data-filter="ads">Ad Services</button>
+        <button class="filter-btn" data-filter="entertainment">Entertainment</button>
+      </div>
+    </div>
+    <div class="product-grid" id="productGrid"></div>
+    <div class="marketplace-cta">
+      <button class="btn-primary btn-lg" onclick="location.href='contact.html'">View All 89,000+ Items</button>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ XR PROMO ═══════ -->
+<section class="section xr-promo">
+  <canvas id="xrCanvas"></canvas>
+  <div class="xr-content container">
+    <div class="xr-badge">✦ NEW</div>
+    <h2 class="xr-title">Experience Art<br/><em>in Your Space</em></h2>
+    <p class="xr-sub">Use WebXR to place sculptures, paintings, and installations directly in your room. No app needed — just your browser.</p>
+    <div class="xr-buttons">
+      <button class="btn-xr" id="xrBtn">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>
+        Try AR Preview
+      </button>
+      <button class="btn-hero-ghost">Learn More</button>
+    </div>
+    <div class="xr-devices">
+      <span>Works with</span>
+      <strong>Chrome</strong><strong>Safari</strong><strong>Firefox</strong><strong>Vision Pro</strong><strong>Quest 3</strong>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ TESTIMONIALS ═══════ -->
+<section class="section testimonials">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-eyebrow">COMMUNITY</span>
+      <h2 class="section-title">Creators Love NEXUS</h2>
+    </div>
+    <div class="testimonial-track" id="testimonialTrack">
+      <div class="testimonial-card">
+        <div class="t-stars">★★★★★</div>
+        <p>"Sold my first digital collection here and hit $12k in the first month. The platform is stunning and the buyers are serious."</p>
+        <div class="t-author"><div class="t-avatar" style="background:linear-gradient(135deg,#6dc44b,#228f7e)">AK</div><div><strong>Aisha Kamara</strong><span>Digital Artist, Lagos</span></div></div>
+      </div>
+      <div class="testimonial-card">
+        <div class="t-stars">★★★★★</div>
+        <p>"Used NEXUS to run a branded content campaign with 6 creators. ROI was 4x what we expected. Will be back for Q4."</p>
+        <div class="t-author"><div class="t-avatar" style="background:linear-gradient(135deg,#228f7e,#0258a3)">MR</div><div><strong>Marcus Reid</strong><span>Marketing Director, NYC</span></div></div>
+      </div>
+      <div class="testimonial-card">
+        <div class="t-stars">★★★★★</div>
+        <p>"The 3D preview and AR feature sold my sculpture collection instantly. Never had this level of presentation anywhere else."</p>
+        <div class="t-author"><div class="t-avatar" style="background:linear-gradient(135deg,#6dc44b,#0258a3,#250076);background-size:200%">SP</div><div><strong>Sofia Park</strong><span>Sculptor & Ceramicist, Seoul</span></div></div>
+      </div>
+      <div class="testimonial-card">
+        <div class="t-stars">★★★★★</div>
+        <p>"Booked 3 film scoring gigs through NEXUS Entertainment. The discovery algorithm is unreal — creators find you here."</p>
+        <div class="t-author"><div class="t-avatar" style="background:linear-gradient(135deg,#3ab26e,#0258a3)">DL</div><div><strong>David Larsson</strong><span>Film Composer, Stockholm</span></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ FOOTER ═══════ -->
+<footer class="footer">
+  <canvas id="footerCanvas"></canvas>
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <a href="#home" class="nav-logo">
+        <div class="logo-3d-wrap" style="width:32px;height:32px">
+          <div class="logo-3d-inner"><img src="logo.png" alt="NEXUS"/></div>
+        </div>
+        <span class="logo-text" style="font-family:'Syne',sans-serif;font-weight:800;font-size:18px">NEXUS</span>
+      </a>
+      <p>The marketplace where art, advertising, and entertainment converge. Built for creators. Trusted by brands.</p>
+      <div class="footer-social">
+        <a href="#" aria-label="Twitter">𝕏</a>
+        <a href="#" aria-label="Instagram">◉</a>
+        <a href="#" aria-label="Discord">⬡</a>
+        <a href="#" aria-label="YouTube">▶</a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Marketplace</h4>
+      <a href="#marketplace">Browse All</a>
+      <a href="#categories">Digital Art</a>
+      <a href="#categories">Ad Services</a>
+      <a href="#categories">Entertainment</a>
+      <a href="contact.html">Become a Seller</a>
+    </div>
+    <div class="footer-col">
+      <h4>Company</h4>
+      <a href="contact.html">About NEXUS</a>
+      <a href="contact.html">Careers</a>
+      <a href="contact.html">Blog</a>
+      <a href="contact.html">Press Kit</a>
+    </div>
+    <div class="footer-col">
+      <h4>Legal</h4>
+      <a href="privacy.html">Privacy Policy</a>
+      <a href="terms.html">Terms of Service</a>
+      <a href="refund.html">Refund Policy</a>
+      <a href="shipping.html">Shipping Policy</a>
+      <a href="cancellation.html">Cancellation Policy</a>
+      <a href="contact.html">Contact Us</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2025 NEXUS Marketplace Inc. All rights reserved.</p>
+    <p>Payments secured by <strong>Stripe</strong> · SSL encrypted · PCI DSS compliant</p>
+  </div>
+</footer>
+
+<!-- ═══════ AR MODAL ═══════ -->
+<div class="ar-modal" id="arModal">
+  <div class="ar-modal-inner">
+    <button class="ar-close" id="arClose">✕</button>
+    <canvas id="arCanvas"></canvas>
+    <div class="ar-ui">
+      <div class="ar-status"><span class="pulse-dot"></span><span id="arStatusText">Initializing AR…</span></div>
+      <p class="ar-hint">Point your camera at a flat surface to place artwork</p>
+      <button class="btn-primary" onclick="document.getElementById('arModal').classList.remove('active')">Exit AR</button>
+    </div>
+  </div>
+</div>
+
+<script src="main.js"></script>
+</body>
+</html>
