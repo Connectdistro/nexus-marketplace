@@ -992,3 +992,391 @@ body.nx-page-ready { opacity: 1; }
   .nx-form-row { grid-template-columns: 1fr; }
   .nx-gate-box { padding: 36px 24px; border-radius: var(--r-lg); }
 }
+
+/* ═══════════════════════════════════════════════
+   NEXUS IMPROVEMENTS v4
+   — Nav: tighter pill, sharper separation
+   — Section blending: seamless color flow
+   — Desktop: no overflow, stacked layout
+   — Scroll: parallax hints + reveal polish
+   — Mobile: full app feel
+═══════════════════════════════════════════════ */
+
+/* ── NAV: refined pill with stronger separation ── */
+.nav {
+  top: 12px;
+  width: calc(100% - 48px);
+  max-width: 1160px;
+  height: 64px;
+  /* Stronger glass + brand tint */
+  background: color-mix(in srgb, var(--bg) 65%, transparent);
+  border: 1px solid rgba(109,196,75,0.22);
+  border-radius: 20px;
+  /* Multi-layer shadow for floating separation */
+  box-shadow:
+    0 2px 0 rgba(109,196,75,0.08) inset,
+    0 1px 0 rgba(255,255,255,0.06) inset,
+    0 12px 40px rgba(0,0,0,0.5),
+    0 4px 16px rgba(34,143,126,0.08);
+  backdrop-filter: blur(32px) saturate(200%);
+  -webkit-backdrop-filter: blur(32px) saturate(200%);
+}
+.nav.scrolled {
+  top: 6px;
+  height: 58px;
+  background: color-mix(in srgb, var(--bg) 80%, transparent);
+  border-color: rgba(109,196,75,0.3);
+  box-shadow:
+    0 2px 0 rgba(109,196,75,0.1) inset,
+    0 1px 0 rgba(255,255,255,0.08) inset,
+    0 20px 60px rgba(0,0,0,0.55),
+    0 6px 20px rgba(34,143,126,0.12);
+}
+/* Light mode nav */
+[data-theme="light"] .nav {
+  background: color-mix(in srgb, var(--bg) 75%, transparent);
+  border-color: rgba(34,143,126,0.25);
+  box-shadow:
+    0 2px 0 rgba(34,143,126,0.08) inset,
+    0 1px 0 rgba(255,255,255,0.9) inset,
+    0 8px 32px rgba(2,88,163,0.12),
+    0 2px 8px rgba(34,143,126,0.08);
+}
+[data-theme="light"] .nav.scrolled {
+  border-color: rgba(34,143,126,0.35);
+  box-shadow:
+    0 2px 0 rgba(34,143,126,0.1) inset,
+    0 1px 0 rgba(255,255,255,0.95) inset,
+    0 12px 40px rgba(2,88,163,0.14),
+    0 4px 12px rgba(34,143,126,0.1);
+}
+
+/* ── SECTION BLENDING — seamless color transitions ── */
+
+/* Each section gets a top/bottom gradient mask that bleeds into the bg */
+.section {
+  position: relative;
+  /* Remove hard background edges */
+  isolation: isolate;
+}
+
+/* Hero bleeds downward into categories */
+.hero::after {
+  content: '';
+  position: absolute; bottom: -1px; left: 0; right: 0;
+  height: 180px; z-index: 3; pointer-events: none;
+  background: linear-gradient(to bottom, transparent, var(--bg-1));
+}
+
+/* Categories section — blend from bg to bg-1 and back */
+.categories {
+  background: linear-gradient(
+    to bottom,
+    var(--bg-1) 0%,
+    color-mix(in srgb, var(--bg-1) 92%, var(--teal) 8%) 50%,
+    var(--bg-1) 100%
+  );
+}
+.categories::before {
+  content: '';
+  position: absolute; top: -1px; left: 0; right: 0;
+  height: 120px; z-index: 1; pointer-events: none;
+  background: linear-gradient(to bottom, var(--bg), transparent);
+}
+.categories::after {
+  content: '';
+  position: absolute; bottom: -1px; left: 0; right: 0;
+  height: 120px; z-index: 1; pointer-events: none;
+  background: linear-gradient(to bottom, transparent, var(--bg));
+}
+
+/* Marketplace blends from bg */
+.marketplace {
+  background: linear-gradient(
+    180deg,
+    var(--bg) 0%,
+    color-mix(in srgb, var(--bg) 94%, var(--blue) 6%) 50%,
+    var(--bg) 100%
+  );
+}
+.marketplace::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+  background:
+    radial-gradient(ellipse 60% 40% at 20% 60%, rgba(109,196,75,0.04) 0%, transparent 70%),
+    radial-gradient(ellipse 50% 50% at 80% 30%, rgba(2,88,163,0.05) 0%, transparent 70%);
+  pointer-events: none; z-index: 0;
+}
+.marketplace > * { position: relative; z-index: 1; }
+
+/* XR promo — dramatic gradient blend */
+.xr-promo {
+  background: linear-gradient(
+    180deg,
+    var(--bg) 0%,
+    color-mix(in srgb, var(--bg-1) 80%, var(--indigo) 20%) 40%,
+    color-mix(in srgb, var(--bg-1) 75%, var(--blue) 25%) 60%,
+    var(--bg) 100%
+  );
+}
+.xr-promo::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 50%, rgba(2,88,163,0.12) 0%, transparent 65%),
+    radial-gradient(ellipse 40% 40% at 20% 80%, rgba(37,0,118,0.1) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 40% at 80% 20%, rgba(109,196,75,0.06) 0%, transparent 60%);
+  pointer-events: none; z-index: 0;
+}
+
+/* Testimonials */
+.testimonials {
+  background: linear-gradient(
+    180deg,
+    var(--bg) 0%,
+    color-mix(in srgb, var(--bg) 96%, var(--green) 4%) 50%,
+    var(--bg-1) 100%
+  );
+}
+
+/* Footer top blend */
+.footer::before {
+  content: '';
+  position: absolute; top: -1px; left: 0; right: 0;
+  height: 100px; z-index: 1; pointer-events: none;
+  background: linear-gradient(to bottom, var(--bg), var(--bg-1));
+}
+
+/* ── DESKTOP: no horizontal overflow, contained stacking ── */
+html, body {
+  overflow-x: hidden;
+  max-width: 100vw;
+}
+
+/* Force all sections to be contained */
+.section, .hero, .xr-promo, .testimonials, .footer {
+  max-width: 100vw;
+  overflow: hidden;
+}
+
+/* Product grid: prevent overflow on desktop */
+.product-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  overflow: visible;
+}
+
+/* Category grid contained */
+.category-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+/* All card content stays within bounds */
+.category-card, .product-card, .testimonial-card {
+  min-width: 0;
+  max-width: 100%;
+}
+
+/* Testimonial track: contain within section */
+.testimonials .container {
+  overflow: hidden;
+}
+.testimonial-track {
+  /* Pause on hover */
+  animation-play-state: running;
+}
+.testimonial-track:hover {
+  animation-play-state: paused;
+}
+
+/* ── SCROLL REVEAL: smoother, staggered ── */
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(32px);
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+[data-reveal].revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+[data-reveal]:nth-child(2) { transition-delay: 0.08s; }
+[data-reveal]:nth-child(3) { transition-delay: 0.16s; }
+[data-reveal]:nth-child(4) { transition-delay: 0.24s; }
+
+/* Category cards stagger */
+.category-card:nth-child(1) { transition-delay: 0s; }
+.category-card:nth-child(2) { transition-delay: 0.1s; }
+.category-card:nth-child(3) { transition-delay: 0.2s; }
+
+/* Product cards stagger */
+.product-card:nth-child(1) { transition-delay: 0s; }
+.product-card:nth-child(2) { transition-delay: 0.06s; }
+.product-card:nth-child(3) { transition-delay: 0.12s; }
+.product-card:nth-child(4) { transition-delay: 0.18s; }
+.product-card:nth-child(5) { transition-delay: 0.06s; }
+.product-card:nth-child(6) { transition-delay: 0.12s; }
+.product-card:nth-child(7) { transition-delay: 0.18s; }
+.product-card:nth-child(8) { transition-delay: 0.24s; }
+
+/* ── MOBILE: full app experience ── */
+@media (max-width: 768px) {
+
+  /* App-like body */
+  html, body {
+    overscroll-behavior: none;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Nav stays tighter on mobile */
+  .nav {
+    top: 8px;
+    width: calc(100% - 20px);
+    height: 56px;
+    border-radius: 18px;
+  }
+  .nav.scrolled {
+    top: 4px;
+    height: 52px;
+  }
+  .nav-inner { padding: 0 16px; gap: 12px; }
+
+  /* Hero — full screen like a splash */
+  .hero {
+    min-height: 100svh;
+    align-items: center;
+    padding-top: calc(var(--nav-h) + 40px);
+    padding-bottom: 0;
+  }
+  .hero-content { text-align: center; padding: 0 20px; }
+  .hero-cta {
+    flex-direction: column; align-items: center; gap: 12px;
+  }
+  .btn-hero-primary, .btn-hero-ghost {
+    width: 100%; max-width: 320px; justify-content: center;
+  }
+  /* Hero stats centered on mobile */
+  .hero-stats { justify-content: center; gap: 24px; }
+  .hero::after { height: 100px; }
+
+  /* Sections: tighter padding, app-like */
+  .section { padding: 56px 0; }
+  .section-header { margin-bottom: 32px; }
+
+  /* Category cards: full-width app list */
+  .category-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    padding: 0 16px;
+  }
+  .category-card {
+    flex-direction: row;
+    border-radius: 18px;
+    min-height: 110px;
+  }
+  .cat-canvas-wrap { width: 110px; height: 110px; flex-shrink: 0; }
+  .cat-content { padding: 14px 16px; }
+  .cat-content p { display: none; } /* Hide desc on mobile for clean app feel */
+  .cat-icon { font-size: 22px; margin-bottom: 6px; }
+  .cat-content h3 { font-size: 16px; margin-bottom: 6px; }
+
+  /* Product grid: 2-col card grid */
+  .product-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    padding: 0 14px;
+  }
+  .product-card { height: 260px; }
+
+  /* XR section: tighter */
+  .xr-promo { padding: 72px 0; }
+  .xr-title { font-size: 30px; letter-spacing: -0.5px; }
+  .xr-sub { font-size: 14px; line-height: 1.65; padding: 0 24px; }
+  .xr-buttons { flex-direction: column; padding: 0 24px; gap: 10px; }
+  .btn-xr, .xr-buttons .btn-hero-ghost {
+    width: 100%; max-width: 320px; justify-content: center;
+    margin: 0 auto;
+  }
+
+  /* Testimonials: narrower cards, fast scroll */
+  .testimonial-track { animation-duration: 18s; }
+  .testimonial-card { width: 280px; padding: 22px; }
+
+  /* Footer: stacked, tight */
+  .footer-inner {
+    grid-template-columns: 1fr;
+    gap: 32px;
+    padding: 48px 20px 28px;
+  }
+  .footer-bottom {
+    flex-direction: column;
+    text-align: center;
+    gap: 8px;
+    padding: 18px 20px;
+  }
+
+  /* Mobile menu: full-screen app overlay */
+  .mobile-menu {
+    padding-top: calc(var(--nav-h) + 16px);
+    background: var(--bg);
+  }
+  .mobile-menu-inner { padding: 20px 20px; gap: 0; }
+  .mobile-link {
+    font-size: 28px;
+    padding: 14px 0;
+  }
+  .mobile-link--sm { font-size: 14px; padding: 9px 0; }
+  .mobile-actions { gap: 10px; margin-top: 28px; }
+  .mobile-actions .btn-ghost,
+  .mobile-actions .btn-primary { justify-content: center; width: 100%; }
+
+  /* Safe area insets for iPhone */
+  .nav { top: max(8px, env(safe-area-inset-top)); }
+  .footer-bottom {
+    padding-bottom: max(18px, env(safe-area-inset-bottom));
+  }
+  .mobile-menu {
+    padding-bottom: max(20px, env(safe-area-inset-bottom));
+  }
+}
+
+/* ── Smooth page-level scroll behavior ── */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+  /* Smooth scroll snap feel between major sections */
+  .hero, .section, .xr-promo, .testimonials {
+    scroll-margin-top: calc(var(--nav-h) + 20px);
+  }
+}
+
+/* ── Tablet adjustments ── */
+@media (max-width: 1100px) and (min-width: 769px) {
+  .product-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .category-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+/* ── Light mode section blends ── */
+[data-theme="light"] .hero::after {
+  background: linear-gradient(to bottom, transparent, var(--bg-1));
+}
+[data-theme="light"] .categories {
+  background: linear-gradient(
+    to bottom,
+    var(--bg-1) 0%,
+    color-mix(in srgb, var(--bg-1) 94%, var(--teal) 6%) 50%,
+    var(--bg-1) 100%
+  );
+}
+[data-theme="light"] .xr-promo {
+  background: linear-gradient(
+    180deg,
+    var(--bg) 0%,
+    color-mix(in srgb, var(--bg-1) 85%, var(--blue) 15%) 50%,
+    var(--bg) 100%
+  );
+}

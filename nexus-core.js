@@ -535,3 +535,98 @@ window.toast = function(msg, type) {
   clearTimeout(el._t);
   el._t = setTimeout(() => el.className = 'nx-toast', 2800);
 };
+
+/* ═══════════════════════════════════════════════
+   NEXUS v4 ADDITIONS
+   — Scroll reveal observer
+   — Parallax on hero canvas
+   — Section entrance animations
+   — Mobile momentum
+═══════════════════════════════════════════════ */
+
+document.addEventListener('DOMContentLoaded', function () {
+
+  /* ── Scroll reveal ── */
+  const revealEls = document.querySelectorAll(
+    '.category-card, .product-card, .testimonial-card, .section-header, [data-reveal]'
+  );
+  if (revealEls.length) {
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('revealed');
+          observer.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+    revealEls.forEach(el => {
+      el.classList.add('data-reveal-auto');
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(28px)';
+      el.style.transition = 'opacity 0.75s cubic-bezier(0.16,1,0.3,1), transform 0.75s cubic-bezier(0.16,1,0.3,1)';
+      observer.observe(el);
+    });
+    document.querySelectorAll('.data-reveal-auto.revealed').forEach(el => {
+      el.style.opacity = '1';
+      el.style.transform = 'translateY(0)';
+    });
+    // Custom revealed style override
+    const style = document.createElement('style');
+    style.textContent = '.data-reveal-auto.revealed { opacity: 1 !important; transform: translateY(0) !important; }';
+    document.head.appendChild(style);
+  }
+
+  /* ── Subtle hero parallax ── */
+  const heroCanvas = document.getElementById('heroCanvas');
+  const heroOverlay = document.querySelector('.hero-overlay');
+  if (heroCanvas || heroOverlay) {
+    let ticking = false;
+    window.addEventListener('scroll', () => {
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          const y = window.scrollY;
+          if (heroCanvas) heroCanvas.style.transform = `translateY(${y * 0.25}px)`;
+          if (heroOverlay) heroOverlay.style.transform = `translateY(${y * 0.1}px)`;
+          ticking = false;
+        });
+        ticking = true;
+      }
+    }, { passive: true });
+  }
+
+  /* ── Nav link active state ── */
+  const currentPage = location.pathname.split('/').pop() || 'index.html';
+  document.querySelectorAll('.nav-links a').forEach(a => {
+    const href = a.getAttribute('href');
+    if (href === currentPage || (currentPage === '' && href === 'index.html')) {
+      a.style.color = 'var(--text)';
+      a.style.background = 'var(--surface)';
+    }
+  });
+
+  /* ── Smooth anchor scroll with nav offset ── */
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      const target = document.querySelector(a.getAttribute('href'));
+      if (!target) return;
+      e.preventDefault();
+      const navH = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--nav-h')) || 70;
+      const top = target.getBoundingClientRect().top + window.scrollY - navH - 20;
+      window.scrollTo({ top, behavior: 'smooth' });
+    });
+  });
+
+  /* ── Mobile: close nav on scroll ── */
+  if (window.innerWidth <= 768) {
+    let lastY = 0;
+    window.addEventListener('scroll', () => {
+      const y = window.scrollY;
+      const mMenu = document.getElementById('mobileMenu');
+      if (mMenu && mMenu.classList.contains('open') && Math.abs(y - lastY) > 40) {
+        mMenu.classList.remove('open');
+        document.body.style.overflow = '';
+      }
+      lastY = y;
+    }, { passive: true });
+  }
+});
