@@ -14,6 +14,10 @@
 </head>
 <body>
 
+<!-- ═══ GLOBAL FULL-VIEWPORT WEBGL BACKGROUND ═══ -->
+<!-- One canvas behind everything, morphs per section like alireza.com -->
+<canvas id="globalBg"></canvas>
+
 <!-- ═══════ FLOATING PILL NAV ═══════ -->
 <nav class="nav" id="mainNav">
   <div class="nav-inner">
@@ -22,12 +26,12 @@
       <span class="logo-text">NEXUS</span>
     </a>
     <ul class="nav-links">
-      <li><a href="index.html"style="color:var(--text)">Home</a></li>
+      <li><a href="index.html" style="color:var(--text)">Home</a></li>
       <li><a href="marketplace.html">Marketplace</a></li>
       <li><a href="contact.html">Contact</a></li>
     </ul>
     <div class="nav-actions">
-      <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme">🌙</button>
+      <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="Toggle theme">🌙</button>
       <div class="nav-actions-auth" id="navActionsAuth">
         <button class="btn-ghost" onclick="AuthModal.open('login')">Sign In</button>
         <button class="btn-primary" onclick="AuthModal.open('signup')">Join Free</button>
@@ -58,9 +62,9 @@
 </nav>
 
 <!-- ═══════ HERO ═══════ -->
-<section class="hero" id="home">
-  <canvas id="heroCanvas"></canvas>
-  <div class="hero-overlay"></div>
+<section class="hero" id="home" data-bg-scene="hero">
+  <!-- Per-section overlay: each section gets its own gradient tint -->
+  <div class="scene-overlay scene-overlay--hero"></div>
   <div class="hero-content">
     <div class="hero-eyebrow">
       <span class="pulse-dot"></span>
@@ -96,8 +100,9 @@
 </section>
 
 <!-- ═══════ CATEGORIES ═══════ -->
-<section class="section categories" id="categories">
-  <div class="container">
+<section class="section categories" id="categories" data-bg-scene="categories">
+  <div class="scene-overlay scene-overlay--categories"></div>
+  <div class="container" style="position:relative;z-index:2">
     <div class="section-header">
       <span class="section-eyebrow">WHAT WE OFFER</span>
       <h2 class="section-title">Three Worlds,<br/><em>One Platform</em></h2>
@@ -138,8 +143,9 @@
 </section>
 
 <!-- ═══════ MARKETPLACE ═══════ -->
-<section class="section marketplace" id="marketplace">
-  <div class="container">
+<section class="section marketplace" id="marketplace" data-bg-scene="marketplace">
+  <div class="scene-overlay scene-overlay--marketplace"></div>
+  <div class="container" style="position:relative;z-index:2">
     <div class="section-header">
       <span class="section-eyebrow">FEATURED LISTINGS</span>
       <h2 class="section-title">Trending Now</h2>
@@ -158,9 +164,10 @@
 </section>
 
 <!-- ═══════ XR PROMO ═══════ -->
-<section class="section xr-promo">
+<section class="section xr-promo" data-bg-scene="xr">
   <canvas id="xrCanvas"></canvas>
-  <div class="xr-content container">
+  <div class="scene-overlay scene-overlay--xr"></div>
+  <div class="xr-content container" style="position:relative;z-index:2">
     <div class="xr-badge">✦ NEW</div>
     <h2 class="xr-title">Experience Art<br/><em>in Your Space</em></h2>
     <p class="xr-sub">Use WebXR to place sculptures, paintings, and installations directly in your room. No app needed — just your browser.</p>
@@ -179,8 +186,9 @@
 </section>
 
 <!-- ═══════ TESTIMONIALS ═══════ -->
-<section class="section testimonials">
-  <div class="container">
+<section class="section testimonials" data-bg-scene="testimonials">
+  <div class="scene-overlay scene-overlay--testimonials"></div>
+  <div class="container" style="position:relative;z-index:2">
     <div class="section-header">
       <span class="section-eyebrow">COMMUNITY</span>
       <h2 class="section-title">Creators Love NEXUS</h2>
@@ -211,9 +219,10 @@
 </section>
 
 <!-- ═══════ FOOTER ═══════ -->
-<footer class="footer">
+<footer class="footer" data-bg-scene="footer">
   <canvas id="footerCanvas"></canvas>
-  <div class="footer-inner">
+  <div class="scene-overlay scene-overlay--footer"></div>
+  <div class="footer-inner" style="position:relative;z-index:2">
     <div class="footer-brand">
       <a href="#home" class="nav-logo">
         <div class="logo-3d-wrap" style="width:32px;height:32px">
@@ -254,7 +263,7 @@
       <a href="contact.html">Contact Us</a>
     </div>
   </div>
-  <div class="footer-bottom">
+  <div class="footer-bottom" style="position:relative;z-index:2">
     <p>© 2025 NEXUS Marketplace Inc. All rights reserved.</p>
     <p>Payments secured by <strong>Stripe</strong> · SSL encrypted · PCI DSS compliant</p>
   </div>

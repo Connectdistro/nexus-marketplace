@@ -267,7 +267,7 @@ ul { list-style: none; }
   display: flex; align-items: center; justify-content: center;
   padding-top: calc(var(--nav-h) + 60px); overflow: hidden;
 }
-#heroCanvas { position:absolute; inset:0; width:100%; height:100%; z-index:0; }
+#heroCanvas { display:none; }  /* replaced by global bg canvas */
 .hero-overlay {
   position:absolute; inset:0; z-index:1;
   background: radial-gradient(ellipse 85% 65% at 50% 50%, transparent 0%, var(--bg) 72%);
@@ -448,7 +448,7 @@ ul { list-style: none; }
 
 /* ════ XR PROMO ═════════════════════════════════ */
 .xr-promo { position:relative; background:var(--bg-1); overflow:hidden; text-align:center; padding:160px 0; }
-#xrCanvas { position:absolute; inset:0; width:100%; height:100%; z-index:0; opacity:0.55; }
+#xrCanvas { display:none; } /* replaced by global bg canvas */
 .xr-content { position:relative; z-index:1; }
 .xr-badge {
   display:inline-block; background:var(--grad-brand); background-size:250%;
@@ -490,7 +490,7 @@ ul { list-style: none; }
 
 /* ════ FOOTER ═══════════════════════════════════ */
 .footer { position:relative; background:var(--bg-1); border-top:1px solid var(--border); overflow:hidden; }
-#footerCanvas { position:absolute; inset:0; width:100%; height:100%; z-index:0; opacity:0.22; }
+#footerCanvas { display:none; } /* replaced by global bg canvas */
 .footer-inner {
   position:relative; z-index:1;
   display:grid; grid-template-columns:2fr 1fr 1fr 1fr; gap:60px;
@@ -1380,3 +1380,443 @@ html, body {
     var(--bg) 100%
   );
 }
+
+/* ═══════════════════════════════════════════════
+   NEXUS v5 — Global WebGL Background + Glassmorphism
+   Inspired by alireza.com: content floats over
+   a single persistent 3D canvas at z-index:0
+═══════════════════════════════════════════════ */
+
+/* Global bg canvas sits behind everything */
+#globalBgCanvas {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* All content must sit above the canvas */
+.nav                { z-index: 1000; }
+.hero               { z-index: 1; }
+.section            { z-index: 1; }
+.xr-promo           { z-index: 1; }
+.testimonials       { z-index: 1; }
+.footer             { z-index: 1; }
+.ar-modal           { z-index: 2000; }
+#nx-curtain         { z-index: 9999; }
+#nx-auth-modal      { z-index: 3000; }
+
+/* ── HERO: transparent — canvas shows through ── */
+.hero {
+  background: transparent !important;
+  position: relative;
+  min-height: 100svh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: calc(var(--nav-h) + 60px);
+  overflow: visible;
+}
+
+/* Hero overlay — radial vignette so text reads clearly */
+.hero-overlay {
+  position: fixed;  /* fixed so it follows scroll */
+  inset: 0;
+  z-index: 1;
+  background:
+    radial-gradient(ellipse 90% 70% at 50% 40%,
+      transparent 0%,
+      rgba(3,6,15,0.55) 55%,
+      rgba(3,6,15,0.82) 85%,
+      var(--bg) 100%
+    );
+  pointer-events: none;
+}
+[data-theme="light"] .hero-overlay {
+  background:
+    radial-gradient(ellipse 90% 70% at 50% 40%,
+      transparent 0%,
+      rgba(242,248,245,0.45) 55%,
+      rgba(242,248,245,0.75) 85%,
+      var(--bg) 100%
+    );
+}
+
+.hero-content {
+  position: relative;
+  z-index: 3;  /* above overlay */
+  text-align: center;
+  max-width: 860px;
+  padding: 0 24px;
+}
+
+/* ── SECTIONS: glassmorphism panels float over canvas ── */
+.section {
+  position: relative;
+  background: transparent !important;
+  padding: 120px 0;
+}
+
+/* Glass panel behind section content */
+.section .container {
+  position: relative;
+  z-index: 2;
+}
+
+/* Section background blur panel */
+.section::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(3,6,15,0) 0%,
+    rgba(3,6,15,0.72) 15%,
+    rgba(3,6,15,0.82) 50%,
+    rgba(3,6,15,0.72) 85%,
+    rgba(3,6,15,0) 100%
+  );
+  z-index: 1;
+  pointer-events: none;
+}
+[data-theme="light"] .section::before {
+  background: linear-gradient(
+    to bottom,
+    rgba(242,248,245,0) 0%,
+    rgba(242,248,245,0.78) 15%,
+    rgba(242,248,245,0.88) 50%,
+    rgba(242,248,245,0.78) 85%,
+    rgba(242,248,245,0) 100%
+  );
+}
+
+/* XR promo section */
+.xr-promo {
+  position: relative;
+  background: transparent !important;
+  padding: 160px 0;
+  text-align: center;
+}
+.xr-promo::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgba(2,5,16,0.78) 20%,
+    rgba(3,2,15,0.88) 50%,
+    rgba(2,5,16,0.78) 80%,
+    transparent 100%
+  );
+  z-index: 0; pointer-events: none;
+}
+.xr-content {
+  position: relative;
+  z-index: 2;
+}
+
+/* Testimonials */
+.testimonials {
+  position: relative;
+  background: transparent !important;
+  overflow: hidden;
+}
+.testimonials::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(3,6,15,0.65);
+  z-index: 0; pointer-events: none;
+}
+.testimonials .container { position: relative; z-index: 2; }
+
+/* Footer */
+.footer {
+  position: relative;
+  background: rgba(3,6,15,0.92) !important;
+  border-top: 1px solid var(--border);
+}
+.footer-inner, .footer-bottom { position: relative; z-index: 2; }
+
+/* ── Category cards: enhanced glass ── */
+.category-card {
+  background: rgba(7,12,24,0.65) !important;
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border: 1px solid rgba(255,255,255,0.08);
+  box-shadow:
+    0 8px 40px rgba(0,0,0,0.45),
+    0 0 0 1px rgba(255,255,255,0.04) inset;
+  transition: all 0.4s cubic-bezier(0.4,0,0.2,1);
+}
+[data-theme="light"] .category-card {
+  background: rgba(255,255,255,0.72) !important;
+  backdrop-filter: blur(24px) saturate(180%);
+  border-color: rgba(0,0,0,0.07);
+  box-shadow: 0 8px 32px rgba(2,88,163,0.12);
+}
+.category-card:hover {
+  background: rgba(7,12,24,0.78) !important;
+  border-color: var(--border-h);
+  transform: perspective(1000px) rotateY(var(--rx,0deg)) rotateX(var(--ry,0deg)) translateY(-4px);
+  box-shadow:
+    0 24px 64px rgba(0,0,0,0.55),
+    0 0 0 1px rgba(109,196,75,0.2) inset,
+    0 0 60px rgba(34,143,126,0.15);
+}
+
+/* ── Product cards: glass ── */
+.product-face {
+  background: rgba(7,12,24,0.72) !important;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255,255,255,0.07);
+}
+[data-theme="light"] .product-face {
+  background: rgba(255,255,255,0.80) !important;
+  border-color: rgba(0,0,0,0.07);
+}
+.product-back {
+  background: rgba(7,12,24,0.92) !important;
+  backdrop-filter: blur(20px);
+}
+[data-theme="light"] .product-back {
+  background: rgba(230,240,235,0.95) !important;
+}
+
+/* ── Testimonial cards: glass ── */
+.testimonial-card {
+  background: rgba(7,12,24,0.68) !important;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255,255,255,0.07);
+}
+[data-theme="light"] .testimonial-card {
+  background: rgba(255,255,255,0.78) !important;
+  border-color: rgba(0,0,0,0.06);
+}
+
+/* ── Scroll-based parallax hint ── */
+.hero-scroll-hint {
+  z-index: 3;
+}
+
+/* ── Section eyebrow: more visible over dark canvas ── */
+.section-eyebrow {
+  background: rgba(34,143,126,0.12);
+  border-color: rgba(34,143,126,0.4);
+  color: var(--teal-light);
+}
+
+/* ── Smooth inter-section blends ── */
+.categories,
+.marketplace,
+.testimonials {
+  /* Extend sections so canvas breathes through edges */
+  margin-bottom: 0;
+  padding-bottom: 130px;
+}
+
+/* ── Section dividers (subtle line) ── */
+.section + .section::after,
+.section + .xr-promo::after {
+  content: '';
+  display: none;
+}
+
+/* ═══════════════════════════════════════════════
+   GLOBAL WEBGL BACKGROUND SYSTEM
+   Inspired by alireza.com — full-viewport canvas
+   morphs per section, content floats above it
+═══════════════════════════════════════════════ */
+
+/* Global bg canvas — fixed, full viewport, behind everything */
+#globalBg {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 0;
+  display: block;
+  pointer-events: none;
+}
+
+/* All sections are transparent — the fixed canvas shows through */
+body {
+  background: transparent;
+}
+.hero,
+.section,
+.categories,
+.marketplace,
+.xr-promo,
+.testimonials,
+.footer {
+  background: transparent !important;
+}
+
+/* ── Per-section scene overlays ─────────────────
+   Each section gets a gradient tint overlay
+   that creates the illusion of a unique background
+   per section, while the WebGL canvas morphs underneath
+──────────────────────────────────────────────── */
+.scene-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* HERO: Deep emerald vignette — like alireza palm tree scene */
+.scene-overlay--hero {
+  background:
+    radial-gradient(ellipse 80% 80% at 50% 50%,
+      rgba(2,12,8,0.15) 0%,
+      rgba(2,8,16,0.65) 65%,
+      rgba(2,6,14,0.92) 100%),
+    radial-gradient(ellipse 50% 60% at 50% 80%,
+      rgba(4,20,12,0.5) 0%, transparent 70%);
+}
+
+/* CATEGORIES: Teal-green atmospheric depth */
+.scene-overlay--categories {
+  background:
+    radial-gradient(ellipse 100% 100% at 50% 0%,
+      rgba(2,14,10,0.45) 0%, rgba(2,8,16,0.82) 70%),
+    linear-gradient(to bottom,
+      rgba(3,10,6,0.5) 0%,
+      rgba(2,8,18,0.75) 100%);
+}
+
+/* MARKETPLACE: Dark blue data-grid atmosphere */
+.scene-overlay--marketplace {
+  background:
+    radial-gradient(ellipse 100% 80% at 50% 100%,
+      rgba(2,8,22,0.55) 0%, rgba(2,6,14,0.82) 65%),
+    linear-gradient(to bottom,
+      rgba(2,8,20,0.6) 0%,
+      rgba(2,6,16,0.8) 100%);
+}
+
+/* XR: Dramatic dark purple-blue cosmos */
+.scene-overlay--xr {
+  background:
+    radial-gradient(ellipse 90% 70% at 50% 40%,
+      rgba(6,4,20,0.3) 0%,
+      rgba(2,6,20,0.75) 55%,
+      rgba(2,4,16,0.95) 100%);
+}
+
+/* TESTIMONIALS: same vibe as hero — reuses scene A */
+.scene-overlay--testimonials {
+  background:
+    radial-gradient(ellipse 100% 80% at 50% 50%,
+      rgba(2,10,8,0.25) 0%,
+      rgba(2,8,18,0.78) 70%,
+      rgba(2,6,14,0.95) 100%);
+}
+
+/* FOOTER */
+.scene-overlay--footer {
+  background:
+    linear-gradient(to bottom,
+      rgba(2,6,14,0.7) 0%,
+      rgba(2,4,12,0.88) 100%);
+}
+
+/* Ensure sections stack correctly over fixed canvas */
+.hero,
+.section,
+.xr-promo,
+.testimonials,
+.footer {
+  position: relative;
+  z-index: 1;
+}
+
+/* The hero section needs extra care — full viewport */
+.hero {
+  min-height: 100svh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Hero content above overlay */
+.hero-content { position: relative; z-index: 2; }
+.hero-scroll-hint { position: absolute; z-index: 2; }
+
+/* XR section: dedicated canvas sits on top of global bg */
+.xr-promo {
+  position: relative;
+  min-height: 560px;
+  overflow: hidden;
+}
+#xrCanvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  opacity: 0.45;
+  pointer-events: none;
+}
+
+/* Footer canvas */
+.footer {
+  position: relative;
+  min-height: 200px;
+  overflow: hidden;
+  border-top: 1px solid rgba(255,255,255,0.06);
+}
+#footerCanvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  opacity: 0.28;
+  pointer-events: none;
+}
+
+/* Cards float above overlays */
+.category-card,
+.product-card,
+.testimonial-card {
+  position: relative;
+  z-index: 3;
+}
+
+/* Section container z-index */
+.categories .container,
+.marketplace .container,
+.testimonials .container {
+  position: relative;
+  z-index: 2;
+}
+
+/* ── Light mode: brighten overlays ── */
+[data-theme="light"] .scene-overlay--hero {
+  background:
+    radial-gradient(ellipse 80% 80% at 50% 50%,
+      rgba(230,248,240,0.3) 0%,
+      rgba(220,240,235,0.75) 65%,
+      rgba(210,232,228,0.92) 100%);
+}
+[data-theme="light"] .scene-overlay--categories,
+[data-theme="light"] .scene-overlay--marketplace,
+[data-theme="light"] .scene-overlay--xr,
+[data-theme="light"] .scene-overlay--testimonials,
+[data-theme="light"] .scene-overlay--footer {
+  background: rgba(230,245,240,0.82);
+}
+[data-theme="light"] #globalBg {
+  filter: invert(0.05) hue-rotate(10deg) brightness(1.3);
+}
+
+/* ── Section padding: content clears overlay ── */
+.categories { padding: 120px 0; }
+.marketplace { padding: 120px 0; }
+.testimonials { padding: 120px 0; }
