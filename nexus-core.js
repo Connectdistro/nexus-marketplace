@@ -79,6 +79,11 @@ const PageTransition = {
       curtain.classList.add('nx-curtain-out');
       setTimeout(() => curtain.classList.add('nx-curtain-hidden'), 700);
     }
+    /* FIX BUG-09: Emergency fallback — if something fails, force body visible after 2s */
+    setTimeout(() => {
+      document.body.style.opacity = '1';
+      document.body.classList.add('nx-page-ready');
+    }, 2000);
   },
 
   leavePage(cb) {
