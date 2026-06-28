@@ -630,3 +630,125 @@ document.addEventListener('DOMContentLoaded', function () {
     }, { passive: true });
   }
 });
+
+/* ═══════════════════════════════════════════════
+   MOBILE ENHANCEMENTS — iOS-native interactions
+═══════════════════════════════════════════════ */
+(function mobileEnhancements() {
+  if (window.innerWidth > 768) return;
+
+  /* ── Mobile scroll reveal ── */
+  function initMobReveal() {
+    const els = document.querySelectorAll(
+      '.category-card, .product-card, .section-header, .testimonial-card, .footer-brand'
+    );
+    if (!els.length) return;
+    const obs = new IntersectionObserver(entries => {
+      entries.forEach((e, i) => {
+        if (e.isIntersecting) {
+          setTimeout(() => {
+            e.target.classList.add('mob-reveal', 'in');
+          }, i * 55);
+          obs.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.06, rootMargin: '0px 0px -24px 0px' });
+
+    els.forEach(el => {
+      el.classList.add('mob-reveal');
+      obs.observe(el);
+    });
+  }
+
+  /* ── Haptic-like scale feedback on tap ── */
+  function addTapFeedback() {
+    const targets = document.querySelectorAll(
+      '.category-card, .filter-btn, .product-card, .btn-primary, .btn-ghost, .btn-hero-primary, .btn-hero-ghost, .btn-xr'
+    );
+    targets.forEach(el => {
+      el.addEventListener('touchstart', () => {
+        el.style.transition = 'transform 0.12s cubic-bezier(0.34,1.56,0.64,1)';
+        el.style.transform = 'scale(0.97)';
+      }, { passive: true });
+      el.addEventListener('touchend', () => {
+        setTimeout(() => {
+          el.style.transform = '';
+        }, 80);
+      }, { passive: true });
+      el.addEventListener('touchcancel', () => {
+        el.style.transform = '';
+      }, { passive: true });
+    });
+  }
+
+  /* ── Stagger product cards on render ── */
+  function staggerCards() {
+    const grid = document.getElementById('productGrid');
+    if (!grid) return;
+    const obs = new MutationObserver(() => {
+      grid.querySelectorAll('.product-card').forEach((card, i) => {
+        if (!card.dataset.animated) {
+          card.dataset.animated = '1';
+          card.style.opacity = '0';
+          card.style.transform = 'translateY(18px)';
+          setTimeout(() => {
+            card.style.transition = 'opacity 0.4s cubic-bezier(0.22,1,0.36,1), transform 0.4s cubic-bezier(0.22,1,0.36,1)';
+            card.style.opacity = '1';
+            card.style.transform = 'translateY(0)';
+          }, i * 60 + 80);
+        }
+      });
+    });
+    obs.observe(grid, { childList: true });
+  }
+
+  /* ── Smooth horizontal filter scroll ── */
+  function filterDrag() {
+    const bar = document.querySelector('.filter-bar');
+    if (!bar) return;
+    let startX, scrollLeft, isDragging = false;
+    bar.addEventListener('touchstart', e => {
+      startX = e.touches[0].pageX - bar.offsetLeft;
+      scrollLeft = bar.scrollLeft;
+    }, { passive: true });
+    bar.addEventListener('touchmove', e => {
+      const x = e.touches[0].pageX - bar.offsetLeft;
+      bar.scrollLeft = scrollLeft - (x - startX);
+    }, { passive: true });
+  }
+
+  /* ── Pull-down to refresh hint ── */
+  let pullStartY = 0;
+  document.addEventListener('touchstart', e => {
+    pullStartY = e.touches[0].clientY;
+  }, { passive: true });
+
+  /* ── Close mobile menu on scroll ── */
+  let lastScrollY = 0;
+  window.addEventListener('scroll', () => {
+    const menu = document.getElementById('mobileMenu');
+    if (menu && menu.classList.contains('open') && Math.abs(window.scrollY - lastScrollY) > 50) {
+      menu.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+    lastScrollY = window.scrollY;
+  }, { passive: true });
+
+  /* ── Init all ── */
+  document.addEventListener('DOMContentLoaded', () => {
+    initMobReveal();
+    addTapFeedback();
+    staggerCards();
+    filterDrag();
+  });
+
+  /* ── Re-run reveal & tap after grid re-renders ── */
+  const prodGrid = document.getElementById('productGrid');
+  if (prodGrid) {
+    const reObserver = new MutationObserver(() => {
+      addTapFeedback();
+      staggerCards();
+    });
+    reObserver.observe(prodGrid, { childList: true });
+  }
+})();
