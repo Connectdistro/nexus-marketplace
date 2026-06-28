@@ -10,25 +10,31 @@
 <body>
 <nav class="nav" id="mainNav">
   <div class="nav-inner">
-    <a href="index.html" class="nav-logo">
+    <a href="index.html" class="nav-logo" data-no-transition>
       <div class="logo-3d-wrap"><div class="logo-3d-inner"><img src="logo.png" alt="NEXUS"/></div></div>
       <span class="logo-text">NEXUS</span>
     </a>
     <ul class="nav-links">
       <li><a href="index.html">Home</a></li>
-      <li><a href="index.html#marketplace">Marketplace</a></li>
-      <li><a href="contact.html">Contact</a></li>
+      <li><a href="marketplace.html">Marketplace</a></li>
+      <li><a href="contact.html"style="color:var(--text)">Contact</a></li>
     </ul>
     <div class="nav-actions">
-      <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="Toggle theme" style="font-size:13px;font-weight:600">Moon</button>
-      <a href="index.html" class="btn-ghost">Back Home</a>
+      <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme">🌙</button>
+      <div class="nav-actions-auth" id="navActionsAuth">
+        <button class="btn-ghost" onclick="AuthModal.open('login')">Sign In</button>
+        <button class="btn-primary" onclick="AuthModal.open('signup')">Join Free</button>
+      </div>
     </div>
-    <button class="nav-burger" id="navBurger" aria-label="Menu"><span></span><span></span><span></span></button>
+    <div style="display:flex;align-items:center;gap:8px;margin-left:auto">
+      <button class="theme-toggle" id="themeToggleMob" style="display:none" onclick="toggleTheme()">🌙</button>
+      <button class="nav-burger" id="navBurger"><span></span><span></span><span></span></button>
+    </div>
   </div>
   <div class="mobile-menu" id="mobileMenu">
     <div class="mobile-menu-inner">
       <a href="index.html" class="mobile-link">Home</a>
-      <a href="index.html#marketplace" class="mobile-link">Marketplace</a>
+      <a href="marketplace.html" class="mobile-link" data-protected="true">Marketplace</a>
       <a href="contact.html" class="mobile-link">Contact</a>
       <div class="mobile-divider"></div>
       <a href="privacy.html" class="mobile-link mobile-link--sm">Privacy Policy</a>
@@ -36,6 +42,10 @@
       <a href="refund.html" class="mobile-link mobile-link--sm">Refund Policy</a>
       <a href="shipping.html" class="mobile-link mobile-link--sm">Shipping Policy</a>
       <a href="cancellation.html" class="mobile-link mobile-link--sm">Cancellation Policy</a>
+      <div class="mobile-actions" id="mobileActionsAuth">
+        <button class="btn-ghost w-full" onclick="AuthModal.open('login')">Sign In</button>
+        <button class="btn-primary w-full" onclick="AuthModal.open('signup')">Join Free</button>
+      </div>
     </div>
   </div>
 </nav>
@@ -215,59 +225,6 @@
   </div>
 </footer>
 
-<script>
-document.getElementById('navBurger').addEventListener('click',()=>{
-  const m=document.getElementById('mobileMenu');
-  m.classList.toggle('open');
-  document.body.style.overflow=m.classList.contains('open')?'hidden':'';
-});
-
-// Show order number field for relevant subjects
-document.getElementById('cf-subject').addEventListener('change', function() {
-  const show = ['Purchase Support','Refund / Cancellation Request'].includes(this.value);
-  document.getElementById('orderNumGroup').style.display = show ? 'block' : 'none';
-});
-
-function submitForm() {
-  const fname = document.getElementById('cf-fname').value.trim();
-  const email = document.getElementById('cf-email').value.trim();
-  const subject = document.getElementById('cf-subject').value;
-  const msg = document.getElementById('cf-msg').value.trim();
-  const consent = document.getElementById('cf-consent').checked;
-  
-  if (!fname || !email || !subject || !msg) {
-    alert('Please fill in all required fields.');
-    return;
-  }
-  if (!consent) {
-    alert('Please agree to the Privacy Policy to continue.');
-    return;
-  }
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-    alert('Please enter a valid email address.');
-    return;
-  }
-
-  const btn = document.getElementById('cf-submit');
-  btn.textContent = 'Sending…';
-  btn.disabled = true;
-
-  // Simulate submission (replace with real endpoint)
-  setTimeout(() => {
-    document.getElementById('contactFormWrap').style.display = 'none';
-    document.getElementById('formSuccess').classList.add('show');
-  }, 1200);
-}
-</script>
-<script>
-const STORAGE_KEY="nexus-theme";
-function getTheme(){return localStorage.getItem(STORAGE_KEY)||"dark";}
-function applyTheme(t){document.documentElement.setAttribute("data-theme",t);localStorage.setItem(STORAGE_KEY,t);const el=document.getElementById("themeToggle");if(el)el.textContent=t==="dark"?"🌙":"☀️";}
-function toggleTheme(){applyTheme(getTheme()==="dark"?"light":"dark");}
-applyTheme(getTheme());
-const nb=document.getElementById("navBurger");
-if(nb){const mm=document.getElementById("mobileMenu");nb.addEventListener("click",()=>{mm.classList.toggle("open");document.body.style.overflow=mm.classList.contains("open")?"hidden":"";});}
-window.addEventListener("scroll",()=>{const n=document.querySelector(".nav");if(n)n.classList.toggle("scrolled",window.scrollY>60);},{passive:true});
-</script>
+<script src="nexus-core.js"></script>
 </body>
 </html>

@@ -450,19 +450,21 @@
 <!-- ══ NAV ══ -->
 <nav class="nav" id="mainNav">
   <div class="nav-inner">
-    <a href="index.html" class="nav-logo">
+    <a href="index.html" class="nav-logo" data-no-transition>
       <div class="logo-3d-wrap"><div class="logo-3d-inner"><img src="logo.png" alt="NEXUS"/></div></div>
       <span class="logo-text">NEXUS</span>
     </a>
     <ul class="nav-links">
       <li><a href="index.html">Home</a></li>
-      <li><a href="marketplace.html" style="color:var(--text)">Marketplace</a></li>
+      <li><a href="marketplace.html"style="color:var(--text)">Marketplace</a></li>
       <li><a href="contact.html">Contact</a></li>
     </ul>
     <div class="nav-actions">
-      <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="Toggle theme">🌙</button>
-      <button class="btn-ghost" onclick="location.href='contact.html'">Sign In</button>
-      <button class="btn-primary" onclick="location.href='contact.html'">Join Free</button>
+      <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme">🌙</button>
+      <div class="nav-actions-auth" id="navActionsAuth">
+        <button class="btn-ghost" onclick="AuthModal.open('login')">Sign In</button>
+        <button class="btn-primary" onclick="AuthModal.open('signup')">Join Free</button>
+      </div>
     </div>
     <div style="display:flex;align-items:center;gap:8px;margin-left:auto">
       <button class="theme-toggle" id="themeToggleMob" style="display:none" onclick="toggleTheme()">🌙</button>
@@ -472,12 +474,18 @@
   <div class="mobile-menu" id="mobileMenu">
     <div class="mobile-menu-inner">
       <a href="index.html" class="mobile-link">Home</a>
-      <a href="marketplace.html" class="mobile-link">Marketplace</a>
+      <a href="marketplace.html" class="mobile-link" data-protected="true">Marketplace</a>
       <a href="contact.html" class="mobile-link">Contact</a>
       <div class="mobile-divider"></div>
       <a href="privacy.html" class="mobile-link mobile-link--sm">Privacy Policy</a>
       <a href="terms.html" class="mobile-link mobile-link--sm">Terms of Service</a>
       <a href="refund.html" class="mobile-link mobile-link--sm">Refund Policy</a>
+      <a href="shipping.html" class="mobile-link mobile-link--sm">Shipping Policy</a>
+      <a href="cancellation.html" class="mobile-link mobile-link--sm">Cancellation Policy</a>
+      <div class="mobile-actions" id="mobileActionsAuth">
+        <button class="btn-ghost w-full" onclick="AuthModal.open('login')">Sign In</button>
+        <button class="btn-primary w-full" onclick="AuthModal.open('signup')">Join Free</button>
+      </div>
     </div>
   </div>
 </nav>
@@ -527,6 +535,23 @@
   </div>
 </section>
 
+
+<!-- Auth Gate (shown when not logged in) -->
+<div class="nx-gate" id="mpGate" style="display:none">
+  <div class="nx-gate-box">
+    <div class="nx-gate-icon">🔐</div>
+    <h2>Members Only</h2>
+    <p>The NEXUS Marketplace is exclusive to members. Sign in or create your free account to browse 8,600+ listings from creators worldwide.</p>
+    <div class="nx-gate-actions">
+      <button class="btn-primary btn-lg" onclick="AuthModal.open('signup', function(){ showMarketplace(); })">Join Free — It's Quick</button>
+      <button class="btn-ghost" onclick="AuthModal.open('login', function(){ showMarketplace(); })">Sign In</button>
+    </div>
+    <p style="font-size:12px;color:var(--text-30);margin-top:20px">No credit card required · Free to browse · 15% fee only on sales</p>
+  </div>
+</div>
+
+<!-- Main marketplace content -->
+<div id="mpContent">
 <!-- ══ MOBILE DRAWER ══ -->
 <div class="mob-overlay" id="mobOverlay" onclick="closeDrawer()"></div>
 <div class="mob-drawer" id="mobDrawer">
@@ -664,6 +689,8 @@
 
   </main>
 </div>
+
+</div><!-- /mpContent -->
 
 <!-- ══ FOOTER ══ -->
 <footer class="footer" style="padding:0">
@@ -982,8 +1009,26 @@ document.addEventListener('keydown',function(e){
   if(e.key==='Escape'){closeModal();closeDrawer();}
 });
 
-/* ── Init ──────────────────────────────── */
-render();
+
+/* ── Marketplace Auth Gate ── */
+function showMarketplace() {
+  document.getElementById('mpGate').style.display = 'none';
+  document.getElementById('mpContent').style.display = '';
+}
+function checkMpAuth() {
+  if (!Auth.isLoggedIn()) {
+    document.getElementById('mpGate').style.display = 'flex';
+    document.getElementById('mpContent').style.display = 'none';
+  } else {
+    showMarketplace();
+  }
+}
+document.addEventListener('DOMContentLoaded', function() {
+  checkMpAuth();
+  render();
+});
+
 </script>
+<script src="nexus-core.js"></script>
 </body>
 </html>

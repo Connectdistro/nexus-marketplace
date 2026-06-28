@@ -16,52 +16,41 @@
 <!-- ═══════ FLOATING PILL NAV ═══════ -->
 <nav class="nav" id="mainNav">
   <div class="nav-inner">
-    <a href="#home" class="nav-logo">
-      <div class="logo-3d-wrap" id="logoWrap">
-        <div class="logo-3d-inner" id="logo3d">
-          <img src="logo.png" alt="NEXUS"/>
-        </div>
-      </div>
+    <a href="index.html" class="nav-logo" data-no-transition>
+      <div class="logo-3d-wrap"><div class="logo-3d-inner"><img src="logo.png" alt="NEXUS"/></div></div>
       <span class="logo-text">NEXUS</span>
     </a>
-
     <ul class="nav-links">
-      <li><a href="#home">Home</a></li>
+      <li><a href="index.html"style="color:var(--text)">Home</a></li>
       <li><a href="marketplace.html">Marketplace</a></li>
-      <li><a href="#categories">Categories</a></li>
       <li><a href="contact.html">Contact</a></li>
     </ul>
-
     <div class="nav-actions">
-      <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme" title="Switch theme">🌙</button>
-      <button class="btn-ghost" onclick="location.href='contact.html'">Sign In</button>
-      <button class="btn-primary" onclick="location.href='contact.html'">Join Free</button>
+      <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme">🌙</button>
+      <div class="nav-actions-auth" id="navActionsAuth">
+        <button class="btn-ghost" onclick="AuthModal.open('login')">Sign In</button>
+        <button class="btn-primary" onclick="AuthModal.open('signup')">Join Free</button>
+      </div>
     </div>
-
     <div style="display:flex;align-items:center;gap:8px;margin-left:auto">
-      <button class="theme-toggle" id="themeToggleMob" aria-label="Toggle theme" style="display:none">🌙</button>
-      <button class="nav-burger" id="navBurger" aria-label="Menu">
-        <span></span><span></span><span></span>
-      </button>
+      <button class="theme-toggle" id="themeToggleMob" style="display:none" onclick="toggleTheme()">🌙</button>
+      <button class="nav-burger" id="navBurger"><span></span><span></span><span></span></button>
     </div>
   </div>
-
-  <!-- Mobile slide-down menu -->
   <div class="mobile-menu" id="mobileMenu">
     <div class="mobile-menu-inner">
-      <a href="#home"         class="mobile-link">Home</a>
-      <a href="#marketplace"  class="mobile-link">Marketplace</a>
-      <a href="#categories"   class="mobile-link">Categories</a>
-      <a href="contact.html"  class="mobile-link">Contact</a>
+      <a href="index.html" class="mobile-link">Home</a>
+      <a href="marketplace.html" class="mobile-link" data-protected="true">Marketplace</a>
+      <a href="contact.html" class="mobile-link">Contact</a>
       <div class="mobile-divider"></div>
-      <a href="privacy.html"      class="mobile-link mobile-link--sm">Privacy Policy</a>
-      <a href="terms.html"        class="mobile-link mobile-link--sm">Terms of Service</a>
-      <a href="refund.html"       class="mobile-link mobile-link--sm">Refund Policy</a>
-      <a href="shipping.html"     class="mobile-link mobile-link--sm">Shipping Policy</a>
+      <a href="privacy.html" class="mobile-link mobile-link--sm">Privacy Policy</a>
+      <a href="terms.html" class="mobile-link mobile-link--sm">Terms of Service</a>
+      <a href="refund.html" class="mobile-link mobile-link--sm">Refund Policy</a>
+      <a href="shipping.html" class="mobile-link mobile-link--sm">Shipping Policy</a>
       <a href="cancellation.html" class="mobile-link mobile-link--sm">Cancellation Policy</a>
-      <div class="mobile-actions">
-        <button class="btn-ghost w-full" onclick="location.href='contact.html'">Sign In</button>
-        <button class="btn-primary w-full" onclick="location.href='contact.html'">Join Free</button>
+      <div class="mobile-actions" id="mobileActionsAuth">
+        <button class="btn-ghost w-full" onclick="AuthModal.open('login')">Sign In</button>
+        <button class="btn-primary w-full" onclick="AuthModal.open('signup')">Join Free</button>
       </div>
     </div>
   </div>
@@ -85,7 +74,7 @@
       and entertainment — powered by creators, built for culture.
     </p>
     <div class="hero-cta">
-      <button class="btn-hero-primary" onclick="location.href='marketplace.html'">
+      <button class="btn-hero-primary" onclick="navigateTo('marketplace.html', true)">
         Explore Marketplace
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
       </button>
@@ -162,7 +151,7 @@
     </div>
     <div class="product-grid" id="productGrid"></div>
     <div class="marketplace-cta">
-      <button class="btn-primary btn-lg" onclick="location.href='marketplace.html'">View All 89,000+ Items</button>
+      <button class="btn-primary btn-lg" onclick="navigateTo('marketplace.html', true)">View All 89,000+ Items</button>
     </div>
   </div>
 </section>
@@ -284,5 +273,6 @@
 </div>
 
 <script src="main.js"></script>
+<script src="nexus-core.js"></script>
 </body>
 </html>
