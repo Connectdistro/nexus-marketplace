@@ -1627,15 +1627,19 @@ html, body {
 }
 
 /* ═══════════════════════════════════════════════
-   GLOBAL WEBGL BACKGROUND SYSTEM
-   Inspired by alireza.com — full-viewport canvas
-   morphs per section, content floats above it
+   GLOBAL WEBGL BACKGROUND — alireza.com technique
+   
+   ONE fixed canvas behind everything.
+   Each section is transparent — the canvas bleeds through.
+   Distinct Three.js scenes per section (different camera
+   angles / geometry like alireza's palm tree renders).
+   Scene crossfades are handled by bg-engine.js.
 ═══════════════════════════════════════════════ */
 
-/* Global bg canvas — fixed, full viewport, behind everything */
+/* Fixed full-viewport canvas — lowest z-index */
 #globalBg {
   position: fixed;
-  inset: 0;
+  top: 0; left: 0;
   width: 100vw;
   height: 100vh;
   z-index: 0;
@@ -1643,10 +1647,11 @@ html, body {
   pointer-events: none;
 }
 
-/* All sections are transparent — the fixed canvas shows through */
+/* ── ALL sections are transparent so canvas bleeds through ── */
 body {
-  background: transparent;
+  background: #02080e;
 }
+
 .hero,
 .section,
 .categories,
@@ -1657,76 +1662,65 @@ body {
   background: transparent !important;
 }
 
-/* ── Per-section scene overlays ─────────────────
-   Each section gets a gradient tint overlay
-   that creates the illusion of a unique background
-   per section, while the WebGL canvas morphs underneath
+/* ── Per-section overlays (like alireza's per-section colour tint) ──
+   These give each section its unique atmosphere while the
+   WebGL canvas underneath provides the actual visual content.
+   Colour matched to each Three.js scene.
 ──────────────────────────────────────────────── */
 .scene-overlay {
   position: absolute;
   inset: 0;
   z-index: 1;
   pointer-events: none;
+  transition: opacity 0.8s ease;
 }
 
-/* HERO: Deep emerald vignette — like alireza palm tree scene */
+/* SCENE 0 — HERO: warm emerald atmosphere (like alireza palm glow) */
 .scene-overlay--hero {
-  background:
-    radial-gradient(ellipse 80% 80% at 50% 50%,
-      rgba(2,12,8,0.15) 0%,
-      rgba(2,8,16,0.65) 65%,
-      rgba(2,6,14,0.92) 100%),
-    radial-gradient(ellipse 50% 60% at 50% 80%,
-      rgba(4,20,12,0.5) 0%, transparent 70%);
+  background: radial-gradient(
+    ellipse 70% 80% at 50% 60%,
+    rgba(2,40,18,0.08) 0%,
+    rgba(2,12,8,0.55) 55%,
+    rgba(1,6,4,0.88) 100%
+  );
 }
 
-/* CATEGORIES: Teal-green atmospheric depth */
+/* SCENE 1 — CATEGORIES: very dark with subtle teal (like alireza fibres) */
 .scene-overlay--categories {
   background:
-    radial-gradient(ellipse 100% 100% at 50% 0%,
-      rgba(2,14,10,0.45) 0%, rgba(2,8,16,0.82) 70%),
+    radial-gradient(ellipse 100% 60% at 0% 50%,
+      rgba(1,10,12,0.2) 0%, rgba(1,6,8,0.82) 60%),
     linear-gradient(to bottom,
-      rgba(3,10,6,0.5) 0%,
-      rgba(2,8,18,0.75) 100%);
+      rgba(1,6,8,0.5) 0%, rgba(1,4,6,0.78) 100%);
 }
 
-/* MARKETPLACE: Dark blue data-grid atmosphere */
+/* SCENE 2 — MARKETPLACE: dark with warm amber base (like alireza trunk) */
 .scene-overlay--marketplace {
   background:
-    radial-gradient(ellipse 100% 80% at 50% 100%,
-      rgba(2,8,22,0.55) 0%, rgba(2,6,14,0.82) 65%),
+    radial-gradient(ellipse 80% 100% at 50% 100%,
+      rgba(12,8,2,0.25) 0%, rgba(2,6,3,0.82) 55%),
     linear-gradient(to bottom,
-      rgba(2,8,20,0.6) 0%,
-      rgba(2,6,16,0.8) 100%);
+      rgba(3,8,3,0.55) 0%, rgba(2,5,2,0.8) 100%);
 }
 
-/* XR: Dramatic dark purple-blue cosmos */
+/* SCENE 3 — XR / TESTIMONIALS: deep teal-black (like alireza sectors) */
 .scene-overlay--xr {
   background:
-    radial-gradient(ellipse 90% 70% at 50% 40%,
-      rgba(6,4,20,0.3) 0%,
-      rgba(2,6,20,0.75) 55%,
-      rgba(2,4,16,0.95) 100%);
+    radial-gradient(ellipse 90% 70% at 80% 80%,
+      rgba(1,14,18,0.15) 0%,
+      rgba(1,6,8,0.78) 55%,
+      rgba(1,4,6,0.95) 100%);
 }
+.scene-overlay--testimonials { background: var(--scene-xr-grad, rgba(1,6,8,0.8)); }
 
-/* TESTIMONIALS: same vibe as hero — reuses scene A */
-.scene-overlay--testimonials {
-  background:
-    radial-gradient(ellipse 100% 80% at 50% 50%,
-      rgba(2,10,8,0.25) 0%,
-      rgba(2,8,18,0.78) 70%,
-      rgba(2,6,14,0.95) 100%);
-}
-
-/* FOOTER */
+/* SCENE 4 — FOOTER: near-black (like alireza careers last section) */
 .scene-overlay--footer {
   background:
-    linear-gradient(to bottom,
-      rgba(2,6,14,0.7) 0%,
-      rgba(2,4,12,0.88) 100%);
+    radial-gradient(ellipse 100% 80% at 50% 40%,
+      rgba(1,6,8,0.3) 0%, rgba(1,4,6,0.88) 100%);
 }
 
-/* Ensure sections stack correctly over fixed canvas */
+/* ── Section stacking — content above canvas ── */
 .hero,
 .section,
 .xr-promo,
@@ -1736,7 +1730,7 @@ body {
   z-index: 1;
 }
 
-/* The hero section needs extra care — full viewport */
+/* Hero fills full viewport */
 .hero {
   min-height: 100svh;
   display: flex;
@@ -1744,11 +1738,10 @@ body {
   justify-content: center;
 }
 
-/* Hero content above overlay */
-.hero-content { position: relative; z-index: 2; }
+.hero-content  { position: relative; z-index: 2; }
 .hero-scroll-hint { position: absolute; z-index: 2; }
 
-/* XR section: dedicated canvas sits on top of global bg */
+/* XR promo: own dedicated canvas on top of global bg */
 .xr-promo {
   position: relative;
   min-height: 560px;
@@ -1760,7 +1753,7 @@ body {
   width: 100%;
   height: 100%;
   z-index: 1;
-  opacity: 0.45;
+  opacity: 0.4;
   pointer-events: none;
 }
 
@@ -1769,7 +1762,7 @@ body {
   position: relative;
   min-height: 200px;
   overflow: hidden;
-  border-top: 1px solid rgba(255,255,255,0.06);
+  border-top: 1px solid rgba(255,255,255,0.05);
 }
 #footerCanvas {
   position: absolute;
@@ -1777,46 +1770,34 @@ body {
   width: 100%;
   height: 100%;
   z-index: 1;
-  opacity: 0.28;
+  opacity: 0.22;
   pointer-events: none;
 }
 
-/* Cards float above overlays */
+/* Cards sit above overlay */
 .category-card,
 .product-card,
-.testimonial-card {
-  position: relative;
-  z-index: 3;
-}
+.testimonial-card { position: relative; z-index: 3; }
 
-/* Section container z-index */
+/* Container z-index */
 .categories .container,
 .marketplace .container,
-.testimonials .container {
-  position: relative;
-  z-index: 2;
-}
+.testimonials .container { position: relative; z-index: 2; }
 
-/* ── Light mode: brighten overlays ── */
-[data-theme="light"] .scene-overlay--hero {
-  background:
-    radial-gradient(ellipse 80% 80% at 50% 50%,
-      rgba(230,248,240,0.3) 0%,
-      rgba(220,240,235,0.75) 65%,
-      rgba(210,232,228,0.92) 100%);
-}
+/* ── Light mode ── */
+[data-theme="light"] .scene-overlay--hero,
 [data-theme="light"] .scene-overlay--categories,
 [data-theme="light"] .scene-overlay--marketplace,
 [data-theme="light"] .scene-overlay--xr,
 [data-theme="light"] .scene-overlay--testimonials,
 [data-theme="light"] .scene-overlay--footer {
-  background: rgba(230,245,240,0.82);
+  background: rgba(220,240,235,0.86);
 }
 [data-theme="light"] #globalBg {
-  filter: invert(0.05) hue-rotate(10deg) brightness(1.3);
+  filter: brightness(1.5) saturate(0.7) hue-rotate(8deg);
 }
 
-/* ── Section padding: content clears overlay ── */
+/* ── Section padding ── */
 .categories { padding: 120px 0; }
 .marketplace { padding: 120px 0; }
 .testimonials { padding: 120px 0; }
