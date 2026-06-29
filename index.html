@@ -968,29 +968,7 @@ body {
 
 
 /* ── Contact panel ── */
-[data-theme="light"] .ct-form-box {
-  background: rgba(232,237,231,0.82);
-  border-color: rgba(26,32,24,0.06);
-}
-[data-theme="light"] .ct-form-ttl { color: rgba(26,32,24,0.88); }
-[data-theme="light"] .ct-form-sub { color: rgba(26,32,24,0.45); }
-[data-theme="light"] .ct-field label { color: rgba(26,32,24,0.38); }
-[data-theme="light"] .ct-inp {
-  background: rgba(26,32,24,0.04);
-  border-color: rgba(26,32,24,0.1);
-  color: rgba(26,32,24,0.88);
-}
-[data-theme="light"] .ct-inp:focus { border-color: var(--green); }
-[data-theme="light"] .ct-inp::placeholder { color: rgba(26,32,24,0.28); }
-[data-theme="light"] .ct-check label { color: rgba(26,32,24,0.5); }
-[data-theme="light"] .ct-channel { border-color: rgba(26,32,24,0.07); }
-[data-theme="light"] .ct-ch-icon {
-  border-color: rgba(26,32,24,0.1);
-  color: var(--green);
-}
-[data-theme="light"] .ct-ch-lbl { color: rgba(26,32,24,0.3); }
-[data-theme="light"] .ct-ch-val { color: rgba(26,32,24,0.72); }
-[data-theme="light"] .ct-ch-val:hover { color: var(--green); }
+
 
 /* ── Footer ── */
 [data-theme="light"] #fbar {
@@ -1152,84 +1130,164 @@ body {
 /* Light mode marketplace */
 
 /* ════ CONTACT PANEL (p8) ════ */
+/* ════════════════════════════════════════
+   CONTACT PANEL — mirrors services layout
+   Left: label + title + body + stat strip
+   Right: stacked card carousel (top→bottom auto-scroll)
+════════════════════════════════════════ */
 .ct-panel {
-  align-items: stretch;
-}
-.ct-inner {
-  width: 100%;
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 80px 120px 80px 180px;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 80px;
   align-items: center;
 }
-.ct-channels { margin-top: 36px; display: flex; flex-direction: column; }
-.ct-channel {
-  padding: 16px 0;
-  border-top: 1px solid rgba(255,255,255,0.07);
-  display: flex; align-items: flex-start; gap: 14px;
+
+/* ── Stacked card deck ── */
+.ct-deck-wrap {
+  position: relative;
+  height: 260px;         /* visible window — one card height */
+  overflow: hidden;
+  /* 3D context so cards can tilt in Z */
+  perspective: 800px;
+  transform-style: preserve-3d;
 }
-.ct-channel:last-child { border-bottom: 1px solid rgba(255,255,255,0.07); }
-.ct-ch-icon {
-  width: 32px; height: 32px;
-  border: 1px solid rgba(255,255,255,0.12);
-  display: flex; align-items: center; justify-content: center;
-  color: var(--green); font-size: 12px; flex-shrink: 0;
+
+/* The moving belt — translateY driven by JS */
+.ct-deck {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  /* transition applied inline by JS for smooth lerp */
+  will-change: transform;
+  transform-style: preserve-3d;
 }
-.ct-ch-lbl { font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(255,255,255,0.3); margin-bottom: 3px; }
-.ct-ch-val { font-size: 13px; color: rgba(255,255,255,0.75); text-decoration: none; transition: color 0.2s; }
-.ct-ch-val:hover { color: var(--green); }
-/* Contact form */
-.ct-form-box {
-  background: rgba(2,14,7,0.6);
+
+/* Individual card */
+.ct-card {
+  width: 100%;
+  padding: 28px 32px;
+  background: rgba(2,14,7,0.65);
   border: 1px solid rgba(255,255,255,0.07);
-  padding: 36px 32px;
   backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex-shrink: 0;
+  /* Cards start flat, get a subtle 3D tilt when mid-scroll */
+  transition:
+    border-color   0.45s ease,
+    background     0.45s ease,
+    box-shadow     0.45s ease,
+    transform      0.45s cubic-bezier(0.16,1,0.3,1),
+    opacity        0.45s ease;
+  cursor: default;
 }
-.ct-form-ttl { font-size: 17px; font-weight: 500; color: #fff; margin-bottom: 6px; }
-.ct-form-sub { font-size: 12px; color: rgba(255,255,255,0.4); margin-bottom: 24px; }
-.ct-field { display: flex; flex-direction: column; gap: 5px; margin-bottom: 12px; }
-.ct-field label { font-size: 9px; letter-spacing: 0.16em; text-transform: uppercase; color: rgba(255,255,255,0.35); }
-.ct-field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-.ct-inp {
-  background: rgba(255,255,255,0.05);
-  border: 1px solid rgba(255,255,255,0.1);
-  color: #fff; font-family: 'Space Grotesk', sans-serif;
-  font-size: 13px; padding: 10px 13px; outline: none; width: 100%;
-  transition: border-color 0.2s;
+.ct-card:hover {
+  border-color: rgba(109,196,75,0.3);
+  background: rgba(6,24,10,0.75);
+  box-shadow: 0 8px 40px rgba(0,0,0,0.35),
+              0 0 0 1px rgba(109,196,75,0.1);
 }
-.ct-inp:focus { border-color: var(--green); }
-.ct-inp::placeholder { color: rgba(255,255,255,0.25); }
-textarea.ct-inp { resize: vertical; min-height: 80px; }
-select.ct-inp { cursor: pointer; appearance: none; }
-.ct-check {
-  display: flex; align-items: flex-start; gap: 9px; margin-bottom: 14px;
+
+/* Active (centred) card — slightly brighter */
+.ct-card.ct-active {
+  border-color: rgba(109,196,75,0.18);
+  background: rgba(4,18,8,0.72);
 }
-.ct-check input { accent-color: var(--green); margin-top: 2px; flex-shrink: 0; }
-.ct-check label { font-size: 11px; color: rgba(255,255,255,0.4); line-height: 1.6; }
-.ct-check a { color: var(--green); text-decoration: none; }
-.ct-err-msg { font-size: 11px; color: #ef4444; min-height: 14px; margin-bottom: 8px; }
-.ct-sub-btn {
-  width: 100%; height: 44px;
-  background: var(--green); border: none;
-  color: #fff; font-family: 'Space Grotesk', sans-serif;
-  font-size: 13px; font-weight: 500; letter-spacing: 0.06em;
-  cursor: pointer; display: flex; align-items: center;
-  justify-content: center; gap: 8px; transition: opacity 0.2s;
+
+.ct-card-lbl {
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--green);
 }
-.ct-sub-btn:hover { opacity: 0.85; }
-.ct-sub-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-.ct-ok-msg {
-  display: none; flex-direction: column;
-  align-items: center; text-align: center;
-  padding: 28px 0; gap: 10px;
+.ct-card-val {
+  font-size: clamp(18px, 2.5vw, 26px);
+  font-weight: 300;
+  letter-spacing: -0.01em;
+  color: rgba(255,255,255,0.88);
+  text-decoration: none;
+  line-height: 1.2;
+  transition: color 0.3s ease;
 }
-.ct-ok-msg.show { display: flex; }
-.ct-ok-msg-icon { font-size: 34px; }
-.ct-ok-msg h3 { font-size: 17px; font-weight: 500; }
-.ct-ok-msg p { font-size: 12px; color: rgba(255,255,255,0.5); }
+a.ct-card-val:hover { color: #fff; }
+.ct-card-note {
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0.06em;
+  color: rgba(255,255,255,0.28);
+  margin-top: 4px;
+}
+
+/* Top and bottom fade masks — smooth edge dissolve */
+.ct-deck-wrap::before,
+.ct-deck-wrap::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 0;
+  height: 80px;
+  z-index: 2;
+  pointer-events: none;
+}
+.ct-deck-wrap::before {
+  top: 0;
+  background: linear-gradient(to bottom,
+    var(--bg, #020e07) 0%,
+    transparent 100%);
+}
+.ct-deck-wrap::after {
+  bottom: 0;
+  background: linear-gradient(to top,
+    var(--bg, #020e07) 0%,
+    transparent 100%);
+}
+
+/* Pause indicator — appears on hover */
+.ct-pause-hint {
+  position: absolute;
+  bottom: 12px;
+  right: 0;
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.22);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+.ct-deck-wrap:hover .ct-pause-hint { opacity: 1; }
+
+/* ── Light mode ── */
+[data-theme="light"] .ct-card {
+  background: rgba(232,237,231,0.75);
+  border-color: rgba(26,32,24,0.06);
+}
+[data-theme="light"] .ct-card:hover {
+  background: rgba(220,232,218,0.9);
+  border-color: rgba(109,196,75,0.3);
+  box-shadow: 0 8px 40px rgba(0,0,0,0.08),
+              0 0 0 1px rgba(109,196,75,0.12);
+}
+[data-theme="light"] .ct-card.ct-active {
+  background: rgba(225,236,222,0.85);
+  border-color: rgba(109,196,75,0.2);
+}
+[data-theme="light"] .ct-card-val { color: rgba(26,32,24,0.85); }
+[data-theme="light"] a.ct-card-val:hover { color: rgba(26,32,24,1); }
+[data-theme="light"] .ct-card-note { color: rgba(26,32,24,0.32); }
+[data-theme="light"] .ct-deck-wrap::before {
+  background: linear-gradient(to bottom, #f0f4ef 0%, transparent 100%);
+}
+[data-theme="light"] .ct-deck-wrap::after {
+  background: linear-gradient(to top, #f0f4ef 0%, transparent 100%);
+}
+[data-theme="light"] .ct-pause-hint { color: rgba(26,32,24,0.22); }
+
+/* ── Mobile ── */
+@media (max-width: 768px) {
+  .ct-deck-wrap { height: 220px; }
+  .ct-card { padding: 22px 20px; }
+  .ct-card-val { font-size: clamp(16px, 4vw, 22px); }
+}
 /* Light mode contact */
 [data-theme="light"] .ct-form-box { background: rgba(240,248,240,0.85); border-color: rgba(0,0,0,0.07); }
 [data-theme="light"] .ct-form-ttl { color: rgba(0,0,0,0.88); }
@@ -1238,10 +1296,7 @@ select.ct-inp { cursor: pointer; appearance: none; }
 [data-theme="light"] .ct-inp { background: rgba(0,0,0,0.04); border-color: rgba(0,0,0,0.1); color: rgba(0,0,0,0.88); }
 [data-theme="light"] .ct-inp::placeholder { color: rgba(0,0,0,0.3); }
 [data-theme="light"] .ct-check label { color: rgba(0,0,0,0.5); }
-[data-theme="light"] .ct-channel { border-color: rgba(0,0,0,0.07); }
 [data-theme="light"] .ct-ch-icon { border-color: rgba(0,0,0,0.1); }
-[data-theme="light"] .ct-ch-lbl { color: rgba(0,0,0,0.3); }
-[data-theme="light"] .ct-ch-val { color: rgba(0,0,0,0.75); }
 
 /* ════════════════════════════════════════
    FOOTER — full-viewport, exact alireza reference
@@ -1538,13 +1593,9 @@ select.ct-inp { cursor: pointer; appearance: none; }
 /* Mobile adjustments for new panels + footer */
 @media (max-width: 1024px) {
   .mp-section-hero { padding-left: 120px; }
-  .ct-inner { padding: 60px 60px 60px 120px; gap: 48px; }
 }
 @media (max-width: 768px) {
   .mp-section-hero { padding-left: 24px; }
-  .ct-inner { padding: 40px 20px; grid-template-columns: 1fr; gap: 32px; }
-  .ct-field-row { grid-template-columns: 1fr; }
-  .ct-form-box { padding: 24px 18px; }
   #fbar { grid-template-columns: 1fr; gap: 32px; padding: 36px 20px 28px; }
 }
 </style>
@@ -1877,110 +1928,79 @@ select.ct-inp { cursor: pointer; appearance: none; }
 <!-- ════════════════════════════════════════════
      PANEL 7 — CONTACT
 ════════════════════════════════════════════ -->
-<section class="panel ct-panel" id="p7">
-  <div class="ct-inner">
-    <!-- Left: info -->
+<section class="panel" id="p7">
+  <div class="panel-inner">
+
+    <!-- LEFT: label + title + body (mirrors services panel) -->
     <div>
       <span class="p-label fade-up">Contact</span>
-      <h2 class="p-title fade-up" style="margin-top:12px;">
-        Let's build<br/><em>something</em><br/>together
-      </h2>
-      <div class="ct-channels fade-up">
-        <div class="ct-channel">
-          <div class="ct-ch-icon">✉</div>
-          <div>
-            <p class="ct-ch-lbl">Email</p>
-            <a class="ct-ch-val" href="mailto:hello@connectdistro.com">hello@connectdistro.com</a>
-          </div>
+      <h2 class="p-title fade-up">Get in touch<br/><em>with us</em></h2>
+      <p class="p-body fade-up" style="margin-top:24px;">
+        We reply to every message within 24 hours. Reach out however works best for you.
+      </p>
+      <div class="p-stats fade-up" style="margin-top:40px;">
+        <div>
+          <div class="p-stat-n">&lt;24<span>h</span></div>
+          <div class="p-stat-l">Response</div>
         </div>
-        <div class="ct-channel">
-          <div class="ct-ch-icon">◆</div>
-          <div>
-            <p class="ct-ch-lbl">Support</p>
-            <a class="ct-ch-val" href="mailto:support@connectdistro.com">support@connectdistro.com</a>
-          </div>
-        </div>
-        <div class="ct-channel">
-          <div class="ct-ch-icon">⚡</div>
-          <div>
-            <p class="ct-ch-lbl">Response time</p>
-            <span class="ct-ch-val">Within 24 hours</span>
-          </div>
-        </div>
-        <div class="ct-channel">
-          <div class="ct-ch-icon">🌍</div>
-          <div>
-            <p class="ct-ch-lbl">Headquarters</p>
-            <span class="ct-ch-val">Global · Remote-first</span>
-          </div>
+        <div>
+          <div class="p-stat-n">140<span>+</span></div>
+          <div class="p-stat-l">Countries</div>
         </div>
       </div>
     </div>
-    <!-- Right: form -->
-    <div class="ct-form-box fade-up">
-      <p class="ct-form-ttl">Send a message</p>
-      <p class="ct-form-sub">We reply to every message within 24 hours.</p>
-      <div id="ctFormInner">
-        <div class="ct-field-row">
-          <div class="ct-field">
-            <label>First Name *</label>
-            <input class="ct-inp" type="text" id="ct-first" placeholder="Aisha"/>
+
+    <!-- RIGHT: stacked card carousel -->
+    <div class="fade-up">
+      <div class="ct-deck-wrap" id="ctDeckWrap">
+        <div class="ct-deck" id="ctDeck">
+          <!-- Cards duplicated for seamless loop -->
+          <div class="ct-card">
+            <span class="ct-card-lbl">Email</span>
+            <a class="ct-card-val" href="mailto:hello@connectdistro.com">hello@connectdistro.com</a>
+            <span class="ct-card-note">General enquiries</span>
           </div>
-          <div class="ct-field">
-            <label>Last Name</label>
-            <input class="ct-inp" type="text" id="ct-last" placeholder="Kamara"/>
+          <div class="ct-card">
+            <span class="ct-card-lbl">Support</span>
+            <a class="ct-card-val" href="mailto:support@connectdistro.com">support@connectdistro.com</a>
+            <span class="ct-card-note">Technical help & orders</span>
+          </div>
+          <div class="ct-card">
+            <span class="ct-card-lbl">Response time</span>
+            <span class="ct-card-val">Within 24 hours</span>
+            <span class="ct-card-note">Mon – Fri, all time zones</span>
+          </div>
+          <div class="ct-card">
+            <span class="ct-card-lbl">Headquarters</span>
+            <span class="ct-card-val">Global · Remote-first</span>
+            <span class="ct-card-note">Distributed team worldwide</span>
+          </div>
+          <!-- Duplicate set for seamless infinite loop -->
+          <div class="ct-card">
+            <span class="ct-card-lbl">Email</span>
+            <a class="ct-card-val" href="mailto:hello@connectdistro.com">hello@connectdistro.com</a>
+            <span class="ct-card-note">General enquiries</span>
+          </div>
+          <div class="ct-card">
+            <span class="ct-card-lbl">Support</span>
+            <a class="ct-card-val" href="mailto:support@connectdistro.com">support@connectdistro.com</a>
+            <span class="ct-card-note">Technical help & orders</span>
+          </div>
+          <div class="ct-card">
+            <span class="ct-card-lbl">Response time</span>
+            <span class="ct-card-val">Within 24 hours</span>
+            <span class="ct-card-note">Mon – Fri, all time zones</span>
+          </div>
+          <div class="ct-card">
+            <span class="ct-card-lbl">Headquarters</span>
+            <span class="ct-card-val">Global · Remote-first</span>
+            <span class="ct-card-note">Distributed team worldwide</span>
           </div>
         </div>
-        <div class="ct-field">
-          <label>Email *</label>
-          <input class="ct-inp" type="email" id="ct-email" placeholder="you@example.com"/>
-        </div>
-        <div class="ct-field">
-          <label>I'm a…</label>
-          <select class="ct-inp" id="ct-role">
-            <option value="">Select one</option>
-            <option>Creator / Artist</option>
-            <option>Brand / Advertiser</option>
-            <option>Entertainment Professional</option>
-            <option>Investor</option>
-            <option>Press / Media</option>
-          </select>
-        </div>
-        <div class="ct-field">
-          <label>Subject *</label>
-          <select class="ct-inp" id="ct-subject">
-            <option value="">Select subject</option>
-            <option>Selling on ConnectDistro</option>
-            <option>Running an ad campaign</option>
-            <option>Partnership inquiry</option>
-            <option>Technical support</option>
-            <option>Press inquiry</option>
-            <option>Other</option>
-          </select>
-        </div>
-        <div class="ct-field">
-          <label>Message *</label>
-          <textarea class="ct-inp" id="ct-msg" rows="3" placeholder="Tell us about your project…"></textarea>
-        </div>
-        <div class="ct-check">
-          <input type="checkbox" id="ct-consent"/>
-          <label for="ct-consent">I agree to the <a href="privacy.html">Privacy Policy</a> and consent to ConnectDistro contacting me.</label>
-        </div>
-        <p style="font-size:10px;color:rgba(255,255,255,0.2);margin-bottom:12px;letter-spacing:0.06em;">
-          Payments secured by Stripe · SSL encrypted · GDPR compliant
-        </p>
-        <p class="ct-err-msg" id="ctErr"></p>
-        <button class="ct-sub-btn" id="ctBtn" onclick="ctSubmit()">
-          <span id="ctBtnTxt">Send Message</span>
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-        </button>
-      </div>
-      <div class="ct-ok-msg" id="ctOkMsg">
-        <div class="ct-ok-msg-icon">✅</div>
-        <h3>Message sent!</h3>
-        <p id="ctReplyEmail">We'll reply within 24 hours.</p>
+        <span class="ct-pause-hint">Paused</span>
       </div>
     </div>
+
   </div>
 </section>
 
@@ -2554,30 +2574,90 @@ applyTheme(getTheme());
 
 })();
 
-/* ════ CONTACT FORM ════ */
-window.ctSubmit = function() {
-  const first   = (document.getElementById('ct-first').value||'').trim();
-  const email   = (document.getElementById('ct-email').value||'').trim();
-  const subject = document.getElementById('ct-subject').value;
-  const msg     = (document.getElementById('ct-msg').value||'').trim();
-  const consent = document.getElementById('ct-consent').checked;
-  const errEl   = document.getElementById('ctErr');
-  errEl.textContent = '';
-  if (!first)   { errEl.textContent='Please enter your first name.'; return; }
-  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { errEl.textContent='Enter a valid email.'; return; }
-  if (!subject) { errEl.textContent='Please select a subject.'; return; }
-  if (!msg)     { errEl.textContent='Please write a message.'; return; }
-  if (!consent) { errEl.textContent='Please agree to the privacy policy.'; return; }
-  const btn = document.getElementById('ctBtn');
-  const txt = document.getElementById('ctBtnTxt');
-  btn.disabled = true; txt.textContent = 'Sending…';
-  setTimeout(() => {
-    document.getElementById('ctFormInner').style.display = 'none';
-    document.getElementById('ctReplyEmail').textContent = 'We\'ll reply to ' + email + ' within 24 hours.';
-    document.getElementById('ctOkMsg').classList.add('show');
-  }, 900);
-};
 
+
+</script>
+
+
+<script>
+/* ════ CONTACT CARD CAROUSEL ════
+   
+   Stacked deck of 4 cards scrolling top→bottom.
+   - Smooth continuous loop using requestAnimationFrame
+   - Speed: configurable px/s
+   - Hover on the deck: pauses animation
+   - Each card has a 3D tilt (rotateX) based on its
+     vertical position in the visible window — cards
+     near the top tilt back, cards in the centre are
+     flat, cards near the bottom tilt forward
+   - Active (centred) card gets .ct-active class
+*/
+(function() {
+  const wrap  = document.getElementById('ctDeckWrap');
+  const deck  = document.getElementById('ctDeck');
+  if (!wrap || !deck) return;
+
+  const SPEED     = 42;   /* px per second — steady, not rushed */
+  const CARD_H    = 260;  /* must match .ct-deck-wrap height */
+  const GAP       = 12;   /* must match .ct-deck gap */
+
+  const cards     = Array.from(deck.querySelectorAll('.ct-card'));
+  const N         = cards.length / 2;  /* half = one set (duplicated) */
+  const CARD_UNIT = cards[0] ? (cards[0].offsetHeight || 108) + GAP : 120;
+  const LOOP_H    = CARD_UNIT * N;     /* height of one full set */
+
+  let   offset    = 0;          /* current translateY */
+  let   paused    = false;
+  let   last      = null;
+
+  /* Hover: pause */
+  wrap.addEventListener('mouseenter', () => { paused = true;  });
+  wrap.addEventListener('mouseleave', () => { paused = false; });
+  /* Touch: tap to pause/resume */
+  wrap.addEventListener('touchstart', () => { paused = !paused; }, { passive: true });
+
+  function tick(ts) {
+    if (last === null) last = ts;
+    const dt = Math.min(ts - last, 50) / 1000; /* seconds, capped */
+    last = ts;
+
+    if (!paused) {
+      offset += SPEED * dt;
+      /* Seamless loop: once we've scrolled one full set, reset */
+      if (offset >= LOOP_H) offset -= LOOP_H;
+    }
+
+    deck.style.transform = `translateY(-${offset}px)`;
+
+    /* ── 3D tilt per card ── */
+    /* Mid-window Y = CARD_H / 2 */
+    const mid = CARD_H / 2;
+    cards.forEach((card, i) => {
+      const cardTop = i * CARD_UNIT - offset;
+      const cardMid = cardTop + CARD_UNIT / 2;
+      /* Distance from window centre, normalised -1 → +1 */
+      const rel     = (cardMid - mid) / (CARD_H * 0.7);
+      const clamped = Math.max(-1, Math.min(1, rel));
+      /* Tilt: top of window = +8deg, centre = 0, bottom = -8deg */
+      const tilt    = clamped * -8;
+      /* Depth: centre cards come forward, edges recede */
+      const depth   = (1 - Math.abs(clamped)) * 24;
+      /* Opacity: fade edges */
+      const opacity = 1 - Math.abs(clamped) * 0.55;
+
+      card.style.transform = `rotateX(${tilt}deg) translateZ(${depth}px)`;
+      card.style.opacity   = opacity;
+
+      /* Active class on centred card */
+      const isCentre = Math.abs(clamped) < 0.25;
+      card.classList.toggle('ct-active', isCentre);
+    });
+
+    requestAnimationFrame(tick);
+  }
+
+  requestAnimationFrame(tick);
+})();
 </script>
 
 <script src="nexus-nav.js"></script>
