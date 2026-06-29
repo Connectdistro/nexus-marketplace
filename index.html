@@ -7,299 +7,451 @@
 <meta name="description" content="NEXUS is the premier marketplace for digital art, advertising services, and entertainment."/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Space+Grotesk:wght@300;400;500&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Space+Grotesk:wght@300;400;500;600&display=swap" rel="stylesheet"/>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
 <style>
-/* ═══════════════════════════════════════════
-   RESET & BASE
-═══════════════════════════════════════════ */
-*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+/* ════════════════════════════════════════
+   RESET
+════════════════════════════════════════ */
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
 
-html, body {
-  width: 100%; height: 100%;
-  background: #030d08;
-  color: #fff;
+:root {
+  --green:  #6dc44b;
+  --teal:   #228f7e;
+  --blue:   #0258a3;
+  --white:  #ffffff;
+  --dim:    rgba(255,255,255,0.45);
+  --dimmer: rgba(255,255,255,0.22);
+  --bg:     #020e07;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--white);
   font-family: 'Space Grotesk', sans-serif;
   font-weight: 300;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
 }
 
-/* ═══════════════════════════════════════════
-   FIXED WEBGL CANVAS — sits behind everything
-   This is THE key alireza structure:
-   one canvas, position:fixed, z-index:0
-═══════════════════════════════════════════ */
+/* ════════════════════════════════════════
+   FIXED CANVAS — the only background
+════════════════════════════════════════ */
 #c {
   position: fixed;
-  top: 0; left: 0;
-  width: 100vw; height: 100vh;
+  inset: 0;
   z-index: 0;
+  width: 100vw;
+  height: 100vh;
   display: block;
 }
 
-/* ═══════════════════════════════════════════
-   HEADER — transparent, minimal, top-fixed
-   logo left · hamburger right (alireza style)
-═══════════════════════════════════════════ */
+/* ════════════════════════════════════════
+   HEADER — exact alireza clone
+   
+   Structure:
+   [logo-icon | divider | logo-name] [space] [hamburger]
+   
+   Left side: diamond icon + thin vertical
+   line divider + company name text
+   Centre: nothing — transparent
+   Right side: hamburger (3 thin lines)
+   
+   Top-right on desktop: "EN | عربي | ..."
+   (we replace with "Sign In | Join")
+════════════════════════════════════════ */
 #hdr {
   position: fixed;
   top: 0; left: 0; right: 0;
-  z-index: 100;
+  z-index: 200;
+  height: 80px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 28px 48px;
-  pointer-events: none;
+  padding: 0 40px;
+  /* No background — fully transparent over canvas */
 }
-#hdr > * { pointer-events: all; }
 
+/* Logo group — left */
 .hdr-logo {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 0;
   text-decoration: none;
-  color: #fff;
+  color: var(--white);
+  flex-shrink: 0;
 }
-.hdr-logo img {
-  width: 36px; height: 36px;
+
+/* Diamond icon wrapper */
+.logo-icon {
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.logo-icon img {
+  width: 36px;
+  height: 36px;
   object-fit: contain;
+  /* Make logo white/light on dark background */
   filter: brightness(0) invert(1);
-}
-.hdr-logo-text {
-  font-family: 'Space Grotesk', sans-serif;
-  font-weight: 500;
-  font-size: 14px;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  opacity: 0.9;
+  opacity: 0.92;
 }
 
+/* Thin vertical divider — exactly as reference */
 .hdr-divider {
-  width: 1px; height: 28px;
-  background: rgba(255,255,255,0.2);
+  width: 1px;
+  height: 32px;
+  background: rgba(255,255,255,0.18);
+  margin: 0 18px;
+  flex-shrink: 0;
 }
 
+/* Company name + tagline stacked */
+.hdr-name {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.hdr-name-top {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.9);
+  line-height: 1;
+}
+.hdr-name-sub {
+  font-size: 9px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.35);
+  line-height: 1;
+}
+
+/* Centre spacer */
+.hdr-spacer { flex: 1; }
+
+/* Right group */
 .hdr-right {
   display: flex;
   align-items: center;
-  gap: 32px;
+  gap: 28px;
+  flex-shrink: 0;
 }
-.hdr-auth {
+
+/* Auth links — top right (reference shows EN | عربي | ...) */
+.hdr-meta {
   display: flex;
-  gap: 20px;
   align-items: center;
+  gap: 18px;
 }
-.hdr-auth a {
-  color: rgba(255,255,255,0.7);
-  text-decoration: none;
-  font-size: 13px;
-  letter-spacing: 0.08em;
-  transition: color 0.2s;
-}
-.hdr-auth a:hover { color: #fff; }
-.hdr-auth .btn-join {
-  padding: 8px 22px;
-  border: 1px solid rgba(255,255,255,0.35);
-  border-radius: 100px;
-  color: #fff;
+.hdr-meta a, .hdr-meta button {
   font-size: 12px;
   letter-spacing: 0.1em;
+  color: rgba(255,255,255,0.65);
+  text-decoration: none;
+  background: none;
+  border: none;
   cursor: pointer;
-  background: transparent;
-  transition: background 0.2s, border-color 0.2s;
+  font-family: 'Space Grotesk', sans-serif;
+  transition: color 0.2s;
 }
-.hdr-auth .btn-join:hover { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.6); }
+.hdr-meta a:hover, .hdr-meta button:hover { color: var(--white); }
+.hdr-meta .sep {
+  color: rgba(255,255,255,0.2);
+  font-size: 11px;
+}
+.hdr-meta .join-btn {
+  padding: 7px 20px;
+  border: 1px solid rgba(255,255,255,0.3);
+  border-radius: 100px;
+  color: var(--white);
+  transition: border-color 0.2s, background 0.2s;
+}
+.hdr-meta .join-btn:hover {
+  border-color: rgba(255,255,255,0.6);
+  background: rgba(255,255,255,0.06);
+}
 
-/* Hamburger — 3 lines */
+/* Hamburger — 3 thin lines exactly like reference */
 #burger {
-  width: 28px; height: 18px;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: center;
+  gap: 5px;
+  width: 26px;
+  height: 20px;
   cursor: pointer;
   background: none;
   border: none;
   padding: 0;
+  flex-shrink: 0;
 }
 #burger span {
   display: block;
+  width: 100%;
   height: 1px;
-  background: rgba(255,255,255,0.85);
-  transition: transform 0.35s ease, opacity 0.25s ease;
-  transform-origin: center;
+  background: rgba(255,255,255,0.8);
+  transition: transform 0.35s ease, opacity 0.25s ease, width 0.25s ease;
+  transform-origin: left center;
 }
-#burger.open span:nth-child(1) { transform: translateY(8.5px) rotate(45deg); }
+/* Middle line shorter — exactly like reference */
+#burger span:nth-child(2) { width: 70%; }
+#burger.open span:nth-child(1) { transform: rotate(45deg) translate(0px, -1px); width: 100%; }
 #burger.open span:nth-child(2) { opacity: 0; }
-#burger.open span:nth-child(3) { transform: translateY(-8.5px) rotate(-45deg); }
+#burger.open span:nth-child(3) { transform: rotate(-45deg) translate(0px, 1px); width: 100%; }
 
-/* ═══════════════════════════════════════════
-   FULLSCREEN MENU OVERLAY
-═══════════════════════════════════════════ */
-#menu-overlay {
+/* ════════════════════════════════════════
+   FULLSCREEN MENU — exact alireza clone
+   
+   Dark overlay, full screen.
+   Left: section links (large serif)
+   Left-bottom: social
+   Bottom: legal links + copyright
+════════════════════════════════════════ */
+#menu {
   position: fixed;
   inset: 0;
-  z-index: 90;
-  background: rgba(3,13,8,0.97);
-  display: flex;
+  z-index: 190;
+  background: rgba(2,14,7,0.97);
+  display: none;
   flex-direction: column;
-  justify-content: center;
-  padding: 80px 48px 48px;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.45s ease;
+  padding: 100px 60px 50px;
+  overflow: auto;
 }
-#menu-overlay.open { opacity: 1; pointer-events: all; }
+#menu.open { display: flex; }
 
-.menu-nav {
-  list-style: none;
-  margin-bottom: 56px;
-}
-.menu-nav li {
-  overflow: hidden;
-  margin-bottom: 4px;
-}
-.menu-nav a {
-  display: block;
-  font-family: 'Cormorant Garamond', serif;
-  font-size: clamp(40px, 8vw, 88px);
-  font-weight: 300;
-  color: rgba(255,255,255,0.85);
-  text-decoration: none;
-  letter-spacing: -0.01em;
-  line-height: 1.15;
-  transform: translateY(100%);
-  transition: transform 0.55s cubic-bezier(0.16,1,0.3,1), color 0.2s;
-}
-.menu-nav a:hover { color: #6dc44b; }
-#menu-overlay.open .menu-nav a { transform: translateY(0); }
-#menu-overlay.open .menu-nav li:nth-child(1) a { transition-delay: 0.04s; }
-#menu-overlay.open .menu-nav li:nth-child(2) a { transition-delay: 0.09s; }
-#menu-overlay.open .menu-nav li:nth-child(3) a { transition-delay: 0.14s; }
-#menu-overlay.open .menu-nav li:nth-child(4) a { transition-delay: 0.19s; }
-#menu-overlay.open .menu-nav li:nth-child(5) a { transition-delay: 0.24s; }
-
-.menu-footer {
+.menu-sections {
   display: flex;
-  gap: 32px;
-  flex-wrap: wrap;
+  gap: 80px;
+  flex: 1;
+  align-items: flex-start;
 }
-.menu-footer a {
-  font-size: 11px;
-  letter-spacing: 0.12em;
-  color: rgba(255,255,255,0.4);
-  text-decoration: none;
+
+/* Left column: "Homepage" label + section links */
+.menu-col-left { min-width: 260px; }
+.menu-col-label {
+  font-size: 10px;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
-  transition: color 0.2s;
+  color: rgba(255,255,255,0.3);
+  margin-bottom: 20px;
 }
-.menu-footer a:hover { color: rgba(255,255,255,0.8); }
 
-/* ═══════════════════════════════════════════
-   LEFT SIDE DOT NAV — alireza's section dots
-═══════════════════════════════════════════ */
-#sidenav {
-  position: fixed;
-  left: 48px;
-  top: 50%;
-  transform: translateY(-50%);
-  z-index: 50;
-  display: flex;
-  flex-direction: column;
-  gap: 0;
+/* Section links — medium size, the reference shows these as h4 */
+.menu-section-links { list-style: none; margin-bottom: 40px; }
+.menu-section-links li { overflow: hidden; margin-bottom: 2px; }
+.menu-section-links a {
+  display: block;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 17px;
+  font-weight: 400;
+  color: rgba(255,255,255,0.75);
+  text-decoration: none;
+  letter-spacing: 0.02em;
+  padding: 6px 0;
+  transform: translateY(100%);
   opacity: 0;
-  transition: opacity 0.6s ease;
+  transition: transform 0.5s cubic-bezier(0.16,1,0.3,1), opacity 0.4s ease, color 0.2s;
 }
-#sidenav.visible { opacity: 1; }
+.menu-section-links a:hover { color: var(--green); }
+#menu.open .menu-section-links a { transform: translateY(0); opacity: 1; }
+#menu.open .menu-section-links li:nth-child(1) a { transition-delay: 0.05s; }
+#menu.open .menu-section-links li:nth-child(2) a { transition-delay: 0.10s; }
+#menu.open .menu-section-links li:nth-child(3) a { transition-delay: 0.15s; }
+#menu.open .menu-section-links li:nth-child(4) a { transition-delay: 0.20s; }
 
-.sidenav-item {
+/* Right column: "Other pages" — big display links */
+.menu-col-right {}
+.menu-page-links { list-style: none; }
+.menu-page-links li { overflow: hidden; margin-bottom: 4px; }
+.menu-page-links a {
   display: flex;
   align-items: center;
   gap: 14px;
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 300;
+  font-size: clamp(36px, 5vw, 64px);
+  color: rgba(255,255,255,0.88);
+  text-decoration: none;
+  line-height: 1.1;
+  transform: translateY(100%);
+  opacity: 0;
+  transition: transform 0.55s cubic-bezier(0.16,1,0.3,1), opacity 0.4s ease, color 0.2s;
+}
+.menu-page-links a::before {
+  content: '';
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--green);
+  opacity: 0;
+  transition: opacity 0.2s;
+  flex-shrink: 0;
+}
+.menu-page-links a:hover { color: var(--white); }
+.menu-page-links a:hover::before { opacity: 1; }
+#menu.open .menu-page-links a { transform: translateY(0); opacity: 1; }
+#menu.open .menu-page-links li:nth-child(1) a { transition-delay: 0.08s; }
+#menu.open .menu-page-links li:nth-child(2) a { transition-delay: 0.14s; }
+#menu.open .menu-page-links li:nth-child(3) a { transition-delay: 0.20s; }
+#menu.open .menu-page-links li:nth-child(4) a { transition-delay: 0.26s; }
+
+/* Social + bottom bar */
+.menu-bottom {
+  border-top: 1px solid rgba(255,255,255,0.07);
+  padding-top: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+.menu-legal {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+.menu-legal a {
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.35);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.menu-legal a:hover { color: rgba(255,255,255,0.7); }
+.menu-copy {
+  font-size: 11px;
+  color: rgba(255,255,255,0.25);
+  letter-spacing: 0.06em;
+}
+
+/* ════════════════════════════════════════
+   LEFT SIDE DOT NAV — exact alireza clone
+   
+   Fixed left, vertically centred.
+   Small dot + label text beside it.
+   Active dot = filled green diamond (◆)
+   Inactive = dim circle
+════════════════════════════════════════ */
+#sidenav {
+  position: fixed;
+  left: 40px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  opacity: 0;
+  transition: opacity 0.8s ease;
+}
+#sidenav.show { opacity: 1; }
+
+.snav-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
   cursor: pointer;
-  padding: 10px 0;
   background: none;
   border: none;
   color: inherit;
+  padding: 8px 0;
   text-align: left;
-}
-.sidenav-dot {
-  width: 5px; height: 5px;
-  border-radius: 50%;
-  background: rgba(255,255,255,0.35);
-  transition: background 0.3s, transform 0.3s;
-  flex-shrink: 0;
-}
-.sidenav-item.active .sidenav-dot {
-  background: #6dc44b;
-  transform: scale(1.5);
-}
-.sidenav-label {
-  font-size: 11px;
-  letter-spacing: 0.1em;
-  color: rgba(255,255,255,0.35);
-  text-transform: uppercase;
-  white-space: nowrap;
-  transition: color 0.3s, opacity 0.3s;
-  opacity: 0;
-  pointer-events: none;
-}
-.sidenav-item:hover .sidenav-label,
-.sidenav-item.active .sidenav-label {
-  opacity: 1;
-  color: rgba(255,255,255,0.8);
+  font-family: 'Space Grotesk', sans-serif;
 }
 
-/* ═══════════════════════════════════════════
-   SCROLL DISCOVER — bottom right (alireza)
-═══════════════════════════════════════════ */
+.snav-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.3);
+  flex-shrink: 0;
+  transition: background 0.3s, transform 0.3s, border-radius 0.3s;
+}
+
+/* Active: diamond shape in green — like the reference ◆ */
+.snav-item.active .snav-dot {
+  background: var(--green);
+  border-radius: 2px;
+  transform: rotate(45deg) scale(1.3);
+}
+
+.snav-label {
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.3);
+  white-space: nowrap;
+  opacity: 0;
+  transform: translateX(-6px);
+  transition: opacity 0.25s, transform 0.25s, color 0.25s;
+  pointer-events: none;
+}
+.snav-item:hover .snav-label,
+.snav-item.active .snav-label {
+  opacity: 1;
+  transform: translateX(0);
+  color: rgba(255,255,255,0.75);
+}
+
+/* ════════════════════════════════════════
+   SCROLL TO DISCOVER — exact alireza clone
+   Bottom-right corner:
+   "Scroll to discover" text + thin vertical line
+════════════════════════════════════════ */
 #scroll-hint {
   position: fixed;
-  bottom: 36px;
-  right: 48px;
-  z-index: 50;
+  bottom: 32px;
+  right: 40px;
+  z-index: 100;
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   opacity: 0;
-  transition: opacity 0.8s ease 1.2s;
+  transition: opacity 0.8s ease 1.4s;
 }
-#scroll-hint.visible { opacity: 1; }
-.scroll-hint-text {
-  font-size: 11px;
-  letter-spacing: 0.14em;
-  color: rgba(255,255,255,0.45);
+#scroll-hint.show { opacity: 1; }
+.sh-text {
+  font-size: 10px;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
+  color: rgba(255,255,255,0.4);
+  white-space: nowrap;
 }
-.scroll-hint-line {
+.sh-line {
   width: 1px;
-  height: 40px;
-  background: rgba(255,255,255,0.3);
+  height: 44px;
+  background: rgba(255,255,255,0.2);
   position: relative;
   overflow: hidden;
 }
-.scroll-hint-line::after {
+.sh-line::after {
   content: '';
   position: absolute;
-  top: -100%;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: #6dc44b;
-  animation: scrollLine 1.8s ease infinite;
+  width: 100%; height: 50%;
+  background: var(--green);
+  top: -50%;
+  animation: scrollDrop 1.6s ease-in-out infinite;
 }
-@keyframes scrollLine {
-  0%   { top: -100%; }
-  100% { top: 100%; }
+@keyframes scrollDrop {
+  0%   { top: -50%; }
+  100% { top: 150%; }
 }
 
-/* ═══════════════════════════════════════════
-   SECTIONS — full-viewport height panels
-   Position relative, z-index:1 to sit above canvas
-   NO background — canvas bleeds through
-═══════════════════════════════════════════ */
+/* ════════════════════════════════════════
+   PANELS — full-viewport scroll sections
+   No background. Canvas bleeds through.
+════════════════════════════════════════ */
 .panel {
   position: relative;
-  z-index: 1;
+  z-index: 10;
   width: 100%;
   min-height: 100vh;
   display: flex;
@@ -307,176 +459,180 @@ html, body {
   /* NO background — canvas shows through */
 }
 
-/* ── PANEL CONTENT POSITIONS (matching alireza screenshots) ── */
-
-/* HERO: large centred title + button + description bottom-right */
+/* ── PANEL 0: HERO ── */
 .panel--hero {
+  flex-direction: column;
   justify-content: center;
   text-align: center;
-  flex-direction: column;
+  gap: 0;
 }
+
 .hero-eyebrow {
-  font-size: 11px;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: rgba(255,255,255,0.5);
-  margin-bottom: 32px;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 10px;
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--dim);
+  margin-bottom: 36px;
 }
-.pulse-dot {
-  width: 7px; height: 7px;
+.pulse {
+  width: 6px; height: 6px;
   border-radius: 50%;
-  background: #6dc44b;
-  animation: pulse 2s ease infinite;
+  background: var(--green);
+  animation: pulse 2.2s ease infinite;
 }
 @keyframes pulse {
-  0%,100% { opacity: 1; transform: scale(1); }
-  50%      { opacity: 0.5; transform: scale(1.4); }
+  0%,100% { opacity:1; transform:scale(1); }
+  50%      { opacity:0.4; transform:scale(1.5); }
 }
+
 .hero-title {
   font-family: 'Cormorant Garamond', serif;
   font-weight: 300;
-  font-size: clamp(64px, 11vw, 148px);
-  line-height: 0.92;
-  letter-spacing: -0.02em;
-  color: #fff;
-  margin-bottom: 44px;
+  font-size: clamp(72px, 12vw, 160px);
+  line-height: 0.9;
+  letter-spacing: -0.025em;
+  color: var(--white);
+  margin-bottom: 48px;
 }
 .hero-title em {
   font-style: italic;
-  color: rgba(255,255,255,0.75);
+  color: rgba(255,255,255,0.7);
 }
+
+/* Pill button — white border, text orange like reference */
 .btn-pill {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
-  padding: 16px 40px;
+  gap: 8px;
+  padding: 14px 36px;
   border-radius: 100px;
-  background: rgba(255,255,255,0.1);
-  border: 1px solid rgba(255,255,255,0.25);
-  color: #6dc44b;
-  font-size: 13px;
-  letter-spacing: 0.08em;
-  cursor: pointer;
-  text-decoration: none;
-  backdrop-filter: blur(8px);
-  transition: background 0.25s, border-color 0.25s;
+  border: 1px solid rgba(255,255,255,0.3);
+  background: rgba(255,255,255,0.06);
+  backdrop-filter: blur(10px);
+  color: var(--green);
   font-family: 'Space Grotesk', sans-serif;
+  font-size: 13px;
   font-weight: 400;
+  letter-spacing: 0.06em;
+  text-decoration: none;
+  cursor: pointer;
+  transition: border-color 0.25s, background 0.25s, color 0.25s;
 }
-.btn-pill:hover { background: rgba(255,255,255,0.15); border-color: rgba(255,255,255,0.45); }
+.btn-pill:hover {
+  border-color: rgba(255,255,255,0.55);
+  background: rgba(255,255,255,0.1);
+  color: var(--white);
+}
 
+/* Description — bottom-right of hero, like reference */
 .hero-desc {
   position: absolute;
-  bottom: 80px;
+  bottom: 72px;
   right: 48px;
-  max-width: 260px;
+  max-width: 240px;
   text-align: right;
-  font-size: 13px;
-  line-height: 1.7;
-  color: rgba(255,255,255,0.55);
+  font-size: 12px;
+  line-height: 1.8;
+  color: rgba(255,255,255,0.45);
 }
 
-/* CONTENT PANELS: title left-centre, body text below */
-.panel--content {
-  align-items: center;
-}
+/* ── PANEL CONTENT LAYOUT ── */
+/* 2-col grid: title left, content right */
 .panel-inner {
-  position: relative;
-  z-index: 2;
   width: 100%;
-  max-width: 1400px;
+  max-width: 1280px;
   margin: 0 auto;
-  padding: 0 120px 0 200px; /* left clears sidenav */
+  padding: 0 120px 0 180px;
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 80px;
   align-items: center;
 }
-.panel-inner--right {
-  padding: 0 120px 0 200px;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  text-align: right;
-}
-.panel-inner--right .panel-title,
-.panel-inner--right .panel-body { text-align: right; }
 
-.panel-label {
-  font-size: 10px;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: rgba(255,255,255,0.4);
-  margin-bottom: 20px;
+.p-label {
   display: block;
+  font-size: 9px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.35);
+  margin-bottom: 18px;
 }
-.panel-title {
+.p-title {
   font-family: 'Cormorant Garamond', serif;
   font-weight: 300;
-  font-size: clamp(42px, 6vw, 88px);
+  font-size: clamp(40px, 5.5vw, 80px);
   line-height: 1.0;
-  letter-spacing: -0.01em;
-  color: #fff;
-  margin-bottom: 32px;
+  letter-spacing: -0.015em;
+  color: var(--white);
 }
-.panel-body {
-  font-size: 15px;
-  line-height: 1.75;
-  color: rgba(255,255,255,0.6);
-  max-width: 420px;
+.p-title em { font-style: italic; color: rgba(255,255,255,0.65); }
+.p-body {
+  font-size: 14px;
+  line-height: 1.8;
+  color: rgba(255,255,255,0.55);
+  max-width: 400px;
 }
-.panel-body + .panel-body { margin-top: 20px; }
 
-/* Cards grid for marketplace */
-.panel-cards {
+/* Stats row */
+.p-stats { display: flex; gap: 48px; margin-top: 48px; }
+.p-stat-n {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 48px;
+  font-weight: 300;
+  color: var(--white);
+  line-height: 1;
+}
+.p-stat-n span { color: var(--green); }
+.p-stat-l {
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.35);
+  margin-top: 6px;
+}
+
+/* Card grids */
+.p-cards {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: 1fr 1fr;
   gap: 1px;
-  background: rgba(255,255,255,0.06);
+  background: rgba(255,255,255,0.05);
 }
 .p-card {
-  background: rgba(3,13,8,0.6);
-  padding: 32px;
-  transition: background 0.2s;
+  background: rgba(2,14,7,0.65);
+  padding: 28px;
+  transition: background 0.25s;
 }
-.p-card:hover { background: rgba(109,196,75,0.05); }
-.p-card-type {
-  font-size: 10px;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: #6dc44b;
-  margin-bottom: 10px;
+.p-card:hover { background: rgba(109,196,75,0.04); }
+.p-card-t {
+  font-size: 9px; letter-spacing: 0.2em;
+  text-transform: uppercase; color: var(--green);
+  margin-bottom: 8px;
 }
-.p-card-title {
+.p-card-h {
   font-family: 'Cormorant Garamond', serif;
-  font-size: 22px;
-  font-weight: 300;
-  color: #fff;
-  margin-bottom: 6px;
+  font-size: 20px; font-weight: 300; color: var(--white);
+  margin-bottom: 4px;
 }
-.p-card-creator { font-size: 12px; color: rgba(255,255,255,0.4); margin-bottom: 14px; }
-.p-card-price { font-size: 15px; color: rgba(255,255,255,0.85); font-weight: 500; }
+.p-card-c { font-size: 11px; color: rgba(255,255,255,0.35); margin-bottom: 12px; }
+.p-card-p { font-size: 14px; color: rgba(255,255,255,0.8); font-weight: 500; }
 
-/* Testimonial cards */
-.panel-testimonials {
-  display: flex;
-  flex-direction: column;
-  gap: 1px;
+/* Testimonial list */
+.p-tlist { display: flex; flex-direction: column; gap: 1px; }
+.p-tcard {
+  background: rgba(2,14,7,0.6);
+  padding: 24px 28px;
+  border-left: 1px solid rgba(109,196,75,0.15);
 }
-.t-card {
-  background: rgba(3,13,8,0.5);
-  padding: 28px 32px;
-  border-left: 1px solid rgba(109,196,75,0.2);
-}
-.t-card p { font-size: 14px; line-height: 1.7; color: rgba(255,255,255,0.65); margin-bottom: 14px; font-style: italic; }
-.t-name { font-size: 12px; color: rgba(255,255,255,0.5); letter-spacing: 0.05em; }
-.t-stars { color: #6dc44b; font-size: 11px; margin-bottom: 8px; }
+.p-tcard-stars { color: var(--green); font-size: 10px; margin-bottom: 8px; }
+.p-tcard p { font-size: 13px; line-height: 1.7; color: rgba(255,255,255,0.6); font-style: italic; margin-bottom: 10px; }
+.p-tcard-name { font-size: 11px; color: rgba(255,255,255,0.35); }
 
-/* Join section — centred */
+/* ── PANEL 5: JOIN — centred like alireza careers ── */
 .panel--join {
   justify-content: center;
   text-align: center;
@@ -492,482 +648,464 @@ html, body {
 .join-title {
   font-family: 'Cormorant Garamond', serif;
   font-weight: 300;
-  font-size: clamp(40px, 6.5vw, 92px);
-  line-height: 1.05;
-  color: #fff;
-  letter-spacing: -0.01em;
+  font-size: clamp(44px, 7vw, 100px);
+  line-height: 1.0;
+  color: var(--white);
+  letter-spacing: -0.02em;
 }
+/* Three links in a row — like "Companies | Careers | Contact" in reference */
 .join-links {
   display: flex;
-  gap: 40px;
+  gap: 60px;
 }
 .join-links a {
   font-size: 13px;
-  letter-spacing: 0.08em;
-  color: #6dc44b;
+  letter-spacing: 0.06em;
+  color: var(--green);
   text-decoration: none;
-  border-bottom: 1px solid rgba(109,196,75,0.3);
-  padding-bottom: 4px;
-  transition: border-color 0.2s;
+  transition: opacity 0.2s;
 }
-.join-links a:hover { border-color: #6dc44b; }
+.join-links a:hover { opacity: 0.7; }
 
-/* Footer bar */
-#footer-bar {
+/* ── FOOTER BAR ── */
+#fbar {
   position: relative;
-  z-index: 1;
-  padding: 28px 48px;
+  z-index: 10;
+  padding: 24px 40px;
+  border-top: 1px solid rgba(255,255,255,0.05);
+  background: rgba(2,14,7,0.92);
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-top: 1px solid rgba(255,255,255,0.06);
-  background: rgba(3,13,8,0.9);
+  flex-wrap: wrap;
+  gap: 12px;
 }
-.footer-copy { font-size: 11px; color: rgba(255,255,255,0.3); letter-spacing: 0.06em; }
-.footer-links { display: flex; gap: 28px; }
-.footer-links a { font-size: 11px; color: rgba(255,255,255,0.35); text-decoration: none; letter-spacing: 0.06em; transition: color 0.2s; }
-.footer-links a:hover { color: rgba(255,255,255,0.7); }
+.fbar-copy { font-size: 10px; color: rgba(255,255,255,0.25); letter-spacing: 0.08em; }
+.fbar-links { display: flex; gap: 24px; flex-wrap: wrap; }
+.fbar-links a {
+  font-size: 10px;
+  color: rgba(255,255,255,0.3);
+  text-decoration: none;
+  letter-spacing: 0.08em;
+  transition: color 0.2s;
+}
+.fbar-links a:hover { color: rgba(255,255,255,0.65); }
 
-/* ═══════════════════════════════════════════
-   WORD / LINE REVEAL ANIMATIONS
-   Words start translated down, fade in on scroll
-   (alireza letter-by-letter entrances)
-═══════════════════════════════════════════ */
-.reveal-word {
-  display: inline-block;
-  transform: translateY(60px);
+/* ════════════════════════════════════════
+   ENTRANCE ANIMATIONS
+════════════════════════════════════════ */
+.fade-up {
   opacity: 0;
-  transition: transform 0.9s cubic-bezier(0.16,1,0.3,1), opacity 0.9s cubic-bezier(0.16,1,0.3,1);
+  transform: translateY(36px);
+  transition: opacity 0.9s cubic-bezier(0.16,1,0.3,1), transform 0.9s cubic-bezier(0.16,1,0.3,1);
 }
-.reveal-block {
-  transform: translateY(40px);
-  opacity: 0;
-  transition: transform 0.8s cubic-bezier(0.16,1,0.3,1), opacity 0.8s cubic-bezier(0.16,1,0.3,1);
-}
-.revealed .reveal-word,
-.revealed .reveal-block,
-.reveal-word.in,
-.reveal-block.in {
-  transform: translateY(0);
-  opacity: 1;
-}
+.fade-up.in { opacity: 1; transform: translateY(0); }
 
-/* ═══════════════════════════════════════════
+/* ════════════════════════════════════════
    MOBILE
-═══════════════════════════════════════════ */
+════════════════════════════════════════ */
 @media (max-width: 768px) {
-  #hdr { padding: 20px 24px; }
-  .hdr-divider, .hdr-auth { display: none; }
+  #hdr { padding: 0 20px; height: 64px; }
+  .hdr-name-sub { display: none; }
+  .hdr-meta { display: none; }
   #sidenav { display: none; }
-  #scroll-hint { right: 24px; }
-  .hero-title { font-size: clamp(44px, 13vw, 72px); }
-  .hero-desc { position: static; text-align: center; max-width: 100%; padding: 0 24px; margin-top: 32px; }
-  .panel-inner { padding: 0 24px; grid-template-columns: 1fr; gap: 48px; }
-  .panel-inner--right { padding: 0 24px; text-align: left; align-items: flex-start; }
-  .panel-inner--right .panel-title,
-  .panel-inner--right .panel-body { text-align: left; }
-  .panel-cards { grid-template-columns: 1fr; }
+  #scroll-hint { right: 20px; bottom: 24px; }
+  .hero-title { font-size: clamp(44px, 14vw, 80px); }
+  .hero-desc { display: none; }
+  .panel-inner { padding: 0 20px; grid-template-columns: 1fr; gap: 40px; }
+  .p-cards { grid-template-columns: 1fr; }
   .join-links { flex-direction: column; gap: 20px; align-items: center; }
-  #footer-bar { flex-direction: column; gap: 16px; text-align: center; }
-  .footer-links { flex-wrap: wrap; justify-content: center; }
-  #menu-overlay { padding: 80px 24px 40px; }
-  .menu-nav a { font-size: clamp(32px, 10vw, 56px); }
+  #fbar { flex-direction: column; text-align: center; padding: 20px; }
+  #menu { padding: 80px 24px 40px; }
+  .menu-sections { flex-direction: column; gap: 40px; }
+  .menu-page-links a { font-size: clamp(28px, 9vw, 48px); }
 }
 </style>
 </head>
 <body>
 
-<!-- ONE fixed canvas. This is the entire background system. -->
+<!-- ════ FIXED CANVAS ════ -->
 <canvas id="c"></canvas>
 
-<!-- HEADER -->
+<!-- ════════════════════════════════════════
+     HEADER — exact alireza structure
+════════════════════════════════════════ -->
 <header id="hdr">
-  <a href="#" class="hdr-logo" onclick="scrollToPanel(0);return false;">
-    <img src="logo.png" alt="NEXUS"/>
+  <!-- Logo: icon + divider + name -->
+  <a class="hdr-logo" href="#" onclick="goPanel(0);return false;">
+    <div class="logo-icon">
+      <img src="logo.png" alt="NEXUS"/>
+    </div>
     <div class="hdr-divider"></div>
-    <span class="hdr-logo-text">NEXUS Marketplace</span>
+    <div class="hdr-name">
+      <span class="hdr-name-top">NEXUS</span>
+      <span class="hdr-name-sub">Art · Ads · Entertainment</span>
+    </div>
   </a>
+
+  <div class="hdr-spacer"></div>
+
   <div class="hdr-right">
-    <nav class="hdr-auth" id="hdrAuth">
-      <a href="#" onclick="openModal('login');return false;">Sign In</a>
-      <a href="#" class="btn-join" onclick="openModal('signup');return false;">Join Free</a>
+    <!-- Top-right meta (reference: EN | عربي | ...) -->
+    <nav class="hdr-meta">
+      <a href="#" onclick="openAuth('login');return false;">Sign In</a>
+      <span class="sep">|</span>
+      <button class="join-btn" onclick="openAuth('signup')">Join Free</button>
     </nav>
+
+    <!-- Hamburger: 3 thin lines, middle is shorter -->
     <button id="burger" aria-label="Menu" onclick="toggleMenu()">
       <span></span><span></span><span></span>
     </button>
   </div>
 </header>
 
-<!-- FULLSCREEN MENU -->
-<div id="menu-overlay">
-  <ul class="menu-nav">
-    <li><a href="#" onclick="scrollToPanel(0);toggleMenu();return false;">Home</a></li>
-    <li><a href="#" onclick="scrollToPanel(1);toggleMenu();return false;">Art</a></li>
-    <li><a href="#" onclick="scrollToPanel(2);toggleMenu();return false;">Marketplace</a></li>
-    <li><a href="#" onclick="scrollToPanel(3);toggleMenu();return false;">Services</a></li>
-    <li><a href="contact.html">Contact</a></li>
-  </ul>
-  <div class="menu-footer">
-    <a href="privacy.html">Privacy</a>
-    <a href="terms.html">Terms</a>
-    <a href="refund.html">Refunds</a>
-    <a href="shipping.html">Shipping</a>
-    <a href="cancellation.html">Cancellation</a>
-    <a href="contact.html">Contact</a>
+<!-- ════════════════════════════════════════
+     FULLSCREEN MENU — exact alireza structure
+════════════════════════════════════════ -->
+<div id="menu">
+  <div class="menu-sections">
+    <!-- Left: "Homepage" section nav -->
+    <div class="menu-col-left">
+      <p class="menu-col-label">Homepage</p>
+      <ul class="menu-section-links">
+        <li><a href="#" onclick="goPanel(0);toggleMenu();return false;">Home</a></li>
+        <li><a href="#" onclick="goPanel(1);toggleMenu();return false;">Art</a></li>
+        <li><a href="#" onclick="goPanel(2);toggleMenu();return false;">Marketplace</a></li>
+        <li><a href="#" onclick="goPanel(3);toggleMenu();return false;">Services</a></li>
+        <li><a href="#" onclick="goPanel(4);toggleMenu();return false;">Community</a></li>
+      </ul>
+    </div>
+
+    <!-- Right: "Other pages" — big display links -->
+    <div class="menu-col-right">
+      <p class="menu-col-label">Other pages</p>
+      <ul class="menu-page-links">
+        <li><a href="marketplace.html">Marketplace</a></li>
+        <li><a href="contact.html">Contact</a></li>
+        <li><a href="privacy.html">Privacy</a></li>
+        <li><a href="terms.html">Terms</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Bottom: legal + copyright -->
+  <div class="menu-bottom">
+    <nav class="menu-legal">
+      <a href="privacy.html">Privacy Policy</a>
+      <a href="terms.html">Terms of Service</a>
+      <a href="refund.html">Refund Policy</a>
+      <a href="shipping.html">Shipping Policy</a>
+      <a href="cancellation.html">Cancellation Policy</a>
+    </nav>
+    <p class="menu-copy">© 2025 NEXUS Marketplace Inc.</p>
   </div>
 </div>
 
-<!-- LEFT SIDE DOT NAV -->
+<!-- ════ LEFT SIDE DOT NAV ════ -->
 <nav id="sidenav">
-  <button class="sidenav-item active" onclick="scrollToPanel(0)">
-    <span class="sidenav-dot"></span>
-    <span class="sidenav-label">Home</span>
+  <button class="snav-item active" onclick="goPanel(0)">
+    <span class="snav-dot"></span><span class="snav-label">Home</span>
   </button>
-  <button class="sidenav-item" onclick="scrollToPanel(1)">
-    <span class="sidenav-dot"></span>
-    <span class="sidenav-label">Art</span>
+  <button class="snav-item" onclick="goPanel(1)">
+    <span class="snav-dot"></span><span class="snav-label">Art</span>
   </button>
-  <button class="sidenav-item" onclick="scrollToPanel(2)">
-    <span class="sidenav-dot"></span>
-    <span class="sidenav-label">Marketplace</span>
+  <button class="snav-item" onclick="goPanel(2)">
+    <span class="snav-dot"></span><span class="snav-label">Marketplace</span>
   </button>
-  <button class="sidenav-item" onclick="scrollToPanel(3)">
-    <span class="sidenav-dot"></span>
-    <span class="sidenav-label">Services</span>
+  <button class="snav-item" onclick="goPanel(3)">
+    <span class="snav-dot"></span><span class="snav-label">Services</span>
   </button>
-  <button class="sidenav-item" onclick="scrollToPanel(4)">
-    <span class="sidenav-dot"></span>
-    <span class="sidenav-label">Community</span>
+  <button class="snav-item" onclick="goPanel(4)">
+    <span class="snav-dot"></span><span class="snav-label">Community</span>
   </button>
-  <button class="sidenav-item" onclick="scrollToPanel(5)">
-    <span class="sidenav-dot"></span>
-    <span class="sidenav-label">Join</span>
+  <button class="snav-item" onclick="goPanel(5)">
+    <span class="snav-dot"></span><span class="snav-label">Join</span>
   </button>
 </nav>
 
-<!-- SCROLL HINT -->
+<!-- ════ SCROLL HINT ════ -->
 <div id="scroll-hint">
-  <span class="scroll-hint-text">Scroll to discover</span>
-  <div class="scroll-hint-line"></div>
+  <span class="sh-text">Scroll to discover</span>
+  <div class="sh-line"></div>
 </div>
 
-<!-- ═══════════════════════════════════════════════
-     PANELS — each full-viewport, NO background
-     Canvas bleeds through from behind
-═══════════════════════════════════════════════ -->
+<!-- ════════════════════════════════════════
+     PANELS — full-viewport, transparent
+════════════════════════════════════════ -->
 
 <!-- PANEL 0: HERO -->
 <section class="panel panel--hero" id="p0">
-  <div style="position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;gap:0;">
-    <div class="hero-eyebrow">
-      <span class="pulse-dot"></span>
-      <span>Live · 12,400+ Creators · 89,000+ Works</span>
-    </div>
-    <h1 class="hero-title">
-      Where <em>Art</em> Meets<br/>Infinite Possibility
-    </h1>
-    <a href="#" class="btn-pill" onclick="scrollToPanel(2);return false;">
-      Explore Marketplace
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-    </a>
+  <div class="hero-eyebrow fade-up">
+    <span class="pulse"></span>
+    <span>Live · 12,400+ Creators · 89,000+ Works</span>
   </div>
-  <div class="hero-desc">
+  <h1 class="hero-title fade-up">
+    Where <em>Art</em> Meets<br/>Infinite Possibility
+  </h1>
+  <a class="btn-pill fade-up" href="#" onclick="goPanel(2);return false;">
+    Explore Marketplace
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+  </a>
+  <p class="hero-desc fade-up">
     The premier marketplace for digital art, advertising services, and entertainment — powered by creators, built for culture.
+  </p>
+</section>
+
+<!-- PANEL 1: ART -->
+<section class="panel" id="p1">
+  <div class="panel-inner">
+    <div>
+      <span class="p-label fade-up">Digital Art</span>
+      <h2 class="p-title fade-up">Original Works<br/><em>From 8,000+<br/>Global Artists</em></h2>
+    </div>
+    <div>
+      <p class="p-body fade-up">Original pieces, generative art, photography, illustration, and NFTs from creators across 140 countries. Every work is authenticated and delivered instantly.</p>
+      <div class="p-stats fade-up">
+        <div>
+          <div class="p-stat-n">8,000<span>+</span></div>
+          <div class="p-stat-l">Artists</div>
+        </div>
+        <div>
+          <div class="p-stat-n">140<span>+</span></div>
+          <div class="p-stat-l">Countries</div>
+        </div>
+      </div>
+      <p style="margin-top:36px;" class="fade-up">
+        <a class="btn-pill" href="#" onclick="goPanel(2);return false;" style="font-size:12px;padding:10px 24px;">Browse Art →</a>
+      </p>
+    </div>
   </div>
 </section>
 
-<!-- PANEL 1: ART / DIGITAL WORKS -->
-<section class="panel panel--content" id="p1">
+<!-- PANEL 2: MARKETPLACE -->
+<section class="panel" id="p2">
   <div class="panel-inner">
     <div>
-      <span class="panel-label">Digital Art</span>
-      <h2 class="panel-title">Original Works<br/><em>From 8,000+<br/>Global Artists</em></h2>
-    </div>
-    <div>
-      <p class="panel-body">Original pieces, generative art, photography, illustration, and NFTs from creators across 140 countries. Every work is authenticated, high-resolution, and delivered instantly.</p>
-      <p class="panel-body" style="margin-top:28px;">
-        <a href="#" class="btn-pill" style="font-size:12px;padding:12px 28px;" onclick="scrollToPanel(2);return false;">Browse Art →</a>
-      </p>
-      <div style="margin-top:56px;display:flex;gap:48px;">
-        <div>
-          <div style="font-family:'Cormorant Garamond',serif;font-size:42px;font-weight:300;color:#fff;line-height:1">8,000<span style="color:#6dc44b">+</span></div>
-          <div style="font-size:11px;color:rgba(255,255,255,0.4);letter-spacing:0.1em;text-transform:uppercase;margin-top:6px">Artists</div>
-        </div>
-        <div>
-          <div style="font-family:'Cormorant Garamond',serif;font-size:42px;font-weight:300;color:#fff;line-height:1">140<span style="color:#6dc44b">+</span></div>
-          <div style="font-size:11px;color:rgba(255,255,255,0.4);letter-spacing:0.1em;text-transform:uppercase;margin-top:6px">Countries</div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- PANEL 2: MARKETPLACE LISTINGS -->
-<section class="panel panel--content" id="p2">
-  <div class="panel-inner">
-    <div>
-      <span class="panel-label">Featured Listings</span>
-      <h2 class="panel-title">Trending<br/>Now</h2>
-      <p class="panel-body" style="margin-top:24px;">Hand-picked works across art, advertising, and entertainment. Updated daily.</p>
-      <p style="margin-top:32px;">
-        <a href="marketplace.html" class="btn-pill" style="font-size:12px;padding:12px 28px;">View All 89,000+ Items</a>
+      <span class="p-label fade-up">Featured Listings</span>
+      <h2 class="p-title fade-up">Trending<br/>Now</h2>
+      <p class="p-body fade-up" style="margin-top:24px;">Hand-picked across art, advertising, and entertainment. Updated daily.</p>
+      <p style="margin-top:32px;" class="fade-up">
+        <a class="btn-pill" href="marketplace.html" style="font-size:12px;padding:10px 24px;">View All 89,000+ Items</a>
       </p>
     </div>
-    <div class="panel-cards">
+    <div class="p-cards fade-up">
       <div class="p-card">
-        <div class="p-card-type">Art</div>
-        <div class="p-card-title">Chromatic Void #07</div>
-        <div class="p-card-creator">Aisha Kamara</div>
-        <div class="p-card-price">$420</div>
+        <div class="p-card-t">Art</div>
+        <div class="p-card-h">Chromatic Void #07</div>
+        <div class="p-card-c">Aisha Kamara</div>
+        <div class="p-card-p">$420</div>
       </div>
       <div class="p-card">
-        <div class="p-card-type">Ad Service</div>
-        <div class="p-card-title">Brand Launch Package</div>
-        <div class="p-card-creator">Studio Meridian</div>
-        <div class="p-card-price">$1,200</div>
+        <div class="p-card-t">Ad Service</div>
+        <div class="p-card-h">Brand Launch Pack</div>
+        <div class="p-card-c">Studio Meridian</div>
+        <div class="p-card-p">$1,200</div>
       </div>
       <div class="p-card">
-        <div class="p-card-type">Entertainment</div>
-        <div class="p-card-title">Solstice — EP</div>
-        <div class="p-card-creator">David Larsson</div>
-        <div class="p-card-price">$18</div>
+        <div class="p-card-t">Entertainment</div>
+        <div class="p-card-h">Solstice EP</div>
+        <div class="p-card-c">David Larsson</div>
+        <div class="p-card-p">$18</div>
       </div>
       <div class="p-card">
-        <div class="p-card-type">Art</div>
-        <div class="p-card-title">Fractal Garden</div>
-        <div class="p-card-creator">Teodor Voss</div>
-        <div class="p-card-price">$550</div>
+        <div class="p-card-t">Art</div>
+        <div class="p-card-h">Fractal Garden</div>
+        <div class="p-card-c">Teodor Voss</div>
+        <div class="p-card-p">$550</div>
       </div>
     </div>
   </div>
 </section>
 
 <!-- PANEL 3: AD SERVICES -->
-<section class="panel panel--content" id="p3">
-  <div class="panel-inner panel-inner--right" style="max-width:1400px;margin:0 auto;padding:0 120px 0 200px;">
-    <div style="max-width:560px;text-align:right;">
-      <span class="panel-label">Ad Services</span>
-      <h2 class="panel-title">Connect With<br/><em>Premium Creators</em></h2>
-      <p class="panel-body" style="text-align:right;">Campaigns, branded content, influencer partnerships, and media placements — managed end-to-end with full performance analytics.</p>
-      <div style="margin-top:48px;display:flex;gap:48px;justify-content:flex-end;">
+<section class="panel" id="p3">
+  <div class="panel-inner" style="direction:rtl;">
+    <div style="direction:ltr;text-align:right;">
+      <span class="p-label fade-up">Ad Services</span>
+      <h2 class="p-title fade-up">Connect With<br/><em>Premium Creators</em></h2>
+      <p class="p-body fade-up" style="margin-left:auto;text-align:right;margin-top:24px;">Campaigns, branded content, influencer partnerships, and media placements — managed end-to-end with full performance analytics.</p>
+      <div class="p-stats fade-up" style="justify-content:flex-end;">
         <div style="text-align:right;">
-          <div style="font-family:'Cormorant Garamond',serif;font-size:42px;font-weight:300;color:#fff;line-height:1">340<span style="color:#228f7e">+</span></div>
-          <div style="font-size:11px;color:rgba(255,255,255,0.4);letter-spacing:0.1em;text-transform:uppercase;margin-top:6px">Advertisers</div>
+          <div class="p-stat-n">340<span>+</span></div>
+          <div class="p-stat-l">Advertisers</div>
         </div>
         <div style="text-align:right;">
-          <div style="font-family:'Cormorant Garamond',serif;font-size:42px;font-weight:300;color:#fff;line-height:1">4×<span style="color:#228f7e"></span></div>
-          <div style="font-size:11px;color:rgba(255,255,255,0.4);letter-spacing:0.1em;text-transform:uppercase;margin-top:6px">Avg. ROI</div>
+          <div class="p-stat-n">4×</div>
+          <div class="p-stat-l">Avg. ROI</div>
         </div>
       </div>
-      <p style="margin-top:36px;text-align:right;">
-        <a href="contact.html" class="btn-pill" style="font-size:12px;padding:12px 28px;">Start a Campaign →</a>
-      </p>
+    </div>
+    <div style="direction:ltr;display:flex;flex-direction:column;gap:1px;background:rgba(255,255,255,0.05);" class="fade-up">
+      <div class="p-card"><div class="p-card-t">Campaign</div><div class="p-card-h">Brand Launch</div><div class="p-card-c">6 creator placements</div><div class="p-card-p">$1,200</div></div>
+      <div class="p-card"><div class="p-card-t">Influencer</div><div class="p-card-h">Tier A Package</div><div class="p-card-c">1M+ reach</div><div class="p-card-p">$3,500</div></div>
+      <div class="p-card"><div class="p-card-t">Audio</div><div class="p-card-h">Podcast Placement</div><div class="p-card-c">40k listeners/ep</div><div class="p-card-p">$900</div></div>
     </div>
   </div>
 </section>
 
-<!-- PANEL 4: COMMUNITY / TESTIMONIALS -->
-<section class="panel panel--content" id="p4">
+<!-- PANEL 4: COMMUNITY -->
+<section class="panel" id="p4">
   <div class="panel-inner">
     <div>
-      <span class="panel-label">Community</span>
-      <h2 class="panel-title">Creators<br/><em>Love NEXUS</em></h2>
-      <p class="panel-body" style="margin-top:24px;">Trusted by artists, brands, and creators in 140+ countries. Real results, real voices.</p>
+      <span class="p-label fade-up">Community</span>
+      <h2 class="p-title fade-up">Creators<br/><em>Love NEXUS</em></h2>
+      <p class="p-body fade-up" style="margin-top:24px;">Trusted by artists, brands, and creators in 140+ countries. Real results.</p>
     </div>
-    <div class="panel-testimonials">
-      <div class="t-card">
-        <div class="t-stars">★★★★★</div>
+    <div class="p-tlist fade-up">
+      <div class="p-tcard">
+        <div class="p-tcard-stars">★★★★★</div>
         <p>"Sold my first digital collection and hit $12k in the first month. The platform is stunning."</p>
-        <div class="t-name">Aisha Kamara — Digital Artist, Lagos</div>
+        <div class="p-tcard-name">Aisha Kamara — Digital Artist, Lagos</div>
       </div>
-      <div class="t-card">
-        <div class="t-stars">★★★★★</div>
+      <div class="p-tcard">
+        <div class="p-tcard-stars">★★★★★</div>
         <p>"Ran a branded campaign with 6 creators. ROI was 4× what we expected."</p>
-        <div class="t-name">Marcus Reid — Marketing Director, NYC</div>
+        <div class="p-tcard-name">Marcus Reid — Marketing Director, NYC</div>
       </div>
-      <div class="t-card">
-        <div class="t-stars">★★★★★</div>
+      <div class="p-tcard">
+        <div class="p-tcard-stars">★★★★★</div>
         <p>"Booked 3 film scoring gigs through NEXUS. The discovery algorithm is unreal."</p>
-        <div class="t-name">David Larsson — Film Composer, Stockholm</div>
+        <div class="p-tcard-name">David Larsson — Film Composer, Stockholm</div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- PANEL 5: JOIN / CTA -->
+<!-- PANEL 5: JOIN — exact alireza "Grow with us" -->
 <section class="panel panel--join" id="p5">
   <div class="join-inner">
-    <h2 class="join-title">Join the<br/>Marketplace</h2>
-    <div class="join-links">
+    <h2 class="join-title fade-up">Join the<br/>Marketplace</h2>
+    <div class="join-links fade-up">
       <a href="marketplace.html">Browse Works</a>
       <a href="contact.html">Sell Your Work</a>
       <a href="contact.html">Contact Us</a>
     </div>
-    <p style="font-size:13px;color:rgba(255,255,255,0.35);letter-spacing:0.06em;">Payments secured by Stripe · SSL encrypted · PCI DSS compliant</p>
+    <p class="fade-up" style="font-size:11px;color:rgba(255,255,255,0.25);letter-spacing:0.1em;margin-top:12px;">
+      Payments secured by Stripe · SSL encrypted · PCI DSS compliant
+    </p>
   </div>
 </section>
 
-<!-- FOOTER BAR -->
-<footer id="footer-bar">
-  <p class="footer-copy">© 2025 NEXUS Marketplace Inc. All rights reserved.</p>
-  <nav class="footer-links">
+<!-- ════ FOOTER BAR ════ -->
+<footer id="fbar">
+  <p class="fbar-copy">© 2025 NEXUS Marketplace Inc. All rights reserved.</p>
+  <nav class="fbar-links">
     <a href="privacy.html">Privacy</a>
     <a href="terms.html">Terms</a>
     <a href="refund.html">Refunds</a>
     <a href="shipping.html">Shipping</a>
     <a href="cancellation.html">Cancellation</a>
+    <a href="contact.html">Contact</a>
   </nav>
 </footer>
 
 <script>
 'use strict';
 
-/* ═══════════════════════════════════════════════
-   AUTH SYSTEM (preserved from previous build)
-═══════════════════════════════════════════════ */
-const AUTH_KEY = 'nexus_user';
-const Auth = {
-  getUser() { try { return JSON.parse(localStorage.getItem(AUTH_KEY)); } catch { return null; } },
-  isLoggedIn() { return !!this.getUser(); },
-};
-window.openModal = function(mode) {
-  // Preserve auth modal from nexus-core.js if loaded, else redirect
-  if (window.AuthModal) { AuthModal.open(mode); }
-  else { location.href = 'marketplace.html'; }
-};
-
-/* ═══════════════════════════════════════════════
-   MENU TOGGLE
-═══════════════════════════════════════════════ */
+/* ════════════════════════════════════════
+   NAV
+════════════════════════════════════════ */
 const burger = document.getElementById('burger');
-const overlay = document.getElementById('menu-overlay');
+const menu   = document.getElementById('menu');
 let menuOpen = false;
+
 window.toggleMenu = function() {
   menuOpen = !menuOpen;
   burger.classList.toggle('open', menuOpen);
-  overlay.classList.toggle('open', menuOpen);
+  menu.classList.toggle('open', menuOpen);
   document.body.style.overflow = menuOpen ? 'hidden' : '';
 };
+
 document.addEventListener('keydown', e => { if (e.key === 'Escape' && menuOpen) toggleMenu(); });
 
-/* ═══════════════════════════════════════════════
-   PANEL SYSTEM — scroll-based, detect which
-   panel is most visible and update sidenav
-═══════════════════════════════════════════════ */
-const PANELS = Array.from(document.querySelectorAll('.panel'));
-const sideItems = Array.from(document.querySelectorAll('.sidenav-item'));
-const sidenav = document.getElementById('sidenav');
-const scrollHint = document.getElementById('scroll-hint');
+/* ════════════════════════════════════════
+   PANEL SYSTEM
+════════════════════════════════════════ */
+const panels   = Array.from(document.querySelectorAll('.panel'));
+const snavItems = Array.from(document.querySelectorAll('.snav-item'));
+let activePanel = 0;
 
-window.scrollToPanel = function(i) {
-  const p = PANELS[i];
+window.goPanel = function(i) {
+  const p = panels[i];
   if (p) p.scrollIntoView({ behavior: 'smooth' });
 };
 
-let currentPanel = 0;
-
-function detectPanel() {
+function onScroll() {
+  /* Update sidenav active state */
   let best = 0, bestVis = 0;
-  PANELS.forEach((p, i) => {
+  panels.forEach((p, i) => {
     const r = p.getBoundingClientRect();
     const vis = Math.max(0, Math.min(r.bottom, innerHeight) - Math.max(r.top, 0));
     if (vis > bestVis) { bestVis = vis; best = i; }
   });
-  if (best !== currentPanel) {
-    currentPanel = best;
-    sideItems.forEach((el, i) => el.classList.toggle('active', i === best));
-    // WebGL camera is now driven purely by scroll — no scene swap needed
+  if (best !== activePanel) {
+    activePanel = best;
+    snavItems.forEach((el, i) => el.classList.toggle('active', i === best));
   }
+
+  /* Fade out scroll hint after first scroll */
+  if (window.scrollY > 60) {
+    document.getElementById('scroll-hint').style.opacity = '0';
+  }
+
+  /* Fade-up elements */
+  document.querySelectorAll('.fade-up:not(.in)').forEach(el => {
+    const r = el.getBoundingClientRect();
+    if (r.top < innerHeight * 0.88) el.classList.add('in');
+  });
 }
 
-window.addEventListener('scroll', detectPanel, { passive: true });
+window.addEventListener('scroll', onScroll, { passive: true });
 
-// Show sidenav + scroll hint after short delay
+/* Show UI chrome after short delay */
 setTimeout(() => {
-  sidenav.classList.add('visible');
-  scrollHint.classList.add('visible');
-}, 800);
+  document.getElementById('sidenav').classList.add('show');
+  document.getElementById('scroll-hint').classList.add('show');
+}, 900);
 
-// Hide scroll hint once user scrolls
-window.addEventListener('scroll', () => {
-  if (window.scrollY > 80) scrollHint.style.opacity = '0';
-}, { passive: true, once: true });
-
-/* ═══════════════════════════════════════════════
-   TEXT REVEAL — IntersectionObserver
-   Words translate up into view as panels enter
-═══════════════════════════════════════════════ */
-const revObs = new IntersectionObserver(entries => {
-  entries.forEach(e => {
-    if (e.isIntersecting) {
-      const els = e.target.querySelectorAll('.reveal-word, .reveal-block');
-      els.forEach((el, i) => {
-        setTimeout(() => el.classList.add('in'), i * 55);
-      });
-      revObs.unobserve(e.target);
-    }
+/* Trigger hero fade-ups immediately */
+setTimeout(() => {
+  document.querySelectorAll('#p0 .fade-up').forEach((el, i) => {
+    setTimeout(() => el.classList.add('in'), i * 120 + 200);
   });
-}, { threshold: 0.15 });
-PANELS.forEach(p => revObs.observe(p));
+}, 100);
 
-// Auto-apply reveal classes to panel titles on load
-document.querySelectorAll('.panel-title').forEach(el => {
-  // Wrap each word
-  el.innerHTML = el.innerHTML.split(/(<br\/>|<em>|<\/em>)/).map(chunk => {
-    if (chunk.startsWith('<')) return chunk;
-    return chunk.split(' ').filter(w => w).map(w => `<span class="reveal-word">${w} </span>`).join('');
-  }).join('');
-});
-document.querySelectorAll('.panel-body, .panel-label, .hero-eyebrow, .hero-desc').forEach(el => {
-  el.classList.add('reveal-block');
-});
+/* Auth stub */
+window.openAuth = function(mode) {
+  if (window.AuthModal) AuthModal.open(mode);
+};
 
-/* ═══════════════════════════════════════════════
-
-   WEBGL BACKGROUND ENGINE — SCROLL-DRIVEN CAMERA
+/* ════════════════════════════════════════
+   INFINITY BACKGROUND ANIMATION
    
-   THE REAL ALIREZA TECHNIQUE:
-   ─────────────────────────────────────────────
-   ONE scene. ONE camera. The camera travels
-   through a single 3D world as you scroll.
+   The ∞ shape (lemniscate of Bernoulli):
+   x(t) = a·cos(t) / (1+sin²(t))
+   y(t) = a·sin(t)·cos(t) / (1+sin²(t))
    
-   No scene swapping. No blending between scenes.
-   The scroll position (0→1) maps directly to
-   camera position, rotation, and target.
+   We build:
+   1. The core infinity PATH traced by
+      thousands of particles flowing along it
+      — particles at different phases so the
+      path looks like a glowing ribbon
    
-   The 3D world is built like a tree cross-section:
+   2. Multiple SCALES of the same shape
+      nested, rotating at slightly different
+      speeds — creates depth
    
-   PANEL 0 (hero)       → Full canopy view: fronds 
-                          spread wide, camera far back,
-                          centred, looking at crown.
+   3. A DIAMOND GRID of small ◆ shapes
+      in the background (from the logo's
+      diamond geometry) fading in/out
    
-   PANEL 1 (art)        → Camera zooms INTO frond tips,
-                          extreme macro, dark diagonal
-                          fibres fill the frame.
+   4. SCROLL drives: the camera zooms slowly
+      into the centre as you scroll down,
+      giving a sense of travelling THROUGH
+      the infinity symbol — matching the
+      alireza "camera moves through object" feel
    
-   PANEL 2 (marketplace)→ Camera pulls back, pans down 
-                          to the trunk — stacked woven
-                          ring geometry, warm amber.
-   
-   PANEL 3 (services)   → Camera swings to the right,
-                          fronds come in from top-right 
-                          corner, dark teal.
-   
-   PANEL 4 (community)  → Camera tilts, date cluster
-                          glows amber in foreground,
-                          fronds frame from above.
-   
-   PANEL 5 (join)       → Camera pulls straight up,
-                          top-down view of full crown,
-                          radial symmetry, near-black.
-   
-   Implementation:
-   - scrollProgress = window.scrollY / (totalHeight - vh)
-   - panelProgress = scrollProgress * numPanels
-   - camera lerps between keyframe positions each frame
-   - ALL geometry lives in one scene, camera moves around it
-═══════════════════════════════════════════════ */
-
+   All in ONE Three.js scene, ONE camera.
+   No scene swapping.
+════════════════════════════════════════ */
 (function() {
   const canvas = document.getElementById('c');
   if (!window.THREE) { canvas.style.display = 'none'; return; }
@@ -978,325 +1116,237 @@ document.querySelectorAll('.panel-body, .panel-label, .hero-eyebrow, .hero-desc'
   const R = new THREE.WebGLRenderer({ canvas, antialias: !mobile, alpha: false });
   R.setPixelRatio(Math.min(devicePixelRatio, mobile ? 1.5 : 2));
   R.setSize(innerWidth, innerHeight);
-  R.setClearColor(0x020c06, 1);
+  R.setClearColor(0x020e07, 1);
 
-  /* ── Single scene ── */
+  /* ── Scene + Camera ── */
   const scene = new THREE.Scene();
-  scene.background = new THREE.Color(0x020c06);
+  scene.background = new THREE.Color(0x020e07);
+  const cam = new THREE.PerspectiveCamera(52, innerWidth / innerHeight, 0.01, 500);
+  cam.position.set(0, 0, 10);
 
-  /* ── Camera ── */
-  const cam = new THREE.PerspectiveCamera(55, innerWidth / innerHeight, 0.1, 500);
-
-  /* ── Brand palette ── */
-  const GREEN  = new THREE.Color(0x6dc44b);
-  const TEAL   = new THREE.Color(0x228f7e);
-  const BLUE   = new THREE.Color(0x0258a3);
-  const AMBER  = new THREE.Color(0xc47a1a);
-  const DARK   = new THREE.Color(0x030d08);
-
-  /* ─────────────────────────────────────────────
-     BUILD THE WORLD
-     
-     One unified 3D structure the camera travels
-     through. Grouped so we can reference parts.
-     
-     Layout (Y axis = height of the "tree"):
-       +Y 12  → crown tip / frond ends
-       +Y  0  → mid-frond / canopy spread
-       -Y  4  → trunk top
-       -Y 10  → trunk mid (woven rings)
-       -Y 16  → trunk base / roots
-       
-     X/Z axis = spread of fronds / trunk girth
-  ───────────────────────────────────────────── */
-
-  /* Group for gentle idle rotation */
-  const world = new THREE.Group();
-  scene.add(world);
-
-  /* ── 1. CROWN FRONDS (canopy) ──
-     Radiating curved lines from centre-top.
-     Alireza hero: full palm crown, centred, warm lit.
-     These fill the frame when camera is at hero position.
-  ── */
-  const FROND_COUNT = mobile ? 14 : 32;
-  const frondLines = [];
-  for (let f = 0; f < FROND_COUNT; f++) {
-    const angle = (f / FROND_COUNT) * Math.PI * 2;
-    const length = 7 + Math.random() * 5;
-    const droop  = 2.5 + Math.random() * 2;
-    const pts = [];
-    const seg = mobile ? 20 : 50;
-    for (let j = 0; j <= seg; j++) {
-      const t = j / seg;
-      // Frond curves outward then droops
-      const r = t * length;
-      const droopY = -Math.pow(t, 1.6) * droop;
-      const wobble = Math.sin(t * Math.PI * 2.5) * (0.12 + Math.random() * 0.08) * length;
-      pts.push(new THREE.Vector3(
-        Math.cos(angle) * r + Math.cos(angle + Math.PI/2) * wobble,
-        droopY + 8,  // crown sits at Y=8
-        Math.sin(angle) * r + Math.sin(angle + Math.PI/2) * wobble
-      ));
-    }
-    const curve  = new THREE.CatmullRomCurve3(pts);
-    const points = curve.getPoints(seg);
-
-    // Each frond is a tube for thickness, like alireza's rendered fronds
-    const tubeGeo = new THREE.TubeGeometry(curve, seg, 0.022 + Math.random() * 0.025, 5, false);
-    const hue = 0.35 + Math.random() * 0.09; // green–teal
-    const light = 0.18 + Math.random() * 0.14;
-    const tubeMat = new THREE.MeshBasicMaterial({
-      color: new THREE.Color().setHSL(hue, 0.55, light),
-      transparent: true,
-      opacity: 0.65 + Math.random() * 0.25,
-    });
-    const tube = new THREE.Mesh(tubeGeo, tubeMat);
-    world.add(tube);
-
-    // Also add a thin spine line for sharper detail
-    const lineGeo = new THREE.BufferGeometry().setFromPoints(points);
-    const lineMat = new THREE.LineBasicMaterial({
-      color: new THREE.Color().setHSL(hue + 0.02, 0.7, light + 0.08),
-      transparent: true,
-      opacity: 0.5,
-    });
-    world.add(new THREE.Line(lineGeo, lineMat));
-
-    frondLines.push({ tube, angle, length, droop });
+  /* ── Lemniscate path function ── */
+  function lemniscate(t, a) {
+    const cos2 = Math.cos(2 * t);
+    // Classic lemniscate: r² = a²·cos(2θ)
+    // Parametric form that works for all t:
+    const denom = 1 + Math.sin(t) * Math.sin(t);
+    const x = a * Math.cos(t) / denom;
+    const y = a * Math.sin(t) * Math.cos(t) / denom;
+    return { x, y };
   }
 
-  /* ── 2. FIBRE STRANDS (macro close-up layer) ──
-     Diagonal crossing strands — what you see when
-     camera zooms INTO the frond tips (panel 1).
-     These live at the frond-tip region, Y = 6–10, X/Z spread.
-  ── */
-  const STRAND_COUNT = mobile ? 16 : 40;
-  const strandObjs = [];
-  for (let s = 0; s < STRAND_COUNT; s++) {
-    // Random diagonal placement in the frond canopy zone
-    const startX = (Math.random() - 0.5) * 20;
-    const startZ = (Math.random() - 0.5) * 20;
-    const startY = 5 + Math.random() * 7;
-    const angle  = -0.5 + Math.random() * 0.4; // steep diagonal
-    const len    = 8 + Math.random() * 10;
-    const bend   = (Math.random() - 0.5) * 1.5;
-    const pts    = [];
-    const seg    = mobile ? 16 : 36;
-    for (let j = 0; j <= seg; j++) {
-      const t = j / seg;
-      pts.push(new THREE.Vector3(
-        startX + Math.cos(angle) * t * len + Math.sin(t * Math.PI) * bend,
-        startY + Math.sin(angle) * t * len * 0.4,
-        startZ + t * len * 0.3
-      ));
+  /* ── Build path points for one infinity loop ── */
+  function buildLemniscatePts(a, numPts) {
+    const pts = [];
+    for (let i = 0; i <= numPts; i++) {
+      const t = (i / numPts) * Math.PI * 2;
+      const p = lemniscate(t, a);
+      pts.push(new THREE.Vector3(p.x, p.y, 0));
     }
-    const curve = new THREE.CatmullRomCurve3(pts);
-    // Thicker for the macro close-up — these are what fill the screen on panel 1
-    const hue = 0.33 + Math.random() * 0.06;
-    const geo  = new THREE.TubeGeometry(curve, seg, 0.035 + Math.random() * 0.055, 5, false);
-    const mat  = new THREE.MeshBasicMaterial({
-      color: new THREE.Color().setHSL(hue, 0.45, 0.12 + Math.random() * 0.10),
+    return pts;
+  }
+
+  /* ────────────────────────────────────────
+     1. PARTICLE RIBBON — particles flow along
+        the ∞ path like light racing around it
+  ──────────────────────────────────────── */
+  const RIBBON_LAYERS = mobile ? 3 : 6;
+  const RIBBON_PTS    = mobile ? 800 : 2200;
+  const ribbonObjs    = [];
+
+  // Brand colours
+  const COLS = [
+    [0.427, 0.769, 0.294],  // green
+    [0.133, 0.561, 0.494],  // teal
+    [0.227, 0.698, 0.494],  // mid-green
+    [0.008, 0.345, 0.639],  // blue
+    [0.094, 0.655, 0.525],  // teal-light
+    [0.42,  0.769, 0.29 ],  // green again
+  ];
+
+  for (let layer = 0; layer < RIBBON_LAYERS; layer++) {
+    const scale = 3.0 + layer * 0.65;
+    const zOff  = layer * 0.18 - (RIBBON_LAYERS * 0.09);
+    const N     = RIBBON_PTS;
+
+    const geo   = new THREE.BufferGeometry();
+    const pos   = new Float32Array(N * 3);
+    const col   = new Float32Array(N * 3);
+    const phase = new Float32Array(N);     // each particle's t-phase on the path
+    const speed = new Float32Array(N);     // each particle's travel speed
+
+    for (let i = 0; i < N; i++) {
+      // Spread particles around the path at random phases
+      phase[i] = Math.random() * Math.PI * 2;
+      speed[i] = 0.004 + Math.random() * 0.004;
+
+      // Initial position on path
+      const p = lemniscate(phase[i], scale);
+      pos[i*3]   = p.x + (Math.random() - 0.5) * 0.06;
+      pos[i*3+1] = p.y + (Math.random() - 0.5) * 0.06;
+      pos[i*3+2] = zOff + (Math.random() - 0.5) * 0.12;
+
+      // Colour: vary by position on path
+      const c = COLS[layer % COLS.length];
+      const bright = 0.6 + Math.random() * 0.4;
+      col[i*3]   = c[0] * bright;
+      col[i*3+1] = c[1] * bright;
+      col[i*3+2] = c[2] * bright;
+    }
+
+    geo.setAttribute('position', new THREE.BufferAttribute(pos,   3));
+    geo.setAttribute('color',    new THREE.BufferAttribute(col,   3));
+
+    const mat = new THREE.PointsMaterial({
+      size: mobile ? 0.045 : 0.03,
+      vertexColors: true,
       transparent: true,
-      opacity: 0.5 + Math.random() * 0.35,
+      opacity: 0.75 - layer * 0.07,
+      sizeAttenuation: true,
+    });
+
+    const pts = new THREE.Points(geo, mat);
+    scene.add(pts);
+    ribbonObjs.push({ pts, geo, pos, phase, speed, scale, zOff });
+  }
+
+  /* ────────────────────────────────────────
+     2. GLOW RINGS — static tube outlines of
+        the ∞ path at multiple scales.
+        These are the "skeleton" you can see
+        between the flowing particles.
+  ──────────────────────────────────────── */
+  const ringScales = mobile
+    ? [2.2, 3.5, 4.8]
+    : [1.6, 2.4, 3.3, 4.4, 5.6];
+
+  ringScales.forEach((scale, idx) => {
+    const ptCount = 300;
+    const pathPts = buildLemniscatePts(scale, ptCount);
+    const curve   = new THREE.CatmullRomCurve3(pathPts, true);
+    const geo     = new THREE.TubeGeometry(curve, ptCount, 0.008 + idx * 0.002, 4, true);
+    const hue     = 0.36 + idx * 0.03;  // green → teal range
+    const mat     = new THREE.MeshBasicMaterial({
+      color: new THREE.Color().setHSL(hue, 0.7, 0.28 - idx * 0.03),
+      transparent: true,
+      opacity: 0.35 - idx * 0.05,
     });
     const mesh = new THREE.Mesh(geo, mat);
-    world.add(mesh);
-    strandObjs.push({ mesh, phase: Math.random() * Math.PI * 2, speed: 0.003 + Math.random() * 0.003 });
+    mesh.position.z = -idx * 0.3;
+    scene.add(mesh);
+  });
+
+  /* ────────────────────────────────────────
+     3. DIAMOND FIELD — scattered small ◆
+        shapes in 3D space (from the logo)
+        These rotate slowly and pulse.
+  ──────────────────────────────────────── */
+  const DIAMOND_COUNT = mobile ? 40 : 120;
+  const diamondMeshes = [];
+
+  // Diamond shape: simple 4-vertex geometry (rhombus on XY plane)
+  function makeDiamondGeo(size) {
+    const geo = new THREE.BufferGeometry();
+    const s   = size;
+    // 4 vertices of diamond, 2 triangles
+    const verts = new Float32Array([
+       0,  s,  0,   // top
+      -s * 0.6, 0, 0, // left
+       0, -s, 0,    // bottom
+       s * 0.6, 0, 0, // right
+    ]);
+    const idx = new Uint16Array([0,1,2,  0,2,3]);
+    geo.setAttribute('position', new THREE.BufferAttribute(verts, 3));
+    geo.setIndex(new THREE.BufferAttribute(idx, 1));
+    return geo;
   }
 
-  /* ── 3. TRUNK RINGS (trunk cross-section) ──
-     Stacked torus rings at centre, Y = -4 to -18.
-     Amber/ochre woven pattern — what fills frame on panel 2.
-  ── */
-  const RING_COUNT = mobile ? 20 : 44;
-  const trunkRings = [];
-  for (let i = 0; i < RING_COUNT; i++) {
-    const t    = i / RING_COUNT;
-    const y    = -4 - t * 14;
-    const r    = 0.9 + Math.sin(i * 0.85 + 0.3) * 0.35;
-    const thick = 0.055 + Math.random() * 0.06;
-    const hue  = 0.085 + t * 0.035; // ochre → amber
-    const light = 0.28 + t * 0.18;
-    const mesh = new THREE.Mesh(
-      new THREE.TorusGeometry(r, thick, 7, 52),
-      new THREE.MeshBasicMaterial({
-        color: new THREE.Color().setHSL(hue, 0.88, light),
-        transparent: true,
-        opacity: 0.55 + t * 0.35,
-      })
+  for (let i = 0; i < DIAMOND_COUNT; i++) {
+    const size = 0.04 + Math.random() * 0.12;
+    const geo  = makeDiamondGeo(size);
+    const hue  = 0.35 + Math.random() * 0.15;
+    const mat  = new THREE.MeshBasicMaterial({
+      color: new THREE.Color().setHSL(hue, 0.6, 0.25 + Math.random() * 0.2),
+      transparent: true,
+      opacity: 0.15 + Math.random() * 0.25,
+      side: THREE.DoubleSide,
+    });
+    const mesh = new THREE.Mesh(geo, mat);
+    // Scatter in a wide volume
+    mesh.position.set(
+      (Math.random() - 0.5) * 24,
+      (Math.random() - 0.5) * 16,
+      -2 - Math.random() * 14
     );
-    mesh.position.y = y;
-    mesh.rotation.x = Math.PI / 2 + (Math.random() - 0.5) * 0.2;
-    mesh.rotation.z = (Math.random() - 0.5) * 0.15;
-    world.add(mesh);
-    trunkRings.push({ mesh, rotSpeed: (Math.random() - 0.5) * 0.006 });
+    mesh.rotation.z = Math.random() * Math.PI;
+    scene.add(mesh);
+    diamondMeshes.push({
+      mesh,
+      rotSpeedZ: (Math.random() - 0.5) * 0.015,
+      floatSpeed: 0.3 + Math.random() * 0.5,
+      floatAmp:   0.08 + Math.random() * 0.12,
+      baseY:      mesh.position.y,
+      phase:      Math.random() * Math.PI * 2,
+    });
   }
 
-  /* ── 4. DATE CLUSTER (fruit) ──
-     Dense warm amber sphere cluster at Y = -2, X = 2.
-     Visible on panel 4 (community) when camera tilts.
-  ── */
-  const clusterGeo = new THREE.BufferGeometry();
-  const CLN = mobile ? 180 : 550;
-  const clPos = new Float32Array(CLN * 3);
-  const clCol = new Float32Array(CLN * 3);
-  for (let i = 0; i < CLN; i++) {
-    const r  = Math.pow(Math.random(), 0.35) * 2.2;
-    const th = Math.random() * Math.PI * 2;
-    const ph = Math.acos(2 * Math.random() - 1);
-    clPos[i*3]   = 2.2 + r * Math.sin(ph) * Math.cos(th);
-    clPos[i*3+1] = -1.5 + r * Math.sin(ph) * Math.sin(th) * 0.7;
-    clPos[i*3+2] = r * Math.cos(ph) * 0.8;
-    clCol[i*3]   = 0.65 + Math.random() * 0.3;
-    clCol[i*3+1] = 0.25 + Math.random() * 0.22;
-    clCol[i*3+2] = 0.01 + Math.random() * 0.04;
-  }
-  clusterGeo.setAttribute('position', new THREE.BufferAttribute(clPos, 3));
-  clusterGeo.setAttribute('color',    new THREE.BufferAttribute(clCol, 3));
-  const cluster = new THREE.Points(clusterGeo, new THREE.PointsMaterial({
-    size: mobile ? 0.1 : 0.075, vertexColors: true, transparent: true, opacity: 0.88
-  }));
-  world.add(cluster);
-
-  /* ── 5. AMBIENT PARTICLE FIELD ──
-     Fills the negative space. Always visible but
-     very faint — gives depth to every panel.
-  ── */
+  /* ────────────────────────────────────────
+     4. AMBIENT DEEP PARTICLES — sparse
+        background depth field
+  ──────────────────────────────────────── */
+  const AMB_N = mobile ? 400 : 1200;
   const ambGeo = new THREE.BufferGeometry();
-  const AMB_N  = mobile ? 600 : 2000;
   const ambPos = new Float32Array(AMB_N * 3);
   const ambCol = new Float32Array(AMB_N * 3);
   for (let i = 0; i < AMB_N; i++) {
-    ambPos[i*3]   = (Math.random() - 0.5) * 40;
-    ambPos[i*3+1] = -20 + Math.random() * 40;
-    ambPos[i*3+2] = -10 + Math.random() * 12;
-    const palette = [[0.42,0.76,0.29],[0.13,0.56,0.49],[0.05,0.28,0.22],[0.6,0.3,0.05]];
-    const c = palette[Math.floor(Math.random() * palette.length)];
-    ambCol[i*3]=c[0]*0.5; ambCol[i*3+1]=c[1]*0.5; ambCol[i*3+2]=c[2]*0.5;
+    ambPos[i*3]   = (Math.random() - 0.5) * 36;
+    ambPos[i*3+1] = (Math.random() - 0.5) * 24;
+    ambPos[i*3+2] = -4 - Math.random() * 16;
+    const c = COLS[Math.floor(Math.random() * COLS.length)];
+    ambCol[i*3]=c[0]*0.4; ambCol[i*3+1]=c[1]*0.4; ambCol[i*3+2]=c[2]*0.4;
   }
   ambGeo.setAttribute('position', new THREE.BufferAttribute(ambPos, 3));
   ambGeo.setAttribute('color',    new THREE.BufferAttribute(ambCol, 3));
-  world.add(new THREE.Points(ambGeo, new THREE.PointsMaterial({
-    size: 0.04, vertexColors: true, transparent: true, opacity: 0.5
+  scene.add(new THREE.Points(ambGeo, new THREE.PointsMaterial({
+    size: 0.025, vertexColors: true, transparent: true, opacity: 0.45
   })));
 
-  /* ─────────────────────────────────────────────
-     CAMERA KEYFRAMES
+  /* ────────────────────────────────────────
+     SCROLL → CAMERA (alireza technique)
      
-     6 keyframes, one per panel (0–5).
-     Each keyframe defines where the camera sits
-     and where it looks (target).
+     The camera slowly zooms IN toward the
+     centre of the ∞ as user scrolls down.
+     By the last panel it's very close —
+     particles fill the screen, giving the
+     feeling of being INSIDE the infinity loop.
      
-     Matching each screenshot:
+     Panel 0: far back (z=10)
+     Panel 3: mid (z=4)
+     Panel 5: very close (z=1.2)
      
-     KF0 HERO:     Far back, centred on crown.
-                   Fronds fill the frame symmetrically.
-     
-     KF1 ART:      Zoomed very close into one frond
-                   region. Camera slightly tilted.
-                   Dark diagonal fibres fill frame.
-     
-     KF2 MARKET:   Camera drops to trunk level,
-                   pulls slightly back. Stacked rings
-                   fill centre. Warm amber glow.
-     
-     KF3 SERVICES: Camera swings RIGHT and UP.
-                   Looking down-left at fronds.
-                   Fronds enter from top-right corner.
-     
-     KF4 COMMUNITY: Camera drops slightly, tilts.
-                   Date cluster glows in foreground.
-                   Fronds frame above and sides.
-     
-     KF5 JOIN:     Camera flies straight UP, looking
-                   DOWN. Full crown in top-down view.
-                   Near-black radial symmetry.
-  ───────────────────────────────────────────── */
-  const KEYFRAMES = [
-    // KF0 — HERO: full crown, camera back
-    {
-      pos:    new THREE.Vector3(0,    6,   14),
-      target: new THREE.Vector3(0,    5,    0),
-      fov: 55,
-    },
-    // KF1 — ART: extreme macro on fibres / frond tips
-    {
-      pos:    new THREE.Vector3(3.5,  9.5,  2.5),
-      target: new THREE.Vector3(1,    7.5,  0),
-      fov: 35,
-    },
-    // KF2 — MARKETPLACE: trunk level, camera front
-    {
-      pos:    new THREE.Vector3(0,   -8,    5.5),
-      target: new THREE.Vector3(0,   -8,    0),
-      fov: 50,
-    },
-    // KF3 — SERVICES: swung right, fronds from corner
-    {
-      pos:    new THREE.Vector3(-9,   5,    6),
-      target: new THREE.Vector3(-2,   5,    0),
-      fov: 55,
-    },
-    // KF4 — COMMUNITY: low angle, date cluster visible
-    {
-      pos:    new THREE.Vector3(-3,   1.5,  6),
-      target: new THREE.Vector3(1.5, -1,    0),
-      fov: 52,
-    },
-    // KF5 — JOIN: top-down, full radial crown
-    {
-      pos:    new THREE.Vector3(0,   22,    0.1),
-      target: new THREE.Vector3(0,    6,    0),
-      fov: 62,
-    },
-  ];
-
-  /* ─────────────────────────────────────────────
-     SCROLL → CAMERA DRIVER
-     
-     scrollProgress = raw 0→1 across whole page.
-     We map it to panelT = 0→(N-1) (float).
-     Between integer panel indices we smoothly
-     interpolate camera position, target, and FOV.
-     
-     This is the core of the alireza effect:
-     the camera never "cuts" — it flows.
-  ───────────────────────────────────────────── */
-  const N_PANELS = 6;
-  let rawScrollT  = 0;   // target (from scroll event)
-  let smoothScrollT = 0; // lerped value for butter-smooth motion
+     Y also shifts so you travel through
+     different parts of the shape.
+  ──────────────────────────────────────── */
+  let rawT    = 0;   // 0→1 from scroll
+  let smoothT = 0;   // lerped
 
   function getScrollT() {
-    const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
-    return maxScroll > 0 ? window.scrollY / maxScroll : 0;
+    const max = document.documentElement.scrollHeight - window.innerHeight;
+    return max > 0 ? window.scrollY / max : 0;
   }
+  window.addEventListener('scroll', () => { rawT = getScrollT(); }, { passive: true });
 
-  window.addEventListener('scroll', () => {
-    rawScrollT = getScrollT();
-  }, { passive: true });
+  /* Camera keyframes: {z, y, fov, rotY} */
+  const CAM_KF = [
+    { z: 10.0, y:  0.0, fov: 52, rx: 0 },      // hero: full ∞ shape visible
+    { z:  7.0, y:  0.8, fov: 48, rx: 0.04 },   // art: zooming in
+    { z:  4.5, y: -0.5, fov: 44, rx: -0.03 },  // marketplace: inside the loop
+    { z:  3.0, y:  0.3, fov: 46, rx: 0.06 },   // services: travelling through
+    { z:  2.0, y: -0.2, fov: 42, rx: 0 },      // community: very close
+    { z:  1.2, y:  0.0, fov: 38, rx: 0 },      // join: particles fill the frame
+  ];
 
-  /* Expose panel index so sidenav can stay in sync */
-  window.setScene = function(idx) {
-    // Smoothly scroll to that panel
-    const p = document.querySelectorAll('.panel')[idx];
-    if (p) p.scrollIntoView({ behavior: 'smooth' });
-  };
-
-  /* ── Camera lerp helper ── */
-  function lerpV3(out, a, b, t) {
-    out.x = a.x + (b.x - a.x) * t;
-    out.y = a.y + (b.y - a.y) * t;
-    out.z = a.z + (b.z - a.z) * t;
-  }
-
-  /* Current interpolated camera state */
-  const camPos    = new THREE.Vector3(0, 6, 14);
-  const camTarget = new THREE.Vector3(0, 5,  0);
-  let   camFov    = 55;
-  let   camX = 0, camY = 0; // mouse parallax offset
-
-  /* ── Mouse parallax ── */
+  let camZ = 10, camY = 0, camFov = 52, camRX = 0;
   let mx = 0, my = 0;
   if (!mobile) {
     window.addEventListener('mousemove', e => {
@@ -1304,10 +1354,9 @@ document.querySelectorAll('.panel-body, .panel-label, .hero-eyebrow, .hero-desc'
       my = (e.clientY / innerHeight - 0.5) * 2;
     }, { passive: true });
   }
+  let prlX = 0, prlY = 0;
 
-  /* ─────────────────────────────────────────────
-     RENDER LOOP
-  ───────────────────────────────────────────── */
+  /* ── Render loop ── */
   const clk = new THREE.Clock();
   let running = true;
   document.addEventListener('visibilitychange', () => { running = !document.hidden; });
@@ -1317,81 +1366,71 @@ document.querySelectorAll('.panel-body, .panel-label, .hero-eyebrow, .hero-desc'
     if (!running) return;
     const t = clk.getElapsedTime();
 
-    /* ── Smooth scroll lerp ──
-       Fast enough to feel responsive, slow enough
-       to feel cinematic (like GSAP ScrollSmoother).
-       0.07 = roughly matches alireza's smoothing. */
-    smoothScrollT += (rawScrollT - smoothScrollT) * 0.072;
+    /* Smooth scroll */
+    smoothT += (rawT - smoothT) * 0.06;
+    const panelT = smoothT * (CAM_KF.length - 1);
+    const i0 = Math.min(Math.floor(panelT), CAM_KF.length - 2);
+    const i1 = i0 + 1;
+    const f  = panelT - i0;
+    // easeInOutCubic
+    const e  = f < 0.5 ? 4*f*f*f : 1 - Math.pow(-2*f+2,3)/2;
 
-    /* ── Map smooth scroll to panel float ── */
-    const panelT  = smoothScrollT * (N_PANELS - 1);
-    const panelI  = Math.floor(panelT);           // lower keyframe index
-    const panelF  = panelT - panelI;               // 0→1 fraction toward next
-    const iA      = Math.min(panelI,     N_PANELS - 1);
-    const iB      = Math.min(panelI + 1, N_PANELS - 1);
-    const kfA     = KEYFRAMES[iA];
-    const kfB     = KEYFRAMES[iB];
+    const kA = CAM_KF[i0], kB = CAM_KF[i1];
+    const tZ   = kA.z   + (kB.z   - kA.z)   * e;
+    const tY   = kA.y   + (kB.y   - kA.y)   * e;
+    const tFov = kA.fov + (kB.fov - kA.fov) * e;
+    const tRX  = kA.rx  + (kB.rx  - kA.rx)  * e;
 
-    /* Ease the fraction so camera accelerates out and decelerates in */
-    const ease    = panelF < 0.5
-      ? 2 * panelF * panelF
-      : 1 - Math.pow(-2 * panelF + 2, 2) / 2; // easeInOutQuad
+    camZ   += (tZ   - camZ)   * 0.05;
+    camY   += (tY   - camY)   * 0.05;
+    camFov += (tFov - camFov) * 0.05;
+    camRX  += (tRX  - camRX)  * 0.05;
 
-    /* ── Interpolate camera keyframes ── */
-    lerpV3(camPos,    kfA.pos,    kfB.pos,    ease);
-    lerpV3(camTarget, kfA.target, kfB.target, ease);
-    const targetFov = kfA.fov + (kfB.fov - kfA.fov) * ease;
+    /* Mouse parallax */
+    prlX += (mx * 0.18 - prlX) * 0.04;
+    prlY += (-my * 0.12 - prlY) * 0.04;
 
-    /* ── Apply mouse parallax (small offset perpendicular to travel dir) ── */
-    camX += (mx * 0.4 - camX) * 0.04;
-    camY += (-my * 0.25 - camY) * 0.04;
-    cam.position.set(camPos.x + camX, camPos.y + camY, camPos.z);
-    cam.lookAt(camTarget.x + camX * 0.3, camTarget.y + camY * 0.2, camTarget.z);
-
-    /* ── FOV lerp (feel of zoom) ── */
-    camFov += (targetFov - camFov) * 0.05;
+    cam.position.set(prlX, camY + prlY, camZ);
+    cam.rotation.x = camRX;
     cam.fov = camFov;
     cam.aspect = innerWidth / innerHeight;
     cam.updateProjectionMatrix();
 
-    /* ── Background colour lerp ──
-       Each section has a different BG tone,
-       interpolated with the same ease as camera. */
-    const bgColors = [
-      new THREE.Color(0x020c06),  // hero: deep emerald
-      new THREE.Color(0x010608),  // art: near-black
-      new THREE.Color(0x030a02),  // marketplace: dark warm
-      new THREE.Color(0x010a0c),  // services: dark teal
-      new THREE.Color(0x020906),  // community: deep green
-      new THREE.Color(0x010508),  // join: near-black
-    ];
-    const bgA = bgColors[iA];
-    const bgB = bgColors[iB];
-    scene.background.r = bgA.r + (bgB.r - bgA.r) * ease;
-    scene.background.g = bgA.g + (bgB.g - bgA.g) * ease;
-    scene.background.b = bgA.b + (bgB.b - bgA.b) * ease;
+    /* ── Flow particles along ∞ path ── */
+    ribbonObjs.forEach(({ geo, pos, phase, speed, scale, zOff }) => {
+      const posArr = geo.attributes.position.array;
+      const N = phase.length;
+      for (let i = 0; i < N; i++) {
+        // Advance phase
+        phase[i] += speed[i];
+        if (phase[i] > Math.PI * 2) phase[i] -= Math.PI * 2;
 
-    /* ── Idle world animation ──
-       Very gentle — the camera movement is the
-       main animation; this just keeps it alive. */
-    world.rotation.y = Math.sin(t * 0.04) * 0.015;
-
-    /* ── Animate frond strands (breathing, rustling) ── */
-    strandObjs.forEach(({ mesh, phase, speed }) => {
-      mesh.rotation.z = Math.sin(t * speed + phase) * 0.03;
+        const p = lemniscate(phase[i], scale);
+        posArr[i*3]   = p.x + (Math.random() - 0.5) * 0.03;
+        posArr[i*3+1] = p.y + (Math.random() - 0.5) * 0.03;
+        posArr[i*3+2] = zOff + (Math.random() - 0.5) * 0.08;
+      }
+      geo.attributes.position.needsUpdate = true;
     });
 
-    /* ── Animate trunk rings (slow spin) ── */
-    trunkRings.forEach(({ mesh, rotSpeed }) => {
-      mesh.rotation.z += rotSpeed;
+    /* ── Breathe the whole ribbon group ── */
+    const breathe = 1 + Math.sin(t * 0.4) * 0.025;
+    ribbonObjs.forEach(({ pts }) => {
+      pts.scale.set(breathe, breathe, 1);
     });
 
-    /* ── Cluster pulse ── */
-    const cp = 1 + Math.sin(t * 0.9) * 0.04;
-    cluster.scale.setScalar(cp);
+    /* ── Slowly counter-rotate the entire scene (idle drift) ── */
+    scene.rotation.z = Math.sin(t * 0.06) * 0.04;
+
+    /* ── Animate diamond field ── */
+    diamondMeshes.forEach(({ mesh, rotSpeedZ, floatSpeed, floatAmp, baseY, phase: ph }) => {
+      mesh.rotation.z += rotSpeedZ;
+      mesh.position.y  = baseY + Math.sin(t * floatSpeed + ph) * floatAmp;
+    });
 
     R.render(scene, cam);
   }
+
   loop();
 
   /* ── Resize ── */
@@ -1401,31 +1440,13 @@ document.querySelectorAll('.panel-body, .panel-label, .hero-eyebrow, .hero-desc'
     cam.updateProjectionMatrix();
   }, { passive: true });
   window.addEventListener('orientationchange', () => {
-    setTimeout(() => {
-      R.setSize(innerWidth, innerHeight);
-      cam.aspect = innerWidth / innerHeight;
-      cam.updateProjectionMatrix();
-    }, 250);
+    setTimeout(() => { R.setSize(innerWidth, innerHeight); cam.aspect = innerWidth / innerHeight; cam.updateProjectionMatrix(); }, 250);
   });
 
 })();
-})();
-
-/* ═══════════════════════════════════════════════
-   HERO ENTRANCE — words slide up on load
-═══════════════════════════════════════════════ */
-window.addEventListener('load', () => {
-  const els = document.querySelectorAll('#p0 .reveal-word, #p0 .reveal-block, #p0 .hero-eyebrow, #p0 .btn-pill, #p0 .hero-desc');
-  els.forEach((el, i) => {
-    el.style.opacity = '0';
-    el.style.transform = 'translateY(40px)';
-    el.style.transition = `opacity 1s cubic-bezier(0.16,1,0.3,1) ${0.2 + i * 0.08}s, transform 1s cubic-bezier(0.16,1,0.3,1) ${0.2 + i * 0.08}s`;
-    setTimeout(() => { el.style.opacity = '1'; el.style.transform = 'translateY(0)'; }, 50);
-  });
-});
 </script>
 
-<!-- Preserve auth modal from nexus-core.js -->
+<!-- Preserve auth system -->
 <script src="nexus-core.js"></script>
 </body>
 </html>
