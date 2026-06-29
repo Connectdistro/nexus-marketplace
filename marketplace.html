@@ -1,1035 +1,375 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
-  <title>Marketplace — NEXUS</title>
-  <meta name="description" content="Browse art, advertising services, and entertainment on NEXUS Marketplace."/>
-  <link rel="preconnect" href="https://fonts.googleapis.com"/>
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Syne:wght@400;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
-  <link rel="stylesheet" href="style.css"/>
-  <link rel="stylesheet" href="mobile.css"/>
-  <style>
-/* ═══════════════════════════════════════
-   MARKETPLACE — Extended Styles
-═══════════════════════════════════════ */
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+<title>Marketplace — NEXUS</title>
+<meta name="description" content="Browse art, advertising services, and entertainment on NEXUS."/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="nexus-shared.css"/>
+<style>
+body { padding-top: 72px; }
 
-/* Hero */
+/* ── Page header ── */
 .mp-hero {
-  padding: calc(var(--nav-h) + 72px) 0 56px;
-  text-align: center;
-  background: var(--bg);
-  position: relative; overflow: hidden;
+  padding: 60px 48px 48px;
+  border-bottom: 1px solid var(--border);
 }
-.mp-hero-glow {
-  position: absolute; top: 0; left: 50%; transform: translateX(-50%);
-  width: 900px; height: 500px;
-  background: radial-gradient(ellipse at 50% 0%, rgba(109,196,75,0.10) 0%, rgba(34,143,126,0.07) 40%, transparent 70%);
-  pointer-events: none;
+.mp-hero-label {
+  font-size: 9px; letter-spacing: 0.24em;
+  text-transform: uppercase; color: var(--text-30);
+  margin-bottom: 12px;
 }
-.mp-hero h1 {
-  font-family: 'Syne', sans-serif;
-  font-size: clamp(34px, 5.5vw, 68px);
-  font-weight: 800; letter-spacing: -2px;
-  margin-bottom: 16px; color: var(--text);
-  line-height: 1.05;
+.mp-hero-title {
+  font-size: clamp(28px, 4vw, 52px);
+  font-weight: 300; letter-spacing: -0.02em;
+  color: var(--text); margin-bottom: 8px;
 }
-.mp-hero p { font-size: 16px; color: var(--text-60); max-width: 500px; margin: 0 auto 36px; line-height: 1.7; }
+.mp-hero-sub { font-size: 13px; color: var(--text-60); }
 
-/* Stats strip */
-.mp-stats {
-  display: flex; align-items: center; justify-content: center;
-  gap: 0; margin-bottom: 40px; flex-wrap: wrap;
+/* ── Filter bar ── */
+.mp-filters {
+  padding: 20px 48px;
+  border-bottom: 1px solid var(--border);
+  display: flex; gap: 8px; flex-wrap: wrap;
+  align-items: center;
 }
-.mp-stat {
-  text-align: center; padding: 0 32px;
-  border-right: 1px solid var(--border);
+.mp-filter-btn {
+  padding: 7px 18px;
+  border-radius: 100px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-60);
+  font-family: var(--font); font-size: 11px;
+  letter-spacing: 0.08em; cursor: pointer;
+  transition: all 0.2s;
 }
-.mp-stat:last-child { border-right: none; }
-.mp-stat-num {
-  font-family: 'Syne', sans-serif; font-size: 28px; font-weight: 800;
-  background: var(--grad-brand); background-size: 250%;
-  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-  background-clip: text; animation: gradAnim 6s ease infinite;
-  display: block; letter-spacing: -1px;
+.mp-filter-btn:hover { border-color: var(--green); color: var(--green); }
+.mp-filter-btn.active {
+  background: var(--green); border-color: var(--green);
+  color: #fff;
 }
-.mp-stat-lbl { font-size: 12px; color: var(--text-30); text-transform: uppercase; letter-spacing: 1px; margin-top: 2px; }
+.mp-filter-sep {
+  width: 1px; height: 18px; background: var(--border); margin: 0 4px;
+}
+.mp-search {
+  margin-left: auto;
+  display: flex; align-items: center; gap: 8px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  padding: 0 16px; height: 34px;
+}
+.mp-search input {
+  background: none; border: none; outline: none;
+  color: var(--text); font-family: var(--font);
+  font-size: 12px; width: 160px;
+}
+.mp-search input::placeholder { color: var(--text-30); }
+.mp-search svg { color: var(--text-30); flex-shrink: 0; }
 
-/* Search */
-.search-row {
-  display: flex; align-items: center; gap: 10px;
-  max-width: 640px; margin: 0 auto 14px;
+/* ── Grid ── */
+.mp-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 2px;
+  padding: 2px;
+  min-height: 60vh;
+}
+
+/* ── 3D Flip Product Card ── */
+.mp-flip {
+  perspective: 1000px;
+  height: 320px;
+  cursor: pointer;
+}
+.mp-flip-inner {
+  position: relative; width: 100%; height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 0.65s cubic-bezier(0.23,1,0.32,1);
+}
+.mp-flip:hover .mp-flip-inner { transform: rotateY(180deg); }
+
+.mp-flip-front, .mp-flip-back {
+  position: absolute; inset: 0;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  padding: 28px;
   background: var(--card-bg);
   border: 1px solid var(--border);
-  border-radius: var(--r-pill);
-  padding: 6px 6px 6px 22px;
-  backdrop-filter: blur(20px);
-  transition: border-color .25s, box-shadow .25s;
+  display: flex; flex-direction: column;
 }
-.search-row:focus-within { border-color: var(--teal); box-shadow: 0 0 0 3px rgba(34,143,126,.13); }
-.search-row input {
-  flex: 1; background: none; border: none; outline: none;
-  font-family: 'Space Grotesk', sans-serif; font-size: 15px; color: var(--text);
-}
-.search-row input::placeholder { color: var(--text-30); }
-.search-row select {
-  background: var(--surface); border: 1px solid var(--border);
-  border-radius: var(--r-pill); padding: 8px 14px;
-  color: var(--text-60); font-size: 13px;
-  font-family: 'Space Grotesk', sans-serif;
-  outline: none; cursor: pointer; -webkit-appearance: none;
-}
-.search-btn {
-  display: flex; align-items: center; gap: 7px;
-  background: var(--grad-brand); background-size: 250%;
-  color: #fff; font-size: 14px; font-weight: 600;
-  padding: 11px 22px; border-radius: var(--r-pill);
-  border: none; cursor: pointer;
-  animation: gradAnim 6s ease infinite;
-  transition: box-shadow .2s, transform .2s; white-space: nowrap;
-}
-.search-btn:hover { box-shadow: 0 8px 28px rgba(34,143,126,.4); transform: translateY(-1px); }
-.search-tags {
-  display: flex; align-items: center; justify-content: center;
-  gap: 8px; flex-wrap: wrap;
-}
-.stag { font-size: 12px; color: var(--text-30); padding: 4px 14px;
-  border-radius: var(--r-pill); border: 1px solid var(--border);
-  background: var(--surface); cursor: pointer; transition: all .2s;
-}
-.stag:hover { color: var(--teal); border-color: var(--teal); background: rgba(34,143,126,.08); }
-
-/* Layout */
-.mp-wrap {
-  display: grid; grid-template-columns: 252px 1fr; gap: 28px;
-  max-width: 1280px; margin: 0 auto; padding: 44px 24px 80px;
-  align-items: start;
+.mp-flip-back {
+  transform: rotateY(180deg);
+  background: var(--bg2);
+  border-color: rgba(109,196,75,0.2);
+  justify-content: space-between;
 }
 
-/* Sidebar */
-.mp-sidebar { position: sticky; top: calc(var(--nav-h) + 20px); }
-.sb-card {
-  background: var(--card-bg); border: 1px solid var(--border);
-  border-radius: var(--r-lg); padding: 22px;
-  backdrop-filter: blur(16px); margin-bottom: 14px;
-}
-.sb-head {
-  font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 700;
-  color: var(--text); text-transform: uppercase; letter-spacing: 1.5px;
-  margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between;
-}
-.sb-head button { font-size: 11px; color: var(--teal); background: none; border: none; cursor: pointer; font-family: 'Space Grotesk', sans-serif; font-weight: 600; }
-.fc-row {
-  display: flex; align-items: center; gap: 10px;
-  padding: 7px 0; cursor: pointer; font-size: 14px; color: var(--text-60);
-  border-radius: 8px; transition: color .2s; user-select: none;
-}
-.fc-row:hover { color: var(--text); }
-.fc-row input[type=checkbox] { accent-color: var(--teal); width: 15px; height: 15px; flex-shrink: 0; cursor: pointer; }
-.fc-cnt { margin-left: auto; font-size: 11px; color: var(--text-30); background: var(--surface); padding: 2px 7px; border-radius: 10px; }
-.price-row { display: flex; align-items: center; gap: 8px; margin-top: 6px; }
-.price-in {
-  flex: 1; background: var(--surface); border: 1px solid var(--border);
-  border-radius: var(--r-sm); padding: 9px 12px;
-  color: var(--text); font-size: 13px; font-family: 'Space Mono', monospace;
-  outline: none; transition: border-color .2s; width: 0;
-}
-.price-in:focus { border-color: var(--teal); }
-.price-sep { color: var(--text-30); font-size: 12px; }
-.rating-row {
-  display: flex; align-items: center; gap: 8px;
-  padding: 8px 10px; border-radius: var(--r-sm);
-  cursor: pointer; font-size: 13px; color: var(--text-60);
-  transition: background .15s;
-}
-.rating-row:hover { background: var(--surface); color: var(--text); }
-.rating-row.on { background: rgba(34,143,126,.1); color: var(--text); }
-.stars-g { color: var(--green); letter-spacing: .5px; }
-
-/* Main area */
-.mp-main {}
-
-/* Mobile filter btn */
-.mob-filter {
-  display: none; align-items: center; gap: 8px;
-  background: var(--card-bg); border: 1px solid var(--border);
-  border-radius: var(--r-pill); padding: 10px 20px;
-  color: var(--text); font-size: 14px; font-weight: 500;
-  cursor: pointer; margin-bottom: 20px; width: fit-content;
-}
-.filter-badge { background: var(--green); color: #fff; font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 10px; display: none; }
-
-/* Featured slots */
-.featured-row {
-  display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
-  margin-bottom: 28px;
-}
-.feat-card {
-  border-radius: var(--r-lg); padding: 28px 28px 24px;
-  position: relative; overflow: hidden; cursor: pointer;
-  border: 1px solid var(--border-h);
-  transition: transform .3s var(--ease), box-shadow .3s var(--ease);
-}
-.feat-card:hover { transform: translateY(-4px); box-shadow: 0 24px 60px rgba(0,0,0,.4); }
-.feat-card-bg { position: absolute; inset: 0; opacity: .18; transition: opacity .3s; }
-.feat-card:hover .feat-card-bg { opacity: .28; }
-.feat-badge {
-  display: inline-block; font-size: 10px; font-weight: 700;
-  letter-spacing: 1px; text-transform: uppercase;
-  padding: 4px 10px; border-radius: var(--r-pill);
-  border: 1px solid currentColor; margin-bottom: 14px;
-  position: relative; z-index: 1;
-}
-.feat-card h3 { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 800; color: var(--text); margin-bottom: 6px; position: relative; z-index: 1; }
-.feat-card p { font-size: 13px; color: var(--text-60); margin-bottom: 18px; position: relative; z-index: 1; line-height: 1.6; }
-.feat-card .feat-icon { font-size: 52px; position: absolute; right: 20px; bottom: 16px; opacity: .25; }
-
-/* Category pills */
-.cat-pills { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 24px; }
-.cp {
-  display: flex; align-items: center; gap: 6px;
-  padding: 8px 18px; border-radius: var(--r-pill);
-  font-size: 13px; font-weight: 500;
-  border: 1px solid var(--border); background: var(--surface);
-  color: var(--text-60); cursor: pointer; transition: all .2s;
-  white-space: nowrap;
-}
-.cp:hover { border-color: var(--teal); color: var(--text); }
-.cp.on { background: var(--grad-green-teal); color: #fff; border-color: transparent; }
-.cp .cp-ico { font-size: 14px; }
-.cp .cp-n { font-size: 11px; opacity: .7; background: rgba(255,255,255,.15); padding: 1px 6px; border-radius: 10px; }
-
-/* Toolbar */
-.toolbar {
-  display: flex; align-items: center; justify-content: space-between;
-  margin-bottom: 20px; gap: 12px; flex-wrap: wrap;
-}
-.tool-left { font-size: 14px; color: var(--text-60); }
-.tool-left strong { color: var(--text); }
-.tool-right { display: flex; align-items: center; gap: 10px; }
-.sort-sel {
-  background: var(--card-bg); border: 1px solid var(--border);
-  border-radius: var(--r-pill); padding: 9px 16px;
-  color: var(--text); font-size: 13px; font-family: 'Space Grotesk', sans-serif;
-  outline: none; cursor: pointer; -webkit-appearance: none;
-  transition: border-color .2s;
-}
-.sort-sel:focus { border-color: var(--teal); }
-.view-grp { display: flex; gap: 4px; }
-.vbtn {
-  width: 36px; height: 36px; border-radius: 10px;
-  background: var(--surface); border: 1px solid var(--border);
-  color: var(--text-30); font-size: 15px;
-  display: flex; align-items: center; justify-content: center;
-  cursor: pointer; transition: all .2s;
-}
-.vbtn:hover, .vbtn.on { background: var(--surface-h); border-color: var(--teal); color: var(--teal); }
-
-/* Product grid */
-.pg { display: grid; grid-template-columns: repeat(3,1fr); gap: 18px; }
-.pg.lv { grid-template-columns: 1fr; }
-
-/* Product card */
-.pc {
-  background: var(--card-bg); border: 1px solid var(--border);
-  border-radius: var(--r-md); overflow: hidden; cursor: pointer;
-  transition: all .3s var(--ease); backdrop-filter: blur(12px);
-  position: relative; display: flex; flex-direction: column;
-}
-.pc:hover { border-color: var(--border-h); transform: translateY(-5px); box-shadow: 0 20px 56px rgba(0,0,0,.45), 0 0 0 1px var(--border-h), var(--shadow-glow); }
-
-/* Card thumb */
-.pc-thumb {
-  position: relative; height: 196px;
-  background: var(--bg-2); overflow: hidden;
-  display: flex; align-items: center; justify-content: center;
-}
-.pc-thumb-bg { position: absolute; inset: 0; opacity: .32; transition: opacity .35s; }
-.pc:hover .pc-thumb-bg { opacity: .5; }
-.pc-ico { font-size: 48px; position: relative; z-index: 1; transition: transform .35s; }
-.pc:hover .pc-ico { transform: scale(1.12) translateY(-4px); }
-.pc-cat-badge {
-  position: absolute; top: 12px; left: 12px; z-index: 2;
-  font-size: 10px; font-weight: 700; letter-spacing: .5px; text-transform: uppercase;
-  padding: 4px 10px; border-radius: var(--r-pill); backdrop-filter: blur(10px);
-}
-.pcb-art   { background: rgba(109,196,75,.2);  color: #6dc44b; border: 1px solid rgba(109,196,75,.3); }
-.pcb-ads   { background: rgba(34,143,126,.2);  color: #18a786; border: 1px solid rgba(34,143,126,.3); }
-.pcb-ent   { background: rgba(2,88,163,.25);   color: #60a5fa; border: 1px solid rgba(2,88,163,.35); }
-.pcb-photo { background: rgba(58,178,110,.2);  color: #3ab26e; border: 1px solid rgba(58,178,110,.3); }
-.pcb-music { background: rgba(37,0,118,.3);    color: #a78bfa; border: 1px solid rgba(37,0,118,.5); }
-.pcb-video { background: rgba(11,81,151,.25);  color: #38bdf8; border: 1px solid rgba(11,81,151,.4); }
-.pc-new-badge {
-  position: absolute; top: 12px; right: 42px; z-index: 2;
-  background: var(--green); color: #fff; font-size: 9px; font-weight: 800;
-  padding: 3px 8px; border-radius: var(--r-pill); letter-spacing: .5px;
-}
-.pc-wish {
-  position: absolute; top: 10px; right: 10px; z-index: 2;
-  width: 30px; height: 30px; border-radius: 50%;
-  background: rgba(3,6,15,.72); backdrop-filter: blur(8px);
-  border: 1px solid var(--border);
-  color: var(--text-30); font-size: 13px;
-  display: flex; align-items: center; justify-content: center;
-  cursor: pointer; transition: all .2s;
-}
-.pc-wish:hover { color: #f87171; border-color: #f87171; }
-.pc-wish.on { color: #f87171; border-color: #f87171; background: rgba(248,113,113,.12); }
-
-/* Card body */
-.pc-body { padding: 16px 18px; display: flex; flex-direction: column; flex: 1; }
-.pc-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
-.pc-seller { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-30); }
-.pc-dot { width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 700; color: #fff; flex-shrink: 0; }
-.pc-rating { display: flex; align-items: center; gap: 4px; font-size: 12px; color: var(--green); }
-.pc-rating span { color: var(--text-30); font-size: 11px; }
-.pc-title { font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.pc-desc { font-size: 13px; color: var(--text-60); line-height: 1.6; margin-bottom: 12px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; flex: 1; }
-.pc-tags { display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 14px; }
-.pc-tag { font-size: 11px; color: var(--text-30); background: var(--surface); border: 1px solid var(--border); padding: 3px 9px; border-radius: var(--r-pill); }
-.pc-foot { display: flex; align-items: center; justify-content: space-between; padding-top: 13px; border-top: 1px solid var(--border); margin-top: auto; }
-.pc-price { font-family: 'Space Mono', monospace; font-size: 17px; font-weight: 700; color: var(--text); }
-.pc-price small { font-size: 10px; color: var(--text-30); font-family: 'Space Grotesk', sans-serif; display: block; font-weight: 400; margin-top: 1px; }
-.pc-buy {
-  display: flex; align-items: center; gap: 5px;
-  background: var(--grad-green-teal); color: #fff;
-  font-size: 12px; font-weight: 600; padding: 9px 16px;
-  border-radius: var(--r-pill); border: none; cursor: pointer;
-  transition: all .2s; white-space: nowrap;
-}
-.pc-buy:hover { opacity: .9; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(34,143,126,.35); }
-
-/* List view */
-.pg.lv .pc { flex-direction: row; }
-.pg.lv .pc-thumb { width: 190px; height: 140px; flex-shrink: 0; }
-.pg.lv .pc-body { flex-direction: column; }
-.pg.lv .pc-desc { -webkit-line-clamp: 1; }
-.pg.lv .pc-ico { font-size: 36px; }
-
-/* Empty state */
-.mp-empty {
-  grid-column: 1/-1; text-align: center; padding: 72px 24px;
-  color: var(--text-60);
-}
-.mp-empty .ei { font-size: 52px; margin-bottom: 18px; opacity: .4; }
-.mp-empty h3 { font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 700; margin-bottom: 8px; color: var(--text); }
-
-/* Seller CTA strip */
-.seller-strip {
-  background: var(--card-bg); border: 1px solid var(--border-h);
-  border-radius: var(--r-lg); padding: 28px 32px;
-  display: flex; align-items: center; gap: 24px;
-  margin-bottom: 28px; position: relative; overflow: hidden;
-  backdrop-filter: blur(16px);
-}
-.seller-strip::before {
-  content: ''; position: absolute; inset: 0;
-  background: var(--grad-brand); opacity: .06; pointer-events: none;
-}
-.ss-icon { font-size: 38px; flex-shrink: 0; }
-.ss-text { flex: 1; }
-.ss-text h3 { font-family: 'Syne', sans-serif; font-size: 17px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
-.ss-text p { font-size: 13px; color: var(--text-60); line-height: 1.6; }
-.ss-cta { flex-shrink: 0; }
-
-/* Pagination */
-.pag { display: flex; align-items: center; justify-content: center; gap: 6px; margin-top: 44px; flex-wrap: wrap; }
-.pg-btn {
-  min-width: 38px; height: 38px; border-radius: 10px;
-  background: var(--surface); border: 1px solid var(--border);
-  color: var(--text-60); font-size: 13px; font-weight: 500;
-  display: flex; align-items: center; justify-content: center;
-  cursor: pointer; transition: all .2s; padding: 0 12px;
-  font-family: 'Space Grotesk', sans-serif;
-}
-.pg-btn:hover { border-color: var(--teal); color: var(--text); }
-.pg-btn.on { background: var(--grad-green-teal); color: #fff; border-color: transparent; }
-.pg-btn:disabled { opacity: .35; pointer-events: none; }
-
-/* Product Modal */
-.pm-overlay {
-  position: fixed; inset: 0; z-index: 2000;
-  background: rgba(3,6,15,.92); backdrop-filter: blur(20px);
-  display: flex; align-items: center; justify-content: center;
-  opacity: 0; pointer-events: none; transition: opacity .3s var(--ease);
-  padding: 20px;
-}
-.pm-overlay.open { opacity: 1; pointer-events: all; }
-.pm-box {
-  background: var(--bg-1); border: 1px solid var(--border-h);
-  border-radius: var(--r-xl); width: 100%; max-width: 800px;
-  max-height: 90vh; overflow-y: auto;
-  transform: scale(.96) translateY(16px);
-  transition: transform .35s cubic-bezier(.34,1.56,.64,1);
+/* Card image placeholder — coloured gradient swatch */
+.mp-card-img {
+  flex: 1;
+  border-radius: 1px;
+  margin-bottom: 16px;
+  min-height: 140px;
   position: relative;
+  overflow: hidden;
 }
-.pm-overlay.open .pm-box { transform: scale(1) translateY(0); }
-.pm-close {
-  position: absolute; top: 18px; right: 18px; z-index: 10;
-  width: 36px; height: 36px; border-radius: 50%;
-  background: var(--surface); border: 1px solid var(--border);
-  color: var(--text); font-size: 16px; display: flex; align-items: center; justify-content: center;
-  cursor: pointer; transition: all .2s;
+.mp-card-img::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg, var(--c1,#6dc44b) 0%, var(--c2,#228f7e) 100%);
+  opacity: 0.85;
 }
-.pm-close:hover { border-color: var(--teal); color: var(--teal); }
-.pm-thumb {
-  height: 280px; position: relative; overflow: hidden;
-  display: flex; align-items: center; justify-content: center;
-  border-radius: var(--r-xl) var(--r-xl) 0 0;
-}
-.pm-thumb-bg { position: absolute; inset: 0; opacity: .35; }
-.pm-thumb-ico { font-size: 80px; position: relative; z-index: 1; }
-.pm-body { padding: 32px 36px 40px; }
-.pm-meta { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; flex-wrap: wrap; gap: 10px; }
-.pm-seller { display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--text-60); }
-.pm-seller-dot { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: #fff; }
-.pm-rating { font-size: 14px; color: var(--green); display: flex; align-items: center; gap: 6px; }
-.pm-rating span { color: var(--text-30); font-size: 13px; }
-.pm-title { font-family: 'Syne', sans-serif; font-size: 26px; font-weight: 800; color: var(--text); margin-bottom: 12px; letter-spacing: -0.5px; }
-.pm-desc { font-size: 15px; color: var(--text-60); line-height: 1.8; margin-bottom: 22px; }
-.pm-info-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; margin-bottom: 24px; }
-.pm-info-cell { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-sm); padding: 14px 16px; }
-.pm-info-cell .lbl { font-size: 11px; color: var(--text-30); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; }
-.pm-info-cell .val { font-size: 14px; color: var(--text); font-weight: 600; }
-.pm-tags { display: flex; gap: 7px; flex-wrap: wrap; margin-bottom: 28px; }
-.pm-tag { font-size: 12px; color: var(--text-60); background: var(--surface); border: 1px solid var(--border); padding: 5px 12px; border-radius: var(--r-pill); }
-.pm-actions { display: flex; gap: 12px; flex-wrap: wrap; }
-.pm-actions .btn-primary { flex: 1; justify-content: center; padding: 16px; font-size: 15px; }
-.pm-actions .btn-ghost { padding: 16px 24px; }
 
-/* Mobile drawer */
-.mob-overlay { display: none; position: fixed; inset: 0; z-index: 500; background: rgba(3,6,15,.85); backdrop-filter: blur(8px); opacity: 0; transition: opacity .3s; }
-.mob-overlay.show { opacity: 1; }
-.mob-drawer { position: fixed; left: -290px; top: 0; bottom: 0; z-index: 501; width: 290px; background: var(--bg-1); border-right: 1px solid var(--border); padding: 72px 18px 40px; overflow-y: auto; transition: left .35s var(--ease); }
-.mob-drawer.open { left: 0; }
-.mob-drawer-close { position: absolute; top: 18px; right: 18px; background: var(--surface); border: 1px solid var(--border); color: var(--text); width: 34px; height: 34px; border-radius: 50%; font-size: 16px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+.mp-card-type {
+  font-size: 9px; letter-spacing: 0.2em;
+  text-transform: uppercase; color: var(--green);
+  margin-bottom: 6px;
+}
+.mp-card-title {
+  font-size: 15px; font-weight: 500; color: var(--text);
+  margin-bottom: 4px; line-height: 1.3;
+}
+.mp-card-creator { font-size: 11px; color: var(--text-30); margin-bottom: 10px; }
+.mp-card-price { font-size: 16px; font-weight: 600; color: var(--text); }
 
-/* Toast */
-.toast {
-  position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px);
-  background: var(--card-bg); border: 1px solid var(--border-h);
-  color: var(--text); padding: 13px 24px; border-radius: var(--r-pill);
-  font-size: 14px; font-weight: 500; z-index: 9999;
-  backdrop-filter: blur(16px); box-shadow: 0 8px 32px rgba(0,0,0,.4);
-  transition: transform .35s cubic-bezier(.34,1.56,.64,1), opacity .35s;
-  opacity: 0; white-space: nowrap; display: flex; align-items: center; gap: 8px;
+/* Back face */
+.mp-back-type { font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--green); margin-bottom: 8px; }
+.mp-back-title { font-size: 18px; font-weight: 500; color: var(--text); margin-bottom: 12px; }
+.mp-back-desc { font-size: 12px; line-height: 1.7; color: var(--text-60); flex: 1; }
+.mp-back-footer {
+  display: flex; justify-content: space-between;
+  align-items: center; margin-top: 16px;
+  padding-top: 12px; border-top: 1px solid var(--border);
 }
-.toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+.mp-back-price { font-size: 18px; font-weight: 600; color: var(--text); }
+.mp-back-btn {
+  padding: 8px 18px; border-radius: 100px;
+  background: var(--green); border: none;
+  color: #fff; font-family: var(--font);
+  font-size: 11px; letter-spacing: 0.06em;
+  cursor: pointer; transition: opacity 0.2s;
+}
+.mp-back-btn:hover { opacity: 0.85; }
 
-/* Responsive */
-@media (max-width: 1060px) {
-  .mp-wrap { grid-template-columns: 1fr; }
-  .mp-sidebar { display: none; }
-  .mob-filter { display: flex; }
-  .pg { grid-template-columns: repeat(2,1fr); }
-  .featured-row { grid-template-columns: 1fr; }
+/* ── Load more ── */
+.mp-footer {
+  padding: 48px; text-align: center;
+  border-top: 1px solid var(--border);
 }
-@media (max-width: 600px) {
-  .mp-stats { gap: 0; }
-  .mp-stat { padding: 0 18px; }
-  .mp-stat-num { font-size: 22px; }
-  .pg { grid-template-columns: 1fr; }
-  .pg.lv .pc { flex-direction: column; }
-  .pg.lv .pc-thumb { width: 100%; height: 160px; }
-  .pm-box { max-height: 95vh; border-radius: var(--r-lg); }
-  .pm-body { padding: 22px 20px 30px; }
-  .pm-title { font-size: 20px; }
-  .pm-info-grid { grid-template-columns: repeat(2,1fr); }
-  .pm-thumb { height: 200px; }
-  .seller-strip { flex-direction: column; text-align: center; }
-  .ss-cta { width: 100%; }
-  .ss-cta .btn-primary { width: 100%; justify-content: center; }
-  .featured-row { display: none; }
-  .mp-stat { border-right: none; border-bottom: 1px solid var(--border); width: 50%; padding: 12px 0; }
-  .mp-stat:nth-child(even) { border-right: none; }
+
+/* ── MOBILE ── */
+@media (max-width: 768px) {
+  .mp-hero { padding: 40px 20px 32px; }
+  .mp-filters { padding: 16px 20px; }
+  .mp-search { display: none; }
+  .mp-grid { grid-template-columns: 1fr 1fr; }
+  .mp-flip { height: 260px; }
+  .mp-footer { padding: 32px 20px; }
 }
-  </style>
+@media (max-width: 480px) {
+  .mp-grid { grid-template-columns: 1fr; }
+  .mp-flip { height: 300px; }
+}
+</style>
 </head>
 <body>
 
-<!-- ══ NAV ══ -->
-<nav class="nav" id="mainNav">
-  <div class="nav-inner">
-    <a href="index.html" class="nav-logo" data-no-transition>
-      <div class="logo-3d-wrap"><div class="logo-3d-inner"><img src="logo.png" alt="NEXUS"/></div></div>
-      <span class="logo-text">NEXUS</span>
-    </a>
-    <ul class="nav-links">
-      <li><a href="index.html">Home</a></li>
-      <li><a href="marketplace.html"style="color:var(--text)">Marketplace</a></li>
-      <li><a href="contact.html">Contact</a></li>
-    </ul>
-    <div class="nav-actions">
-      <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme">🌙</button>
-      <div class="nav-actions-auth" id="navActionsAuth">
-        <button class="btn-ghost" onclick="AuthModal.open('login')">Sign In</button>
-        <button class="btn-primary" onclick="AuthModal.open('signup')">Join Free</button>
-      </div>
+<!-- ════ HEADER ════ -->
+<header class="nx-hdr" id="nx-hdr">
+  <a class="nx-logo" href="index.html">
+    <div class="nx-logo-icon"><img src="logo.png" alt="NEXUS"/></div>
+    <div class="nx-logo-div"></div>
+    <div class="nx-logo-text">
+      <span class="nx-logo-top">NEXUS</span>
+      <span class="nx-logo-sub">Art · Ads · Entertainment</span>
     </div>
-    <div style="display:flex;align-items:center;gap:8px;margin-left:auto">
-      <button class="theme-toggle" id="themeToggleMob" style="display:none" onclick="toggleTheme()">🌙</button>
-      <button class="nav-burger" id="navBurger"><span></span><span></span><span></span></button>
-    </div>
-  </div>
-  <div class="mobile-menu" id="mobileMenu">
-    <div class="mobile-menu-inner">
-      <a href="index.html" class="mobile-link">Home</a>
-      <a href="marketplace.html" class="mobile-link" data-protected="true">Marketplace</a>
-      <a href="contact.html" class="mobile-link">Contact</a>
-      <div class="mobile-divider"></div>
-      <a href="privacy.html" class="mobile-link mobile-link--sm">Privacy Policy</a>
-      <a href="terms.html" class="mobile-link mobile-link--sm">Terms of Service</a>
-      <a href="refund.html" class="mobile-link mobile-link--sm">Refund Policy</a>
-      <a href="shipping.html" class="mobile-link mobile-link--sm">Shipping Policy</a>
-      <a href="cancellation.html" class="mobile-link mobile-link--sm">Cancellation Policy</a>
-      <div class="mobile-actions" id="mobileActionsAuth">
-        <button class="btn-ghost w-full" onclick="AuthModal.open('login')">Sign In</button>
-        <button class="btn-primary w-full" onclick="AuthModal.open('signup')">Join Free</button>
-      </div>
-    </div>
-  </div>
-</nav>
-
-<!-- ══ HERO ══ -->
-<section class="mp-hero">
-  <div class="mp-hero-glow"></div>
-  <div class="container" style="position:relative;z-index:1">
-    <span class="section-eyebrow">NEXUS MARKETPLACE</span>
-    <h1>Discover <span class="hero-gradient">Extraordinary</span><br/>Creative Work</h1>
-    <p>Thousands of listings across art, advertising, entertainment, photography, music, and more.</p>
-
-    <div class="mp-stats">
-      <div class="mp-stat"><span class="mp-stat-num" data-target="8607">0</span><span class="mp-stat-lbl">Listings</span></div>
-      <div class="mp-stat"><span class="mp-stat-num" data-target="12400">0</span><span class="mp-stat-lbl">Creators</span></div>
-      <div class="mp-stat"><span class="mp-stat-num" data-target="340">0</span><span class="mp-stat-lbl">Advertisers</span></div>
-      <div class="mp-stat"><span class="mp-stat-num" data-target="94">0</span><span class="mp-stat-lbl">Countries</span></div>
-    </div>
-
-    <div class="search-row">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--text-30);flex-shrink:0"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-      <input type="text" id="searchInput" placeholder="Search listings, creators, styles…" autocomplete="off"/>
-      <select class="sort-sel" id="searchCatFilter" style="display:none">
-        <option value="all">All Categories</option>
-        <option value="art">Art</option>
-        <option value="ads">Ad Services</option>
-        <option value="entertainment">Entertainment</option>
-        <option value="photo">Photography</option>
-        <option value="music">Music</option>
-        <option value="video">Video</option>
-      </select>
-      <button class="search-btn" onclick="doSearch()">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-        Search
-      </button>
-    </div>
-    <div class="search-tags">
-      <span style="font-size:12px;color:var(--text-30)">Popular:</span>
-      <span class="stag" onclick="qs('Digital Art')">Digital Art</span>
-      <span class="stag" onclick="qs('Photography')">Photography</span>
-      <span class="stag" onclick="qs('Brand')">Brand Campaign</span>
-      <span class="stag" onclick="qs('Music')">Music</span>
-      <span class="stag" onclick="qs('NFT')">NFT</span>
-      <span class="stag" onclick="qs('Film')">Film</span>
-      <span class="stag" onclick="qs('Illustration')">Illustration</span>
-    </div>
-  </div>
-</section>
-
-
-<!-- Auth Gate (shown when not logged in) -->
-<div class="nx-gate" id="mpGate" style="display:none">
-  <div class="nx-gate-box">
-    <div class="nx-gate-icon">🔐</div>
-    <h2>Members Only</h2>
-    <p>The NEXUS Marketplace is exclusive to members. Sign in or create your free account to browse 8,600+ listings from creators worldwide.</p>
-    <div class="nx-gate-actions">
-      <button class="btn-primary btn-lg" onclick="AuthModal.open('signup', function(){ showMarketplace(); })">Join Free — It's Quick</button>
-      <button class="btn-ghost" onclick="AuthModal.open('login', function(){ showMarketplace(); })">Sign In</button>
-    </div>
-    <p style="font-size:12px;color:var(--text-30);margin-top:20px">No credit card required · Free to browse · 15% fee only on sales</p>
-  </div>
-</div>
-
-<!-- Main marketplace content -->
-<div id="mpContent">
-<!-- ══ MOBILE DRAWER ══ -->
-<div class="mob-overlay" id="mobOverlay" onclick="closeDrawer()"></div>
-<div class="mob-drawer" id="mobDrawer">
-  <button class="mob-drawer-close" onclick="closeDrawer()">✕</button>
-  <div id="drawerContent"></div>
-</div>
-
-<!-- ══ MAIN LAYOUT ══ -->
-<div class="mp-wrap">
-
-  <!-- SIDEBAR -->
-  <aside class="mp-sidebar" id="deskSidebar">
-
-    <div class="sb-card">
-      <div class="sb-head">Category <button onclick="clearF('cat')">Clear</button></div>
-      <label class="fc-row"><input type="checkbox" class="cf" value="art" onchange="applyF()"/> Digital Art <span class="fc-cnt">3,842</span></label>
-      <label class="fc-row"><input type="checkbox" class="cf" value="ads" onchange="applyF()"/> Ad Services <span class="fc-cnt">1,204</span></label>
-      <label class="fc-row"><input type="checkbox" class="cf" value="entertainment" onchange="applyF()"/> Entertainment <span class="fc-cnt">2,561</span></label>
-      <label class="fc-row"><input type="checkbox" class="cf" value="photo" onchange="applyF()"/> Photography <span class="fc-cnt">987</span></label>
-      <label class="fc-row"><input type="checkbox" class="cf" value="music" onchange="applyF()"/> Music <span class="fc-cnt">1,129</span></label>
-      <label class="fc-row"><input type="checkbox" class="cf" value="video" onchange="applyF()"/> Video & Film <span class="fc-cnt">743</span></label>
-    </div>
-
-    <div class="sb-card">
-      <div class="sb-head">Price Range <button onclick="clearF('price')">Clear</button></div>
-      <div class="price-row">
-        <input type="number" class="price-in" id="pMin" placeholder="$0" min="0"/>
-        <span class="price-sep">—</span>
-        <input type="number" class="price-in" id="pMax" placeholder="No limit" min="0"/>
-      </div>
-      <button class="btn-primary" style="width:100%;margin-top:14px;justify-content:center;font-size:13px;padding:10px" onclick="applyF()">Apply Range</button>
-    </div>
-
-    <div class="sb-card">
-      <div class="sb-head">Minimum Rating <button onclick="clearF('rating')">Clear</button></div>
-      <div class="rating-row on" onclick="setR(0,this)"><span class="stars-g">★★★★★</span> Any</div>
-      <div class="rating-row" onclick="setR(4,this)"><span class="stars-g">★★★★</span>☆ 4+ stars</div>
-      <div class="rating-row" onclick="setR(4.5,this)"><span class="stars-g">★★★★½</span> 4.5+ stars</div>
-      <div class="rating-row" onclick="setR(5,this)"><span class="stars-g">★★★★★</span> 5 stars only</div>
-    </div>
-
-    <div class="sb-card">
-      <div class="sb-head">Delivery Type</div>
-      <label class="fc-row"><input type="checkbox" class="df" value="Instant Download" onchange="applyF()"/> Instant Download</label>
-      <label class="fc-row"><input type="checkbox" class="df" value="Physical Shipping" onchange="applyF()"/> Physical Shipping</label>
-      <label class="fc-row"><input type="checkbox" class="df" value="Service" onchange="applyF()"/> Service / Project</label>
-      <label class="fc-row"><input type="checkbox" class="df" value="Subscription" onchange="applyF()"/> Subscription</label>
-    </div>
-
-    <div class="sb-card">
-      <div class="sb-head">License</div>
-      <label class="fc-row"><input type="checkbox" onchange="applyF()"/> Personal Use</label>
-      <label class="fc-row"><input type="checkbox" onchange="applyF()"/> Commercial Use</label>
-      <label class="fc-row"><input type="checkbox" onchange="applyF()"/> Extended License</label>
-      <label class="fc-row"><input type="checkbox" onchange="applyF()"/> Exclusive Rights</label>
-    </div>
-
-  </aside>
-
-  <!-- MAIN -->
-  <main class="mp-main">
-
-    <!-- Mobile filter button -->
-    <button class="mob-filter" onclick="openDrawer()">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="11" y1="18" x2="13" y2="18"/></svg>
-      Filters &amp; Sort
-      <span class="filter-badge" id="filterBadge">0</span>
+  </a>
+  <div class="nx-hdr-spacer"></div>
+  <div class="nx-hdr-right">
+    <nav class="nx-hdr-auth" data-nx-auth-target></nav>
+    <button class="nx-theme-toggle" aria-label="Toggle theme">
+      <span class="nx-t-moon">🌙</span>
+      <span class="nx-t-sun">☀️</span>
     </button>
+    <button class="nx-burger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
 
-    <!-- Featured cards -->
-    <div class="featured-row">
-      <div class="feat-card" onclick="setCat('art',null)" style="background:var(--card-bg)">
-        <div class="feat-card-bg" style="background:linear-gradient(135deg,#6dc44b,#228f7e)"></div>
-        <span class="feat-badge" style="color:#6dc44b">🎨 Digital Art</span>
-        <h3>Explore Original Works</h3>
-        <p>3,842 pieces from artists across 94 countries — paintings, generative art, NFTs, and illustrations.</p>
-        <div class="feat-icon">🎨</div>
-      </div>
-      <div class="feat-card" onclick="setCat('ads',null)" style="background:var(--card-bg)">
-        <div class="feat-card-bg" style="background:linear-gradient(135deg,#228f7e,#0258a3)"></div>
-        <span class="feat-badge" style="color:#18a786">📡 Ad Services</span>
-        <h3>Amplify Your Brand</h3>
-        <p>1,204 campaign, influencer, and media services from verified agencies and independent creators.</p>
-        <div class="feat-icon">📡</div>
-      </div>
+<!-- ════ MENU ════ -->
+<div class="nx-menu">
+  <div class="nx-menu-body">
+    <div>
+      <p class="nx-menu-col-label">Pages</p>
+      <ul class="nx-menu-slinks">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="marketplace.html">Marketplace</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
     </div>
-
-    <!-- Seller CTA -->
-    <div class="seller-strip">
-      <div class="ss-icon">✨</div>
-      <div class="ss-text">
-        <h3>Ready to sell your work on NEXUS?</h3>
-        <p>List for free. We take 15% only when you sell. Join 12,400+ creators already earning.</p>
-      </div>
-      <div class="ss-cta">
-        <button class="btn-primary" onclick="location.href='contact.html'">Start Selling →</button>
-      </div>
-    </div>
-
-    <!-- Category pills -->
-    <div class="cat-pills" id="catPills">
-      <div class="cp on" data-cat="all" onclick="setCat('all',this)"><span class="cp-ico">🌐</span> All <span class="cp-n">8,607</span></div>
-      <div class="cp" data-cat="art" onclick="setCat('art',this)"><span class="cp-ico">🎨</span> Art <span class="cp-n">3,842</span></div>
-      <div class="cp" data-cat="ads" onclick="setCat('ads',this)"><span class="cp-ico">📡</span> Ad Services <span class="cp-n">1,204</span></div>
-      <div class="cp" data-cat="entertainment" onclick="setCat('entertainment',this)"><span class="cp-ico">🎬</span> Entertainment <span class="cp-n">2,561</span></div>
-      <div class="cp" data-cat="photo" onclick="setCat('photo',this)"><span class="cp-ico">📷</span> Photography <span class="cp-n">987</span></div>
-      <div class="cp" data-cat="music" onclick="setCat('music',this)"><span class="cp-ico">🎵</span> Music <span class="cp-n">1,129</span></div>
-      <div class="cp" data-cat="video" onclick="setCat('video',this)"><span class="cp-ico">🎞️</span> Video <span class="cp-n">743</span></div>
-    </div>
-
-    <!-- Toolbar -->
-    <div class="toolbar">
-      <div class="tool-left">Showing <strong id="resCount">20</strong> of <strong>8,607</strong> results</div>
-      <div class="tool-right">
-        <select class="sort-sel" id="sortSel" onchange="applyF()">
-          <option value="relevant">Most Relevant</option>
-          <option value="newest">Newest First</option>
-          <option value="price-asc">Price: Low → High</option>
-          <option value="price-desc">Price: High → Low</option>
-          <option value="rating">Highest Rated</option>
-          <option value="popular">Most Reviews</option>
-        </select>
-        <div class="view-grp">
-          <button class="vbtn on" id="vGrid" onclick="setView('grid')" title="Grid">⊞</button>
-          <button class="vbtn" id="vList" onclick="setView('list')" title="List">☰</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Product grid -->
-    <div class="pg" id="mpGrid"></div>
-
-    <!-- Pagination -->
-    <div class="pag" id="pagination"></div>
-
-  </main>
-</div>
-
-</div><!-- /mpContent -->
-
-<!-- ══ FOOTER ══ -->
-<footer class="footer" style="padding:0">
-  <div class="footer-bottom" style="max-width:1280px;margin:0 auto">
-    <p>© 2025 NEXUS Marketplace Inc. All rights reserved.</p>
-    <div style="display:flex;gap:20px;flex-wrap:wrap">
-      <a href="privacy.html" style="color:var(--text-30);font-size:12px">Privacy</a>
-      <a href="terms.html" style="color:var(--text-30);font-size:12px">Terms</a>
-      <a href="refund.html" style="color:var(--text-30);font-size:12px">Refund</a>
-      <a href="shipping.html" style="color:var(--text-30);font-size:12px">Shipping</a>
-      <a href="cancellation.html" style="color:var(--text-30);font-size:12px">Cancellation</a>
-      <a href="contact.html" style="color:var(--text-30);font-size:12px">Contact</a>
+    <div>
+      <p class="nx-menu-col-label">Marketplace</p>
+      <ul class="nx-menu-plinks">
+        <li><a href="#" onclick="filterCategory('Art');NxNavInit&&document.querySelector('.nx-menu').classList.remove('open');return false;">Art</a></li>
+        <li><a href="#" onclick="filterCategory('Ad Service');NxNavInit&&document.querySelector('.nx-menu').classList.remove('open');return false;">Ad Services</a></li>
+        <li><a href="#" onclick="filterCategory('Entertainment');NxNavInit&&document.querySelector('.nx-menu').classList.remove('open');return false;">Entertainment</a></li>
+        <li><a href="contact.html">Sell Your Work</a></li>
+      </ul>
     </div>
   </div>
+  <div class="nx-menu-foot">
+    <nav class="nx-menu-legal">
+      <a href="privacy.html">Privacy</a>
+      <a href="terms.html">Terms</a>
+      <a href="refund.html">Refunds</a>
+      <a href="shipping.html">Shipping</a>
+      <a href="cancellation.html">Cancellation</a>
+    </nav>
+    <p class="nx-menu-copy">© 2025 NEXUS Marketplace Inc.</p>
+  </div>
+</div>
+
+<!-- ════ PAGE ════ -->
+<div class="mp-hero">
+  <p class="mp-hero-label">Marketplace</p>
+  <h1 class="mp-hero-title">Browse 89,000+ Works</h1>
+  <p class="mp-hero-sub">Art · Advertising · Entertainment — from creators worldwide.</p>
+</div>
+
+<div class="mp-filters">
+  <button class="mp-filter-btn active" onclick="filterCategory('All')">All</button>
+  <button class="mp-filter-btn" onclick="filterCategory('Art')">Art</button>
+  <button class="mp-filter-btn" onclick="filterCategory('Ad Service')">Ad Services</button>
+  <button class="mp-filter-btn" onclick="filterCategory('Entertainment')">Entertainment</button>
+  <div class="mp-filter-sep"></div>
+  <button class="mp-filter-btn" onclick="filterCategory('New')">New</button>
+  <button class="mp-filter-btn" onclick="filterCategory('Featured')">Featured</button>
+  <div class="mp-search">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    <input type="text" id="mp-search-inp" placeholder="Search works…" oninput="filterSearch(this.value)"/>
+  </div>
+</div>
+
+<div class="mp-grid" id="mp-grid"></div>
+
+<div class="mp-footer">
+  <button class="nx-btn nx-btn-ghost" onclick="loadMore()">Load More</button>
+</div>
+
+<!-- AUTH MODAL injected by nexus-nav.js -->
+
+<!-- ════ FOOTER ════ -->
+<footer style="padding:24px 48px;border-top:1px solid var(--border);display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+  <p style="font-size:10px;color:var(--text-30);letter-spacing:0.08em;">© 2025 NEXUS Marketplace Inc.</p>
+  <nav style="display:flex;gap:20px;flex-wrap:wrap;">
+    <a href="privacy.html" style="font-size:10px;color:var(--text-30);text-decoration:none;">Privacy</a>
+    <a href="terms.html" style="font-size:10px;color:var(--text-30);text-decoration:none;">Terms</a>
+    <a href="refund.html" style="font-size:10px;color:var(--text-30);text-decoration:none;">Refunds</a>
+    <a href="contact.html" style="font-size:10px;color:var(--text-30);text-decoration:none;">Contact</a>
+  </nav>
 </footer>
 
-<!-- ══ PRODUCT MODAL ══ -->
-<div class="pm-overlay" id="pmOverlay">
-  <div class="pm-box" id="pmBox">
-    <button class="pm-close" onclick="closeModal()">✕</button>
-    <div id="pmContent"></div>
-  </div>
-</div>
-
-<!-- ══ TOAST ══ -->
-<div class="toast" id="toast"></div>
-
+<script src="nexus-nav.js"></script>
 <script>
-/* ── Theme ─────────────────────────────── */
-(function(){
-  var t=localStorage.getItem('nexus-theme')||'dark';
-  document.documentElement.setAttribute('data-theme',t);
-  window.toggleTheme=function(){
-    var n=t==='dark'?'light':'dark'; t=n;
-    document.documentElement.setAttribute('data-theme',n);
-    localStorage.setItem('nexus-theme',n);
-    ['themeToggle','themeToggleMob'].forEach(function(id){
-      var el=document.getElementById(id);if(el)el.textContent=n==='dark'?'🌙':'☀️';
-    });
-  };
-  document.addEventListener('DOMContentLoaded',function(){
-    ['themeToggle','themeToggleMob'].forEach(function(id){
-      var el=document.getElementById(id);if(el)el.textContent=t==='dark'?'🌙':'☀️';
-    });
-    var mob=document.getElementById('themeToggleMob');
-    function syncMob(){if(mob)mob.style.display=window.innerWidth<=768?'flex':'none';}
-    syncMob(); window.addEventListener('resize',syncMob);
-  });
-})();
+'use strict';
 
-/* ── Nav ───────────────────────────────── */
-window.addEventListener('scroll',function(){
-  document.getElementById('mainNav').classList.toggle('scrolled',window.scrollY>50);
-},{passive:true});
-document.getElementById('navBurger').addEventListener('click',function(){
-  var m=document.getElementById('mobileMenu');
-  m.classList.toggle('open');
-  document.body.style.overflow=m.classList.contains('open')?'hidden':'';
-});
-document.querySelectorAll('.mobile-link').forEach(function(l){
-  l.addEventListener('click',function(){
-    document.getElementById('mobileMenu').classList.remove('open');
-    document.body.style.overflow='';
-  });
-});
-
-/* ── Stat counters ─────────────────────── */
-function animCount(el,target){
-  var dur=2000,t0=performance.now();
-  (function tick(now){
-    var p=Math.min((now-t0)/dur,1);
-    el.textContent=Math.floor((1-Math.pow(1-p,3))*target).toLocaleString();
-    if(p<1)requestAnimationFrame(tick);
-  })(t0);
-}
-var cObs=new IntersectionObserver(function(es){
-  es.forEach(function(e){if(e.isIntersecting){animCount(e.target,+e.target.dataset.target);cObs.unobserve(e.target);}});
-},{threshold:.5});
-document.querySelectorAll('.mp-stat-num').forEach(function(n){cObs.observe(n);});
-
-/* ── Product data ──────────────────────── */
-var PRODS=[
-  {id:1, title:'Abstract Chromatic Series',      seller:'Aisha Kamara',   sc:'#6dc44b', cat:'art',           price:420,   pl:'$420',   rating:4.9, rev:128, desc:'12 high-resolution abstract works exploring color and light. Available as 4K digital files. Certificate of authenticity included with each purchase.',     tags:['Abstract','4K','Digital'],       del:'Instant Download', isNew:true,  icon:'🎨', grad:'linear-gradient(135deg,#6dc44b,#228f7e)', license:'Commercial Use'},
-  {id:2, title:'Full Brand Campaign Package',    seller:'Studio Meridian',sc:'#228f7e', cat:'ads',           price:1200,  pl:'$1,200', rating:5.0, rev:47,  desc:'End-to-end brand campaign: strategy brief, creative direction, 6 creator placements, and detailed performance reporting with ROI analysis.',              tags:['Branding','Social','Campaign'],  del:'Service',          isNew:false, icon:'📡', grad:'linear-gradient(135deg,#228f7e,#0258a3)', license:'Commercial Use'},
-  {id:3, title:'Solstice — Ambient EP',          seller:'David Larsson',  sc:'#0258a3', cat:'music',         price:18,    pl:'$18',    rating:4.8, rev:342, desc:'7-track ambient electronic EP. FLAC + WAV files included. Full sync license for unlimited film, TV, and media use. Stems available on request.',           tags:['Ambient','FLAC','Sync License'], del:'Instant Download', isNew:false, icon:'🎵', grad:'linear-gradient(135deg,#0258a3,#250076)', license:'Extended License'},
-  {id:4, title:'Golden Ratio Print Edition',     seller:'Mara Chen',      sc:'#3ab26e', cat:'art',           price:280,   pl:'$280',   rating:4.7, rev:89,  desc:'Algorithmically generated golden ratio composition. Museum-quality giclée on 300gsm cotton rag. Strictly limited to 10 signed and numbered editions.',    tags:['Generative','Print','Limited'],  del:'Physical Shipping',isNew:false, icon:'🖼️', grad:'linear-gradient(135deg,#6dc44b,#3ab26e)', license:'Personal Use'},
-  {id:5, title:'Influencer Campaign — Tier A',   seller:'ReachLab Agency',sc:'#18a786', cat:'ads',           price:3500,  pl:'$3,500', rating:4.9, rev:23,  desc:'Managed influencer campaign with 3 verified creators totalling 1M+ combined reach. Full analytics dashboard, ROI tracking, and post-campaign report.',   tags:['Influencer','1M+ Reach','ROI'],  del:'Service',          isNew:true,  icon:'📊', grad:'linear-gradient(135deg,#18a786,#0258a3)', license:'Commercial Use'},
-  {id:6, title:'Neon Noir — Short Film',         seller:'Priya Nair Films',sc:'#0258a3',cat:'entertainment', price:8,     pl:'$8',     rating:5.0, rev:512, desc:'Award-winning 12-minute neo-noir short film. 4K DCI download, director\'s commentary, and behind-the-scenes photo pack included.',                         tags:['Film','4K','Award Winner'],      del:'Instant Download', isNew:false, icon:'🎬', grad:'linear-gradient(135deg,#0258a3,#250076)', license:'Personal Use'},
-  {id:7, title:'Fractal Garden — 3D Animation',  seller:'Teodor Voss',    sc:'#6dc44b', cat:'art',           price:550,   pl:'$550',   rating:4.6, rev:67,  desc:'Seamlessly looping 3D fractal animation at 60fps in 4K resolution. Perfect for digital installations, NFT drops, and creative backgrounds.',            tags:['3D','Fractal','Loop','NFT'],     del:'Instant Download', isNew:false, icon:'✨', grad:'linear-gradient(135deg,#6dc44b,#228f7e)', license:'Commercial Use'},
-  {id:8, title:'Podcast Ad Integration',         seller:'SoundWave Media',sc:'#228f7e', cat:'ads',           price:900,   pl:'$900',   rating:4.8, rev:34,  desc:'Host-read ad placement in our top-50 design and creative podcast. 40,000+ verified listeners per episode. Includes script review and read revision.',   tags:['Podcast','Audio','Host Read'],   del:'Service',          isNew:false, icon:'🎙️', grad:'linear-gradient(135deg,#228f7e,#18a786)', license:'Commercial Use'},
-  {id:9, title:'Urban Portrait Collection',      seller:'Lena Fischer',   sc:'#3ab26e', cat:'photo',         price:195,   pl:'$195',   rating:4.8, rev:156, desc:'25 editorial-quality urban portrait photographs shot across 5 cities. Full commercial license. High-res TIFFs + color-graded JPEGs + RAW files included.', tags:['Portrait','Urban','RAW Files'],  del:'Instant Download', isNew:false, icon:'📷', grad:'linear-gradient(135deg,#3ab26e,#0258a3)', license:'Commercial Use'},
-  {id:10,title:'Immersive AR/VR Experience',     seller:'Nova XR Studio', sc:'#250076', cat:'entertainment', price:45,    pl:'$45',    rating:4.9, rev:201, desc:'Tickets to a 90-minute immersive mixed-reality art experience. Limited capacity per session. Multiple dates available across major cities and online.',      tags:['Live','AR/VR','Immersive'],      del:'Instant Download', isNew:true,  icon:'🥽', grad:'linear-gradient(135deg,#0258a3,#250076)', license:'Personal Use'},
-  {id:11,title:'Brand Identity Design Kit',      seller:'PixelForge Co.', sc:'#228f7e', cat:'ads',           price:750,   pl:'$750',   rating:4.7, rev:88,  desc:'Complete brand identity system: logo suite, color tokens, typography guide, icon set, and 20-page brand manual. Delivered in Figma with source files.', tags:['Identity','Figma','Branding'],   del:'Instant Download', isNew:false, icon:'🎯', grad:'linear-gradient(135deg,#228f7e,#6dc44b)', license:'Commercial Use'},
-  {id:12,title:'Cinematic Score — Drama Pack',   seller:'KeiScore Music', sc:'#0258a3', cat:'music',         price:65,    pl:'$65',    rating:4.9, rev:277, desc:'15 full orchestral drama cues scored for film and TV. Stems included for all tracks. Royalty-free for unlimited commercial use across all platforms.',    tags:['Orchestral','Drama','Stems'],    del:'Instant Download', isNew:false, icon:'🎻', grad:'linear-gradient(135deg,#0258a3,#228f7e)', license:'Extended License'},
-  {id:13,title:'Street Photography Zine',        seller:'Kwame Asante',   sc:'#6dc44b', cat:'photo',         price:22,    pl:'$22',    rating:4.6, rev:94,  desc:'64-page digital zine featuring street photography from Accra, Lagos, and Nairobi. PDF + print-ready file. Personal and educational use license.',       tags:['Street','Zine','Africa'],        del:'Instant Download', isNew:false, icon:'📸', grad:'linear-gradient(135deg,#6dc44b,#3ab26e)', license:'Personal Use'},
-  {id:14,title:'Motion Graphics Pack Vol.2',     seller:'Ren Collective', sc:'#18a786', cat:'video',         price:130,   pl:'$130',   rating:4.8, rev:189, desc:'80 premium motion graphic elements: transitions, lower thirds, titles, and overlays. After Effects + Premiere Pro compatible. Commercial license.',       tags:['Motion','AE','Premiere Pro'],    del:'Instant Download', isNew:true,  icon:'🎞️', grad:'linear-gradient(135deg,#18a786,#0258a3)', license:'Commercial Use'},
-  {id:15,title:'Lofi Hip-Hop Beat Collection',   seller:'BeatMaker Zero', sc:'#250076', cat:'music',         price:40,    pl:'$40',    rating:4.7, rev:430, desc:'30 original lofi hip-hop instrumentals. Includes WAV, MP3, and stems. Non-exclusive sync license for YouTube, podcasts, and social media content.',       tags:['Lofi','Hip-Hop','Stems'],        del:'Instant Download', isNew:false, icon:'🎧', grad:'linear-gradient(135deg,#250076,#0258a3)', license:'Extended License'},
-  {id:16,title:'Documentary Film Package',       seller:'Frame & Story',  sc:'#0258a3', cat:'video',         price:299,   pl:'$299',   rating:5.0, rev:55,  desc:'Full production package for a 3–5 minute branded documentary. Includes pre-production brief, 1-day shoot, color grade, and final delivery in 4K.',      tags:['Documentary','Production','4K'], del:'Service',          isNew:false, icon:'🎥', grad:'linear-gradient(135deg,#0258a3,#250076)', license:'Commercial Use'},
-  {id:17,title:'Watercolor Texture Library',     seller:'Studio Pale',    sc:'#3ab26e', cat:'art',           price:35,    pl:'$35',    rating:4.6, rev:312, desc:'200 hand-painted watercolor textures, washes, and splashes at 300dpi. Transparent PNG files. Perfect for designers, illustrators, and branding projects.', tags:['Watercolor','Textures','PNG'],   del:'Instant Download', isNew:false, icon:'🖌️', grad:'linear-gradient(135deg,#3ab26e,#6dc44b)', license:'Commercial Use'},
-  {id:18,title:'Comedy Special — 60 Min',        seller:'The Stage Group',sc:'#6dc44b', cat:'entertainment', price:12,    pl:'$12',    rating:4.8, rev:621, desc:'Full 60-minute stand-up comedy special recorded live in London. 4K stream + download. Subtitles in 8 languages. Personal viewing license.',              tags:['Comedy','Live','4K Stream'],     del:'Instant Download', isNew:false, icon:'😂', grad:'linear-gradient(135deg,#6dc44b,#228f7e)', license:'Personal Use'},
-  {id:19,title:'Product Photography Session',    seller:'Lens & Light Co.',sc:'#228f7e',cat:'photo',         price:480,   pl:'$480',   rating:4.9, rev:72,  desc:'Professional product photography session: up to 10 products, 3 setups, and 30 edited high-res images. White background + lifestyle shots included.',   tags:['Product','Studio','Lifestyle'],  del:'Service',          isNew:true,  icon:'💡', grad:'linear-gradient(135deg,#228f7e,#0258a3)', license:'Commercial Use'},
-  {id:20,title:'Social Media Content Bundle',    seller:'CreativeShift',  sc:'#18a786', cat:'ads',           price:220,   pl:'$220',   rating:4.7, rev:143, desc:'60 ready-to-post social media graphics across 3 aspect ratios (square, story, landscape). Canva + Figma templates. Brand-customizable with your colors.',  tags:['Social','Templates','Canva'],    del:'Instant Download', isNew:false, icon:'📱', grad:'linear-gradient(135deg,#18a786,#6dc44b)', license:'Commercial Use'},
+/* ── Product data ── */
+const PRODUCTS = [
+  { id:1,  type:'Art',           title:'Chromatic Void #07',    creator:'Aisha Kamara',   price:'$420',   desc:'High-resolution generative art. 4K download. Lifetime commercial licence.',  c1:'#6dc44b', c2:'#228f7e', tag:['Featured'] },
+  { id:2,  type:'Ad Service',    title:'Brand Launch Pack',     creator:'Studio Meridian', price:'$1,200', desc:'6 creator placements, analytics dashboard, 30-day campaign management.',      c1:'#0258a3', c2:'#228f7e', tag:['Featured'] },
+  { id:3,  type:'Entertainment', title:'Solstice EP',           creator:'David Larsson',   price:'$18',    desc:'5-track ambient film score. WAV + stems included. Sync licence available.',   c1:'#8b4cf7', c2:'#0258a3', tag:['New'] },
+  { id:4,  type:'Art',           title:'Fractal Garden',        creator:'Teodor Voss',     price:'$550',   desc:'3D generative sculpture render. Edition of 10. Certificate included.',         c1:'#228f7e', c2:'#6dc44b', tag:['Featured'] },
+  { id:5,  type:'Art',           title:'Neon Depths',           creator:'Yuki Tanaka',     price:'$280',   desc:'Abstract neon photography series. 6 prints, signed edition of 25.',           c1:'#f97316', c2:'#6dc44b', tag:['New'] },
+  { id:6,  type:'Ad Service',    title:'Influencer Tier A',     creator:'NexusAds',        price:'$3,500', desc:'1M+ reach, 3 platforms, fully managed influencer campaign.',                  c1:'#0258a3', c2:'#6dc44b', tag:[] },
+  { id:7,  type:'Entertainment', title:'Short Film: Meridian',  creator:'Caro Blum',       price:'$45',    desc:'Award-winning 12-min short film. 4K DRM-free download with bonus commentary.',c1:'#ef4444', c2:'#8b4cf7', tag:['New'] },
+  { id:8,  type:'Art',           title:'Desert Wind Series',    creator:'Lena Müller',     price:'$890',   desc:'8 photographic prints from the Sahara. Limited edition, framing available.',   c1:'#eab308', c2:'#f97316', tag:['Featured'] },
+  { id:9,  type:'Ad Service',    title:'Podcast Placement',     creator:'NexusAds',        price:'$900',   desc:'40k+ listeners per episode, 2 ad spots, read-only or produced.',              c1:'#228f7e', c2:'#0258a3', tag:[] },
+  { id:10, type:'Entertainment', title:'Game OST Bundle',       creator:'Kai Rivers',      price:'$60',    desc:'Full video game original soundtrack, 22 tracks, loopable stems.',             c1:'#6dc44b', c2:'#8b4cf7', tag:['New'] },
+  { id:11, type:'Art',           title:'Pixel Metropolis',      creator:'Bloc Studio',     price:'$190',   desc:'Pixel art cityscape series. 10 pieces, SVG + PNG, commercial use ok.',        c1:'#0258a3', c2:'#ef4444', tag:[] },
+  { id:12, type:'Ad Service',    title:'Social Media Kit',      creator:'Studio Meridian', price:'$650',   desc:'30 branded templates, copy, posting schedule. Canva + Figma files.',          c1:'#f97316', c2:'#eab308', tag:['Featured'] },
 ];
 
-/* ── State ─────────────────────────────── */
-var state={cat:'all',q:'',minP:0,maxP:Infinity,rating:0,deliveries:[],sort:'relevant',view:'grid',page:1,perPage:12};
-var wishlist=new Set();
+let filtered = [...PRODUCTS];
+let shown = 8;
 
-/* ── Helpers ───────────────────────────── */
-function badgeClass(cat){return{art:'pcb-art',ads:'pcb-ads',entertainment:'pcb-ent',photo:'pcb-photo',music:'pcb-music',video:'pcb-video'}[cat]||'pcb-art';}
-function badgeLabel(cat){return{art:'Art',ads:'Ad Service',entertainment:'Entertainment',photo:'Photo',music:'Music',video:'Video'}[cat]||cat;}
-function starStr(r){var f=Math.floor(r);return '★'.repeat(f)+(r-f>=.5?'½':'')+'☆'.repeat(5-Math.ceil(r));}
+function renderGrid() {
+  const grid = document.getElementById('mp-grid');
+  const toShow = filtered.slice(0, shown);
+  grid.innerHTML = toShow.map(p => `
+    <div class="mp-flip" onclick="this.classList.toggle('flipped')" title="Hover or tap to see details">
+      <div class="mp-flip-inner">
+        <div class="mp-flip-front">
+          <div class="mp-card-img" style="--c1:${p.c1};--c2:${p.c2}"></div>
+          <div class="mp-card-type">${p.type}</div>
+          <div class="mp-card-title">${p.title}</div>
+          <div class="mp-card-creator">${p.creator}</div>
+          <div class="mp-card-price">${p.price}</div>
+        </div>
+        <div class="mp-flip-back">
+          <div>
+            <div class="mp-back-type">${p.type} · ${p.tag[0] || 'Available'}</div>
+            <div class="mp-back-title">${p.title}</div>
+            <div class="mp-back-desc">${p.desc}</div>
+          </div>
+          <div class="mp-back-footer">
+            <span class="mp-back-price">${p.price}</span>
+            <button class="mp-back-btn" onclick="event.stopPropagation();buyItem(${p.id})">Buy Now</button>
+          </div>
+        </div>
+      </div>
+    </div>`).join('');
+}
 
-/* ── Filter + sort + paginate ─────────── */
-function getFiltered(){
-  var list=PRODS.filter(function(p){
-    if(state.cat!=='all'&&p.cat!==state.cat)return false;
-    var cats=Array.from(document.querySelectorAll('.cf:checked')).map(function(c){return c.value;});
-    if(cats.length&&!cats.includes(p.cat))return false;
-    if(p.price<state.minP||p.price>state.maxP)return false;
-    if(p.rating<state.rating)return false;
-    if(state.deliveries.length&&!state.deliveries.some(function(d){return p.del.toLowerCase().includes(d.toLowerCase());}))return false;
-    if(state.q){var qlow=state.q.toLowerCase();if(!p.title.toLowerCase().includes(qlow)&&!p.desc.toLowerCase().includes(qlow)&&!p.tags.join(' ').toLowerCase().includes(qlow)&&!p.seller.toLowerCase().includes(qlow))return false;}
-    return true;
+window.filterCategory = function(cat) {
+  document.querySelectorAll('.mp-filter-btn').forEach(b => {
+    b.classList.toggle('active', b.textContent.trim() === cat || (cat === 'All' && b.textContent.trim() === 'All'));
   });
-  list.sort(function(a,b){
-    if(state.sort==='newest')return b.id-a.id;
-    if(state.sort==='price-asc')return a.price-b.price;
-    if(state.sort==='price-desc')return b.price-a.price;
-    if(state.sort==='rating')return b.rating-a.rating;
-    if(state.sort==='popular')return b.rev-a.rev;
-    return 0;
-  });
-  return list;
-}
+  filtered = cat === 'All' ? [...PRODUCTS]
+           : cat === 'New' || cat === 'Featured' ? PRODUCTS.filter(p => p.tag.includes(cat))
+           : PRODUCTS.filter(p => p.type === cat);
+  shown = 8;
+  renderGrid();
+};
 
-/* ── Render ────────────────────────────── */
-function render(){
-  var list=getFiltered();
-  var total=list.length;
-  var start=(state.page-1)*state.perPage;
-  var page=list.slice(start,start+state.perPage);
-  document.getElementById('resCount').textContent=total;
+window.filterSearch = function(q) {
+  const s = q.toLowerCase();
+  filtered = PRODUCTS.filter(p =>
+    p.title.toLowerCase().includes(s) ||
+    p.creator.toLowerCase().includes(s) ||
+    p.type.toLowerCase().includes(s)
+  );
+  shown = 8;
+  renderGrid();
+};
 
-  var grid=document.getElementById('mpGrid');
-  if(!page.length){
-    grid.innerHTML='<div class="mp-empty"><div class="ei">🔍</div><h3>No results found</h3><p>Try adjusting your filters or searching something different.</p></div>';
-    document.getElementById('pagination').innerHTML=''; return;
+window.loadMore = function() {
+  shown = Math.min(shown + 4, filtered.length);
+  renderGrid();
+  if (shown >= filtered.length) {
+    document.querySelector('.mp-footer button').textContent = 'All items loaded';
+    document.querySelector('.mp-footer button').disabled = true;
   }
+};
 
-  grid.innerHTML=page.map(function(p){
-    var w=wishlist.has(p.id);
-    return '<div class="pc" onclick="openModal('+p.id+')">'
-      +'<div class="pc-thumb">'
-      +'<div class="pc-thumb-bg" style="background:'+p.grad+'"></div>'
-      +'<div class="pc-ico">'+p.icon+'</div>'
-      +'<span class="pc-cat-badge '+badgeClass(p.cat)+'">'+badgeLabel(p.cat)+'</span>'
-      +(p.isNew?'<span class="pc-new-badge">NEW</span>':'')
-      +'<button class="pc-wish'+(w?' on':'')+'" onclick="toggleWish(event,'+p.id+')" title="Save">♡</button>'
-      +'</div>'
-      +'<div class="pc-body">'
-      +'<div class="pc-top">'
-      +'<div class="pc-seller"><span class="pc-dot" style="background:'+p.sc+'">'+p.seller[0]+'</span>'+p.seller+'</div>'
-      +'<div class="pc-rating">'+p.rating+' ★ <span>('+p.rev+')</span></div>'
-      +'</div>'
-      +'<div class="pc-title">'+p.title+'</div>'
-      +'<div class="pc-desc">'+p.desc+'</div>'
-      +'<div class="pc-tags">'+p.tags.map(function(t){return '<span class="pc-tag">'+t+'</span>';}).join('')+'</div>'
-      +'<div class="pc-foot">'
-      +'<div class="pc-price">'+p.pl+'<small>'+p.del+'</small></div>'
-      +'<button class="pc-buy" onclick="addCart(event,'+p.id+')">Add to Cart</button>'
-      +'</div></div></div>';
-  }).join('');
-
-  renderPag(total);
-}
-
-function renderPag(total){
-  var pages=Math.ceil(total/state.perPage);
-  if(pages<=1){document.getElementById('pagination').innerHTML='';return;}
-  var html='<button class="pg-btn" onclick="goPage('+(state.page-1)+')" '+(state.page===1?'disabled':'')+'>← Prev</button>';
-  for(var i=1;i<=pages;i++){
-    if(i===1||i===pages||Math.abs(i-state.page)<=1){
-      html+='<button class="pg-btn'+(i===state.page?' on':'')+'" onclick="goPage('+i+')">'+i+'</button>';
-    } else if(Math.abs(i-state.page)===2){
-      html+='<span style="color:var(--text-30);padding:0 4px">…</span>';
-    }
-  }
-  html+='<button class="pg-btn" onclick="goPage('+(state.page+1)+')" '+(state.page===pages?'disabled':'')+'>Next →</button>';
-  document.getElementById('pagination').innerHTML=html;
-}
-
-function goPage(p){
-  var list=getFiltered();
-  var pages=Math.ceil(list.length/state.perPage);
-  if(p<1||p>pages)return;
-  state.page=p;
-  render();
-  window.scrollTo({top:document.querySelector('.mp-wrap').offsetTop-100,behavior:'smooth'});
-}
-
-/* ── Actions ───────────────────────────── */
-function setCat(cat,el){
-  state.cat=cat; state.page=1;
-  document.querySelectorAll('.cp').forEach(function(c){c.classList.remove('on');});
-  if(el){el.classList.add('on');}
-  else{document.querySelectorAll('[data-cat="'+cat+'"]').forEach(function(c){c.classList.add('on');});}
-  render();
-}
-
-function applyF(){
-  state.minP=parseFloat(document.getElementById('pMin').value)||0;
-  state.maxP=parseFloat(document.getElementById('pMax').value)||Infinity;
-  state.sort=document.getElementById('sortSel').value;
-  state.deliveries=Array.from(document.querySelectorAll('.df:checked')).map(function(d){return d.value;});
-  state.page=1;
-  render();
-}
-
-function setR(r,el){
-  state.rating=r;
-  document.querySelectorAll('.rating-row').forEach(function(row){row.classList.remove('on');});
-  el.classList.add('on'); applyF();
-}
-
-function clearF(type){
-  if(type==='cat'){document.querySelectorAll('.cf').forEach(function(c){c.checked=false;});}
-  if(type==='price'){document.getElementById('pMin').value='';document.getElementById('pMax').value='';state.minP=0;state.maxP=Infinity;}
-  if(type==='rating'){state.rating=0;document.querySelectorAll('.rating-row').forEach(function(r){r.classList.remove('on');});document.querySelector('.rating-row').classList.add('on');}
-  applyF();
-}
-
-function setView(v){
-  state.view=v;
-  document.getElementById('mpGrid').classList.toggle('lv',v==='list');
-  document.getElementById('vGrid').classList.toggle('on',v==='grid');
-  document.getElementById('vList').classList.toggle('on',v==='list');
-}
-
-function toggleWish(e,id){
-  e.stopPropagation();
-  if(wishlist.has(id)){wishlist.delete(id);toast('💔 Removed from saved');}
-  else{wishlist.add(id);toast('❤️ Saved to wishlist');}
-  render();
-}
-
-function addCart(e,id){
-  e.stopPropagation();
-  var p=PRODS.find(function(x){return x.id===id;});
-  if(p)toast('🛒 Added "'+p.title+'" to cart');
-}
-
-function doSearch(){state.q=document.getElementById('searchInput').value;state.page=1;render();}
-function qs(q){document.getElementById('searchInput').value=q;doSearch();}
-document.getElementById('searchInput').addEventListener('keydown',function(e){if(e.key==='Enter')doSearch();});
-
-/* ── Product modal ─────────────────────── */
-function openModal(id){
-  var p=PRODS.find(function(x){return x.id===id;});
-  if(!p)return;
-  var stars=starStr(p.rating);
-  document.getElementById('pmContent').innerHTML=
-    '<div class="pm-thumb"><div class="pm-thumb-bg" style="background:'+p.grad+'"></div><div class="pm-thumb-ico">'+p.icon+'</div></div>'
-    +'<div class="pm-body">'
-    +'<div class="pm-meta">'
-    +'<div class="pm-seller"><span class="pm-seller-dot" style="background:'+p.sc+'">'+p.seller[0]+'</span>'+p.seller+'</div>'
-    +'<div class="pm-rating">'+p.rating+' '+stars+' <span>('+p.rev+' reviews)</span></div>'
-    +'</div>'
-    +'<div class="pm-title">'+p.title+'</div>'
-    +'<p class="pm-desc">'+p.desc+'</p>'
-    +'<div class="pm-info-grid">'
-    +'<div class="pm-info-cell"><div class="lbl">Price</div><div class="val">'+p.pl+'</div></div>'
-    +'<div class="pm-info-cell"><div class="lbl">Delivery</div><div class="val">'+p.del+'</div></div>'
-    +'<div class="pm-info-cell"><div class="lbl">License</div><div class="val">'+p.license+'</div></div>'
-    +'</div>'
-    +'<div class="pm-tags">'+p.tags.map(function(t){return '<span class="pm-tag">'+t+'</span>';}).join('')+'</div>'
-    +'<div class="pm-actions">'
-    +'<button class="btn-primary" onclick="addCart(event,'+p.id+');closeModal()" style="flex:1;justify-content:center;padding:16px;font-size:15px">🛒 Add to Cart — '+p.pl+'</button>'
-    +'<button class="btn-ghost" onclick="toggleWish({stopPropagation:function(){}},'+p.id+');closeModal()" style="padding:16px 24px">♡ Save</button>'
-    +'</div>'
-    +'</div>';
-  document.getElementById('pmOverlay').classList.add('open');
-  document.body.style.overflow='hidden';
-}
-function closeModal(){
-  document.getElementById('pmOverlay').classList.remove('open');
-  document.body.style.overflow='';
-}
-document.getElementById('pmOverlay').addEventListener('click',function(e){if(e.target===this)closeModal();});
-
-/* ── Toast ─────────────────────────────── */
-function toast(msg){
-  var el=document.getElementById('toast');
-  el.textContent=msg; el.classList.add('show');
-  clearTimeout(el._t);
-  el._t=setTimeout(function(){el.classList.remove('show');},2600);
-}
-
-/* ── Mobile drawer ─────────────────────── */
-function openDrawer(){
-  document.getElementById('drawerContent').innerHTML=document.getElementById('deskSidebar').innerHTML;
-  document.getElementById('mobDrawer').classList.add('open');
-  document.getElementById('mobOverlay').style.display='block';
-  setTimeout(function(){document.getElementById('mobOverlay').classList.add('show');},10);
-  document.body.style.overflow='hidden';
-}
-function closeDrawer(){
-  document.getElementById('mobDrawer').classList.remove('open');
-  document.getElementById('mobOverlay').classList.remove('show');
-  setTimeout(function(){document.getElementById('mobOverlay').style.display='none';},300);
-  document.body.style.overflow='';
-}
-
-/* ── Keyboard ──────────────────────────── */
-document.addEventListener('keydown',function(e){
-  if(e.key==='Escape'){closeModal();closeDrawer();}
-});
-
-
-/* ── Marketplace Auth Gate ── */
-function showMarketplace() {
-  document.getElementById('mpGate').style.display = 'none';
-  document.getElementById('mpContent').style.display = '';
-}
-function checkMpAuth() {
-  if (!Auth.isLoggedIn()) {
-    document.getElementById('mpGate').style.display = 'flex';
-    document.getElementById('mpContent').style.display = 'none';
+window.buyItem = function(id) {
+  if (!window.NxAuth || !NxAuth.isLoggedIn()) {
+    NxModal.open('login', () => { nxToast('Ready to purchase — contact us to complete your order.'); });
   } else {
-    showMarketplace();
+    nxToast('Added to cart! Check your inbox for next steps.');
   }
-}
-document.addEventListener('DOMContentLoaded', function() {
-  checkMpAuth();
-  render();
-});
+};
 
+renderGrid();
+
+/* Header scroll effect */
+window.addEventListener('scroll', () => {
+  document.getElementById('nx-hdr').classList.toggle('scrolled', window.scrollY > 20);
+}, { passive: true });
 </script>
-<script src="nexus-core.js"></script>
 </body>
 </html>

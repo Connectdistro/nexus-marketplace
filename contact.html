@@ -1,230 +1,384 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en">
 <head>
-  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>Contact Us — NEXUS Marketplace</title>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Syne:wght@400;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css" />
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+<title>Contact — NEXUS</title>
+<meta name="description" content="Get in touch with NEXUS — we'd love to hear from you."/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="nexus-shared.css"/>
+<style>
+body { padding-top: 72px; min-height: 100vh; }
+
+/* ── Two-col layout ── */
+.ct-wrap {
+  max-width: 1200px; margin: 0 auto;
+  padding: 72px 48px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: start;
+}
+
+/* ── Left: info ── */
+.ct-label {
+  font-size: 9px; letter-spacing: 0.24em;
+  text-transform: uppercase; color: var(--text-30);
+  margin-bottom: 16px;
+}
+.ct-title {
+  font-size: clamp(32px, 4.5vw, 60px);
+  font-weight: 300; letter-spacing: -0.02em;
+  color: var(--text); line-height: 1.05;
+  margin-bottom: 24px;
+}
+.ct-body {
+  font-size: 14px; line-height: 1.8;
+  color: var(--text-60); margin-bottom: 48px;
+  max-width: 340px;
+}
+
+.ct-channels { display: flex; flex-direction: column; gap: 0; }
+.ct-channel {
+  padding: 20px 0;
+  border-top: 1px solid var(--border);
+  display: flex; align-items: flex-start; gap: 16px;
+}
+.ct-channel:last-child { border-bottom: 1px solid var(--border); }
+.ct-ch-icon {
+  width: 36px; height: 36px;
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--green); font-size: 14px; flex-shrink: 0;
+}
+.ct-ch-label {
+  font-size: 9px; letter-spacing: 0.2em;
+  text-transform: uppercase; color: var(--text-30);
+  margin-bottom: 4px;
+}
+.ct-ch-val {
+  font-size: 13px; color: var(--text);
+  text-decoration: none;
+}
+.ct-ch-val:hover { color: var(--green); }
+
+/* ── Right: form ── */
+.ct-form {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 40px;
+}
+.ct-form-title {
+  font-size: 18px; font-weight: 500;
+  color: var(--text); margin-bottom: 6px;
+}
+.ct-form-sub {
+  font-size: 12px; color: var(--text-60); margin-bottom: 32px;
+}
+
+/* Form rows */
+.ct-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.ct-field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+.ct-field label {
+  font-size: 10px; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--text-30);
+}
+.ct-field input,
+.ct-field select,
+.ct-field textarea {
+  background: var(--input-bg);
+  border: 1px solid var(--input-border);
+  border-radius: 2px;
+  color: var(--text);
+  font-family: var(--font); font-size: 13px;
+  padding: 12px 14px;
+  outline: none;
+  transition: border-color 0.2s;
+  width: 100%;
+}
+.ct-field input:focus,
+.ct-field select:focus,
+.ct-field textarea:focus { border-color: var(--green); }
+.ct-field input::placeholder,
+.ct-field textarea::placeholder { color: var(--text-30); }
+.ct-field select { cursor: pointer; }
+.ct-field textarea { resize: vertical; min-height: 100px; }
+
+/* Select arrow */
+.ct-field select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath fill='%23666' d='M0 0l5 6 5-6z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  padding-right: 36px;
+}
+
+/* Consent */
+.ct-consent {
+  display: flex; align-items: flex-start; gap: 10px;
+  margin-bottom: 20px;
+}
+.ct-consent input { accent-color: var(--green); margin-top: 2px; flex-shrink: 0; }
+.ct-consent label { font-size: 11px; color: var(--text-60); line-height: 1.6; }
+.ct-consent a { color: var(--green); text-decoration: none; }
+
+.ct-submit {
+  width: 100%; height: 48px;
+  background: var(--green); border: none; border-radius: 2px;
+  color: #fff; font-family: var(--font);
+  font-size: 13px; font-weight: 500; letter-spacing: 0.06em;
+  cursor: pointer; display: flex; align-items: center;
+  justify-content: center; gap: 8px;
+  transition: opacity 0.2s;
+}
+.ct-submit:hover { opacity: 0.85; }
+.ct-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.ct-success {
+  display: none; flex-direction: column;
+  align-items: center; text-align: center;
+  padding: 40px 0; gap: 12px;
+}
+.ct-success.show { display: flex; }
+.ct-success-icon { font-size: 36px; }
+.ct-success h3 { font-size: 18px; font-weight: 500; }
+.ct-success p { font-size: 13px; color: var(--text-60); }
+
+/* ── MOBILE ── */
+@media (max-width: 768px) {
+  .ct-wrap { grid-template-columns: 1fr; gap: 48px; padding: 40px 20px; }
+  .ct-row { grid-template-columns: 1fr; }
+  .ct-form { padding: 28px 20px; }
+  .ct-body { max-width: 100%; }
+}
+</style>
 </head>
 <body>
-<nav class="nav" id="mainNav">
-  <div class="nav-inner">
-    <a href="index.html" class="nav-logo" data-no-transition>
-      <div class="logo-3d-wrap"><div class="logo-3d-inner"><img src="logo.png" alt="NEXUS"/></div></div>
-      <span class="logo-text">NEXUS</span>
-    </a>
-    <ul class="nav-links">
-      <li><a href="index.html">Home</a></li>
-      <li><a href="marketplace.html">Marketplace</a></li>
-      <li><a href="contact.html"style="color:var(--text)">Contact</a></li>
-    </ul>
-    <div class="nav-actions">
-      <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme">🌙</button>
-      <div class="nav-actions-auth" id="navActionsAuth">
-        <button class="btn-ghost" onclick="AuthModal.open('login')">Sign In</button>
-        <button class="btn-primary" onclick="AuthModal.open('signup')">Join Free</button>
-      </div>
+
+<!-- ════ HEADER ════ -->
+<header class="nx-hdr" id="nx-hdr">
+  <a class="nx-logo" href="index.html">
+    <div class="nx-logo-icon"><img src="logo.png" alt="NEXUS"/></div>
+    <div class="nx-logo-div"></div>
+    <div class="nx-logo-text">
+      <span class="nx-logo-top">NEXUS</span>
+      <span class="nx-logo-sub">Art · Ads · Entertainment</span>
     </div>
-    <div style="display:flex;align-items:center;gap:8px;margin-left:auto">
-      <button class="theme-toggle" id="themeToggleMob" style="display:none" onclick="toggleTheme()">🌙</button>
-      <button class="nav-burger" id="navBurger"><span></span><span></span><span></span></button>
+  </a>
+  <div class="nx-hdr-spacer"></div>
+  <div class="nx-hdr-right">
+    <nav class="nx-hdr-auth" data-nx-auth-target></nav>
+    <button class="nx-theme-toggle" aria-label="Toggle theme">
+      <span class="nx-t-moon">🌙</span>
+      <span class="nx-t-sun">☀️</span>
+    </button>
+    <button class="nx-burger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<!-- ════ MENU ════ -->
+<div class="nx-menu">
+  <div class="nx-menu-body">
+    <div>
+      <p class="nx-menu-col-label">Pages</p>
+      <ul class="nx-menu-slinks">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="marketplace.html">Marketplace</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+    </div>
+    <div>
+      <p class="nx-menu-col-label">Legal</p>
+      <ul class="nx-menu-plinks">
+        <li><a href="privacy.html">Privacy</a></li>
+        <li><a href="terms.html">Terms</a></li>
+        <li><a href="refund.html">Refunds</a></li>
+      </ul>
     </div>
   </div>
-  <div class="mobile-menu" id="mobileMenu">
-    <div class="mobile-menu-inner">
-      <a href="index.html" class="mobile-link">Home</a>
-      <a href="marketplace.html" class="mobile-link" data-protected="true">Marketplace</a>
-      <a href="contact.html" class="mobile-link">Contact</a>
-      <div class="mobile-divider"></div>
-      <a href="privacy.html" class="mobile-link mobile-link--sm">Privacy Policy</a>
-      <a href="terms.html" class="mobile-link mobile-link--sm">Terms of Service</a>
-      <a href="refund.html" class="mobile-link mobile-link--sm">Refund Policy</a>
-      <a href="shipping.html" class="mobile-link mobile-link--sm">Shipping Policy</a>
-      <a href="cancellation.html" class="mobile-link mobile-link--sm">Cancellation Policy</a>
-      <div class="mobile-actions" id="mobileActionsAuth">
-        <button class="btn-ghost w-full" onclick="AuthModal.open('login')">Sign In</button>
-        <button class="btn-primary w-full" onclick="AuthModal.open('signup')">Join Free</button>
-      </div>
-    </div>
+  <div class="nx-menu-foot">
+    <nav class="nx-menu-legal">
+      <a href="privacy.html">Privacy</a>
+      <a href="terms.html">Terms</a>
+      <a href="refund.html">Refunds</a>
+      <a href="shipping.html">Shipping</a>
+      <a href="cancellation.html">Cancellation</a>
+    </nav>
+    <p class="nx-menu-copy">© 2025 NEXUS Marketplace Inc.</p>
   </div>
-</nav>
+</div>
 
-<main class="policy-page">
-  <div class="policy-hero">
-    <span class="section-eyebrow">GET IN TOUCH</span>
-    <h1>Contact Us</h1>
-    <p>Questions, support, partnerships — we're here for all of it.</p>
-  </div>
+<!-- ════ PAGE ════ -->
+<div class="ct-wrap">
 
-  <div class="container" style="max-width:1000px;padding-bottom:40px">
-    <div class="contact-grid">
+  <!-- LEFT: info -->
+  <div>
+    <p class="ct-label">Contact</p>
+    <h1 class="ct-title">Let's talk about your project</h1>
+    <p class="ct-body">Whether you're a creator looking to sell, a brand planning a campaign, or just curious — we're here to help.</p>
 
-      <!-- LEFT: Contact Info -->
-      <div class="contact-info">
-        <h2>Let's talk.</h2>
-        <p>Whether you're a creator with a question, a brand looking to advertise, or someone with a technical issue — we respond to every message within 1 business day.</p>
-
-        <div class="contact-detail">
-          <div class="c-icon">✉️</div>
-          <div>
-            <div class="c-label">General Support</div>
-            <div class="c-value">support@nexusmarketplace.com</div>
-          </div>
-        </div>
-        <div class="contact-detail">
-          <div class="c-icon">⚖️</div>
-          <div>
-            <div class="c-label">Legal & Privacy</div>
-            <div class="c-value">legal@nexusmarketplace.com</div>
-          </div>
-        </div>
-        <div class="contact-detail">
-          <div class="c-icon">🤝</div>
-          <div>
-            <div class="c-label">Partnerships & Advertising</div>
-            <div class="c-value">partners@nexusmarketplace.com</div>
-          </div>
-        </div>
-        <div class="contact-detail">
-          <div class="c-icon">📍</div>
-          <div>
-            <div class="c-label">Headquarters</div>
-            <div class="c-value">350 Fifth Avenue, Suite 4000<br/>New York, NY 10118, USA</div>
-          </div>
-        </div>
-        <div class="contact-detail">
-          <div class="c-icon">⏱️</div>
-          <div>
-            <div class="c-label">Response Time</div>
-            <div class="c-value">Within 1 business day<br/>Mon–Fri, 9am–6pm EST</div>
-          </div>
-        </div>
-
-        <div style="margin-top:32px">
-          <p style="font-size:13px;color:var(--white-30);margin-bottom:16px;text-transform:uppercase;letter-spacing:1px;font-weight:600">Legal Pages</p>
-          <div style="display:flex;flex-wrap:wrap;gap:10px">
-            <a href="privacy.html" class="btn-ghost" style="font-size:12px;padding:8px 14px">Privacy Policy</a>
-            <a href="terms.html" class="btn-ghost" style="font-size:12px;padding:8px 14px">Terms of Service</a>
-            <a href="refund.html" class="btn-ghost" style="font-size:12px;padding:8px 14px">Refund Policy</a>
-            <a href="shipping.html" class="btn-ghost" style="font-size:12px;padding:8px 14px">Shipping</a>
-            <a href="cancellation.html" class="btn-ghost" style="font-size:12px;padding:8px 14px">Cancellation</a>
-          </div>
+    <div class="ct-channels">
+      <div class="ct-channel">
+        <div class="ct-ch-icon">✉</div>
+        <div>
+          <p class="ct-ch-label">Email</p>
+          <a class="ct-ch-val" href="mailto:hello@nexus.market">hello@nexus.market</a>
         </div>
       </div>
-
-      <!-- RIGHT: Form -->
-      <div class="contact-form">
-        <h3>Send a Message</h3>
-        <div id="contactFormWrap">
-          <div class="form-row">
-            <div class="form-group">
-              <label for="cf-fname">First Name *</label>
-              <input type="text" id="cf-fname" placeholder="Aisha" required />
-            </div>
-            <div class="form-group">
-              <label for="cf-lname">Last Name *</label>
-              <input type="text" id="cf-lname" placeholder="Kamara" required />
-            </div>
-          </div>
-          <div class="form-group">
-            <label for="cf-email">Email Address *</label>
-            <input type="email" id="cf-email" placeholder="you@example.com" required />
-          </div>
-          <div class="form-group">
-            <label for="cf-subject">Subject *</label>
-            <select id="cf-subject">
-              <option value="">Select a topic…</option>
-              <option>General Inquiry</option>
-              <option>Purchase Support</option>
-              <option>Refund / Cancellation Request</option>
-              <option>Seller / Creator Support</option>
-              <option>Advertising & Partnerships</option>
-              <option>Technical Issue</option>
-              <option>Report Abuse / Infringement</option>
-              <option>Privacy / Data Request</option>
-              <option>Other</option>
-            </select>
-          </div>
-          <div class="form-group" id="orderNumGroup" style="display:none">
-            <label for="cf-order">Order Number (if applicable)</label>
-            <input type="text" id="cf-order" placeholder="NEX-2025-XXXXX" />
-          </div>
-          <div class="form-group">
-            <label for="cf-msg">Message *</label>
-            <textarea id="cf-msg" placeholder="Tell us how we can help you…" rows="5"></textarea>
-          </div>
-          <div class="form-group">
-            <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;font-weight:400;color:var(--white-60)">
-              <input type="checkbox" id="cf-consent" style="margin-top:3px;width:auto;accent-color:var(--violet)" />
-              I agree to the <a href="privacy.html" style="color:var(--violet-light)">Privacy Policy</a> and consent to NEXUS processing my data to respond to this inquiry.
-            </label>
-          </div>
-          <div class="form-submit">
-            <button class="btn-primary btn-lg w-full" id="cf-submit" onclick="submitForm()">
-              Send Message
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
-            </button>
-          </div>
-          <p class="form-note">By submitting, you agree to our <a href="terms.html">Terms of Service</a> and <a href="privacy.html">Privacy Policy</a>. We typically respond within 1 business day.</p>
-        </div>
-
-        <div class="form-success" id="formSuccess">
-          <div class="success-icon">✅</div>
-          <h4>Message Received!</h4>
-          <p>Thanks for reaching out. We'll get back to you at the email you provided within 1 business day.</p>
-          <p style="margin-top:12px"><a href="index.html" class="btn-ghost" style="display:inline-flex">Back to Home</a></p>
+      <div class="ct-channel">
+        <div class="ct-ch-icon">◆</div>
+        <div>
+          <p class="ct-ch-label">Marketplace support</p>
+          <a class="ct-ch-val" href="mailto:support@nexus.market">support@nexus.market</a>
         </div>
       </div>
-
+      <div class="ct-channel">
+        <div class="ct-ch-icon">⚡</div>
+        <div>
+          <p class="ct-ch-label">Response time</p>
+          <span class="ct-ch-val">Within 24 hours</span>
+        </div>
+      </div>
+      <div class="ct-channel">
+        <div class="ct-ch-icon">🌍</div>
+        <div>
+          <p class="ct-ch-label">Headquarters</p>
+          <span class="ct-ch-val">Global · Remote-first</span>
+        </div>
+      </div>
     </div>
   </div>
 
-  <!-- FAQ quick links -->
-  <div class="container" style="max-width:1000px;margin-top:80px;margin-bottom:80px">
-    <div class="section-header" style="margin-bottom:40px">
-      <span class="section-eyebrow">QUICK ANSWERS</span>
-      <h2 class="section-title" style="font-size:36px">Common Questions</h2>
-    </div>
-    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px">
-      <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r-md);padding:28px">
-        <div style="font-size:24px;margin-bottom:12px">💳</div>
-        <h4 style="font-family:var(--font-display);font-size:16px;font-weight:700;margin-bottom:8px">Payment & Billing</h4>
-        <p style="font-size:13px;color:var(--white-60);line-height:1.7">All payments are processed securely by Stripe. We accept Visa, Mastercard, Amex, and more. See our <a href="refund.html" style="color:var(--violet-light)">Refund Policy</a>.</p>
-      </div>
-      <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r-md);padding:28px">
-        <div style="font-size:24px;margin-bottom:12px">🎨</div>
-        <h4 style="font-family:var(--font-display);font-size:16px;font-weight:700;margin-bottom:8px">Selling on NEXUS</h4>
-        <p style="font-size:13px;color:var(--white-60);line-height:1.7">Joining as a creator is free. We charge a 15% platform fee on sales. Payouts are via Stripe Connect. See our <a href="terms.html" style="color:var(--violet-light)">Terms of Service</a>.</p>
-      </div>
-      <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r-md);padding:28px">
-        <div style="font-size:24px;margin-bottom:12px">📦</div>
-        <h4 style="font-family:var(--font-display);font-size:16px;font-weight:700;margin-bottom:8px">Delivery</h4>
-        <p style="font-size:13px;color:var(--white-60);line-height:1.7">Digital items are available immediately after purchase. Physical goods ship within seller's stated timeframe. See our <a href="shipping.html" style="color:var(--violet-light)">Shipping Policy</a>.</p>
-      </div>
-      <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r-md);padding:28px">
-        <div style="font-size:24px;margin-bottom:12px">🔒</div>
-        <h4 style="font-family:var(--font-display);font-size:16px;font-weight:700;margin-bottom:8px">Privacy & Data</h4>
-        <p style="font-size:13px;color:var(--white-60);line-height:1.7">We never sell your personal data. You can request data export or deletion at any time. See our full <a href="privacy.html" style="color:var(--violet-light)">Privacy Policy</a>.</p>
-      </div>
-    </div>
-  </div>
-</main>
+  <!-- RIGHT: form -->
+  <div class="ct-form">
+    <p class="ct-form-title">Send a message</p>
+    <p class="ct-form-sub">We read every message. Usually reply within 24h.</p>
 
-<footer class="footer" style="padding:0">
-  <div class="footer-bottom" style="max-width:1280px;margin:0 auto">
-    <p>2025 NEXUS Marketplace Inc. All rights reserved.</p>
-    <div style="display:flex;gap:20px;flex-wrap:wrap">
-      <a href="privacy.html" style="color:var(--text-30);font-size:12px">Privacy</a>
-      <a href="terms.html" style="color:var(--text-30);font-size:12px">Terms</a>
-      <a href="refund.html" style="color:var(--text-30);font-size:12px">Refund</a>
-      <a href="shipping.html" style="color:var(--text-30);font-size:12px">Shipping</a>
-      <a href="cancellation.html" style="color:var(--text-30);font-size:12px">Cancellation</a>
-      <a href="contact.html" style="color:var(--text-30);font-size:12px">Contact</a>
+    <div id="ct-form-inner">
+      <div class="ct-row">
+        <div class="ct-field">
+          <label>First Name *</label>
+          <input type="text" id="ct-first" placeholder="Aisha" autocomplete="given-name"/>
+        </div>
+        <div class="ct-field">
+          <label>Last Name</label>
+          <input type="text" id="ct-last" placeholder="Kamara" autocomplete="family-name"/>
+        </div>
+      </div>
+
+      <div class="ct-field">
+        <label>Email Address *</label>
+        <input type="email" id="ct-email" placeholder="you@example.com" autocomplete="email"/>
+      </div>
+
+      <div class="ct-field">
+        <label>I'm a…</label>
+        <select id="ct-role">
+          <option value="">Select one</option>
+          <option>Creator / Artist</option>
+          <option>Brand / Advertiser</option>
+          <option>Entertainment Professional</option>
+          <option>Investor</option>
+          <option>Press / Media</option>
+          <option>Other</option>
+        </select>
+      </div>
+
+      <div class="ct-field">
+        <label>Subject *</label>
+        <select id="ct-subject">
+          <option value="">Select subject</option>
+          <option>Selling on NEXUS</option>
+          <option>Running an ad campaign</option>
+          <option>Partnership inquiry</option>
+          <option>Technical support</option>
+          <option>Press inquiry</option>
+          <option>Other</option>
+        </select>
+      </div>
+
+      <div class="ct-field">
+        <label>Message *</label>
+        <textarea id="ct-msg" placeholder="Tell us about your project or question…" rows="5"></textarea>
+      </div>
+
+      <div class="ct-consent">
+        <input type="checkbox" id="ct-consent"/>
+        <label for="ct-consent">I agree to the <a href="privacy.html">Privacy Policy</a> and consent to NEXUS contacting me about my enquiry.</label>
+      </div>
+
+      <p style="font-size:11px;color:var(--text-30);margin-bottom:20px;letter-spacing:0.04em;">
+        Payments & data secured by Stripe · SSL encrypted · GDPR compliant
+      </p>
+
+      <p id="ct-err" style="font-size:12px;color:#ef4444;min-height:18px;margin-bottom:10px;"></p>
+
+      <button class="ct-submit" id="ct-btn" onclick="submitContact()">
+        <span id="ct-btn-txt">Send Message</span>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </button>
+    </div>
+
+    <div class="ct-success" id="ct-success">
+      <div class="ct-success-icon">✅</div>
+      <h3>Message sent!</h3>
+      <p>Thanks for reaching out. We'll reply to <span id="ct-reply-email"></span> within 24 hours.</p>
     </div>
   </div>
+
+</div>
+
+<!-- ════ FOOTER ════ -->
+<footer style="padding:24px 48px;border-top:1px solid var(--border);display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+  <p style="font-size:10px;color:var(--text-30);letter-spacing:0.08em;">© 2025 NEXUS Marketplace Inc.</p>
+  <nav style="display:flex;gap:20px;flex-wrap:wrap;">
+    <a href="privacy.html" style="font-size:10px;color:var(--text-30);text-decoration:none;">Privacy</a>
+    <a href="terms.html" style="font-size:10px;color:var(--text-30);text-decoration:none;">Terms</a>
+    <a href="refund.html" style="font-size:10px;color:var(--text-30);text-decoration:none;">Refunds</a>
+    <a href="marketplace.html" style="font-size:10px;color:var(--text-30);text-decoration:none;">Marketplace</a>
+  </nav>
 </footer>
 
-<script src="nexus-core.js"></script>
+<script src="nexus-nav.js"></script>
+<script>
+'use strict';
+
+window.submitContact = function() {
+  const first   = document.getElementById('ct-first').value.trim();
+  const email   = document.getElementById('ct-email').value.trim();
+  const subject = document.getElementById('ct-subject').value;
+  const msg     = document.getElementById('ct-msg').value.trim();
+  const consent = document.getElementById('ct-consent').checked;
+  const err     = document.getElementById('ct-err');
+
+  err.textContent = '';
+  if (!first)   { err.textContent = 'Please enter your first name.'; return; }
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { err.textContent = 'Please enter a valid email.'; return; }
+  if (!subject) { err.textContent = 'Please select a subject.'; return; }
+  if (!msg)     { err.textContent = 'Please write a message.'; return; }
+  if (!consent) { err.textContent = 'Please agree to the privacy policy.'; return; }
+
+  const btn = document.getElementById('ct-btn');
+  const txt = document.getElementById('ct-btn-txt');
+  btn.disabled = true;
+  txt.textContent = 'Sending…';
+
+  setTimeout(() => {
+    document.getElementById('ct-reply-email').textContent = email;
+    document.getElementById('ct-form-inner').style.display = 'none';
+    document.getElementById('ct-success').classList.add('show');
+  }, 1000);
+};
+
+/* Header scroll */
+window.addEventListener('scroll', () => {
+  document.getElementById('nx-hdr').classList.toggle('scrolled', window.scrollY > 20);
+}, { passive: true });
+</script>
 </body>
 </html>
