@@ -1,289 +1,1431 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
-  <title>NEXUS — Art · Ads · Entertainment Marketplace</title>
-  <meta name="description" content="NEXUS is the premier marketplace for digital art, advertising services, and entertainment."/>
-  <link rel="preconnect" href="https://fonts.googleapis.com"/>
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Syne:wght@400;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
-  <link rel="stylesheet" href="style.css"/>
-  <link rel="stylesheet" href="mobile.css"/>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+<title>NEXUS — Art · Ads · Entertainment</title>
+<meta name="description" content="NEXUS is the premier marketplace for digital art, advertising services, and entertainment."/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Space+Grotesk:wght@300;400;500&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+<style>
+/* ═══════════════════════════════════════════
+   RESET & BASE
+═══════════════════════════════════════════ */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+html, body {
+  width: 100%; height: 100%;
+  background: #030d08;
+  color: #fff;
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 300;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ═══════════════════════════════════════════
+   FIXED WEBGL CANVAS — sits behind everything
+   This is THE key alireza structure:
+   one canvas, position:fixed, z-index:0
+═══════════════════════════════════════════ */
+#c {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  z-index: 0;
+  display: block;
+}
+
+/* ═══════════════════════════════════════════
+   HEADER — transparent, minimal, top-fixed
+   logo left · hamburger right (alireza style)
+═══════════════════════════════════════════ */
+#hdr {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 28px 48px;
+  pointer-events: none;
+}
+#hdr > * { pointer-events: all; }
+
+.hdr-logo {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  text-decoration: none;
+  color: #fff;
+}
+.hdr-logo img {
+  width: 36px; height: 36px;
+  object-fit: contain;
+  filter: brightness(0) invert(1);
+}
+.hdr-logo-text {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 500;
+  font-size: 14px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  opacity: 0.9;
+}
+
+.hdr-divider {
+  width: 1px; height: 28px;
+  background: rgba(255,255,255,0.2);
+}
+
+.hdr-right {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+}
+.hdr-auth {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+.hdr-auth a {
+  color: rgba(255,255,255,0.7);
+  text-decoration: none;
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  transition: color 0.2s;
+}
+.hdr-auth a:hover { color: #fff; }
+.hdr-auth .btn-join {
+  padding: 8px 22px;
+  border: 1px solid rgba(255,255,255,0.35);
+  border-radius: 100px;
+  color: #fff;
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+  background: transparent;
+  transition: background 0.2s, border-color 0.2s;
+}
+.hdr-auth .btn-join:hover { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.6); }
+
+/* Hamburger — 3 lines */
+#burger {
+  width: 28px; height: 18px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0;
+}
+#burger span {
+  display: block;
+  height: 1px;
+  background: rgba(255,255,255,0.85);
+  transition: transform 0.35s ease, opacity 0.25s ease;
+  transform-origin: center;
+}
+#burger.open span:nth-child(1) { transform: translateY(8.5px) rotate(45deg); }
+#burger.open span:nth-child(2) { opacity: 0; }
+#burger.open span:nth-child(3) { transform: translateY(-8.5px) rotate(-45deg); }
+
+/* ═══════════════════════════════════════════
+   FULLSCREEN MENU OVERLAY
+═══════════════════════════════════════════ */
+#menu-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  background: rgba(3,13,8,0.97);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 80px 48px 48px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.45s ease;
+}
+#menu-overlay.open { opacity: 1; pointer-events: all; }
+
+.menu-nav {
+  list-style: none;
+  margin-bottom: 56px;
+}
+.menu-nav li {
+  overflow: hidden;
+  margin-bottom: 4px;
+}
+.menu-nav a {
+  display: block;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(40px, 8vw, 88px);
+  font-weight: 300;
+  color: rgba(255,255,255,0.85);
+  text-decoration: none;
+  letter-spacing: -0.01em;
+  line-height: 1.15;
+  transform: translateY(100%);
+  transition: transform 0.55s cubic-bezier(0.16,1,0.3,1), color 0.2s;
+}
+.menu-nav a:hover { color: #6dc44b; }
+#menu-overlay.open .menu-nav a { transform: translateY(0); }
+#menu-overlay.open .menu-nav li:nth-child(1) a { transition-delay: 0.04s; }
+#menu-overlay.open .menu-nav li:nth-child(2) a { transition-delay: 0.09s; }
+#menu-overlay.open .menu-nav li:nth-child(3) a { transition-delay: 0.14s; }
+#menu-overlay.open .menu-nav li:nth-child(4) a { transition-delay: 0.19s; }
+#menu-overlay.open .menu-nav li:nth-child(5) a { transition-delay: 0.24s; }
+
+.menu-footer {
+  display: flex;
+  gap: 32px;
+  flex-wrap: wrap;
+}
+.menu-footer a {
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  color: rgba(255,255,255,0.4);
+  text-decoration: none;
+  text-transform: uppercase;
+  transition: color 0.2s;
+}
+.menu-footer a:hover { color: rgba(255,255,255,0.8); }
+
+/* ═══════════════════════════════════════════
+   LEFT SIDE DOT NAV — alireza's section dots
+═══════════════════════════════════════════ */
+#sidenav {
+  position: fixed;
+  left: 48px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  opacity: 0;
+  transition: opacity 0.6s ease;
+}
+#sidenav.visible { opacity: 1; }
+
+.sidenav-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  cursor: pointer;
+  padding: 10px 0;
+  background: none;
+  border: none;
+  color: inherit;
+  text-align: left;
+}
+.sidenav-dot {
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.35);
+  transition: background 0.3s, transform 0.3s;
+  flex-shrink: 0;
+}
+.sidenav-item.active .sidenav-dot {
+  background: #6dc44b;
+  transform: scale(1.5);
+}
+.sidenav-label {
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  color: rgba(255,255,255,0.35);
+  text-transform: uppercase;
+  white-space: nowrap;
+  transition: color 0.3s, opacity 0.3s;
+  opacity: 0;
+  pointer-events: none;
+}
+.sidenav-item:hover .sidenav-label,
+.sidenav-item.active .sidenav-label {
+  opacity: 1;
+  color: rgba(255,255,255,0.8);
+}
+
+/* ═══════════════════════════════════════════
+   SCROLL DISCOVER — bottom right (alireza)
+═══════════════════════════════════════════ */
+#scroll-hint {
+  position: fixed;
+  bottom: 36px;
+  right: 48px;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  opacity: 0;
+  transition: opacity 0.8s ease 1.2s;
+}
+#scroll-hint.visible { opacity: 1; }
+.scroll-hint-text {
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  color: rgba(255,255,255,0.45);
+  text-transform: uppercase;
+}
+.scroll-hint-line {
+  width: 1px;
+  height: 40px;
+  background: rgba(255,255,255,0.3);
+  position: relative;
+  overflow: hidden;
+}
+.scroll-hint-line::after {
+  content: '';
+  position: absolute;
+  top: -100%;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #6dc44b;
+  animation: scrollLine 1.8s ease infinite;
+}
+@keyframes scrollLine {
+  0%   { top: -100%; }
+  100% { top: 100%; }
+}
+
+/* ═══════════════════════════════════════════
+   SECTIONS — full-viewport height panels
+   Position relative, z-index:1 to sit above canvas
+   NO background — canvas bleeds through
+═══════════════════════════════════════════ */
+.panel {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  /* NO background — canvas shows through */
+}
+
+/* ── PANEL CONTENT POSITIONS (matching alireza screenshots) ── */
+
+/* HERO: large centred title + button + description bottom-right */
+.panel--hero {
+  justify-content: center;
+  text-align: center;
+  flex-direction: column;
+}
+.hero-eyebrow {
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.5);
+  margin-bottom: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+.pulse-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: #6dc44b;
+  animation: pulse 2s ease infinite;
+}
+@keyframes pulse {
+  0%,100% { opacity: 1; transform: scale(1); }
+  50%      { opacity: 0.5; transform: scale(1.4); }
+}
+.hero-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 300;
+  font-size: clamp(64px, 11vw, 148px);
+  line-height: 0.92;
+  letter-spacing: -0.02em;
+  color: #fff;
+  margin-bottom: 44px;
+}
+.hero-title em {
+  font-style: italic;
+  color: rgba(255,255,255,0.75);
+}
+.btn-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 40px;
+  border-radius: 100px;
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.25);
+  color: #6dc44b;
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  text-decoration: none;
+  backdrop-filter: blur(8px);
+  transition: background 0.25s, border-color 0.25s;
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 400;
+}
+.btn-pill:hover { background: rgba(255,255,255,0.15); border-color: rgba(255,255,255,0.45); }
+
+.hero-desc {
+  position: absolute;
+  bottom: 80px;
+  right: 48px;
+  max-width: 260px;
+  text-align: right;
+  font-size: 13px;
+  line-height: 1.7;
+  color: rgba(255,255,255,0.55);
+}
+
+/* CONTENT PANELS: title left-centre, body text below */
+.panel--content {
+  align-items: center;
+}
+.panel-inner {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 120px 0 200px; /* left clears sidenav */
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: center;
+}
+.panel-inner--right {
+  padding: 0 120px 0 200px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  text-align: right;
+}
+.panel-inner--right .panel-title,
+.panel-inner--right .panel-body { text-align: right; }
+
+.panel-label {
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.4);
+  margin-bottom: 20px;
+  display: block;
+}
+.panel-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 300;
+  font-size: clamp(42px, 6vw, 88px);
+  line-height: 1.0;
+  letter-spacing: -0.01em;
+  color: #fff;
+  margin-bottom: 32px;
+}
+.panel-body {
+  font-size: 15px;
+  line-height: 1.75;
+  color: rgba(255,255,255,0.6);
+  max-width: 420px;
+}
+.panel-body + .panel-body { margin-top: 20px; }
+
+/* Cards grid for marketplace */
+.panel-cards {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1px;
+  background: rgba(255,255,255,0.06);
+}
+.p-card {
+  background: rgba(3,13,8,0.6);
+  padding: 32px;
+  transition: background 0.2s;
+}
+.p-card:hover { background: rgba(109,196,75,0.05); }
+.p-card-type {
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #6dc44b;
+  margin-bottom: 10px;
+}
+.p-card-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 22px;
+  font-weight: 300;
+  color: #fff;
+  margin-bottom: 6px;
+}
+.p-card-creator { font-size: 12px; color: rgba(255,255,255,0.4); margin-bottom: 14px; }
+.p-card-price { font-size: 15px; color: rgba(255,255,255,0.85); font-weight: 500; }
+
+/* Testimonial cards */
+.panel-testimonials {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+.t-card {
+  background: rgba(3,13,8,0.5);
+  padding: 28px 32px;
+  border-left: 1px solid rgba(109,196,75,0.2);
+}
+.t-card p { font-size: 14px; line-height: 1.7; color: rgba(255,255,255,0.65); margin-bottom: 14px; font-style: italic; }
+.t-name { font-size: 12px; color: rgba(255,255,255,0.5); letter-spacing: 0.05em; }
+.t-stars { color: #6dc44b; font-size: 11px; margin-bottom: 8px; }
+
+/* Join section — centred */
+.panel--join {
+  justify-content: center;
+  text-align: center;
+}
+.join-inner {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 40px;
+}
+.join-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 300;
+  font-size: clamp(40px, 6.5vw, 92px);
+  line-height: 1.05;
+  color: #fff;
+  letter-spacing: -0.01em;
+}
+.join-links {
+  display: flex;
+  gap: 40px;
+}
+.join-links a {
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  color: #6dc44b;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(109,196,75,0.3);
+  padding-bottom: 4px;
+  transition: border-color 0.2s;
+}
+.join-links a:hover { border-color: #6dc44b; }
+
+/* Footer bar */
+#footer-bar {
+  position: relative;
+  z-index: 1;
+  padding: 28px 48px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  background: rgba(3,13,8,0.9);
+}
+.footer-copy { font-size: 11px; color: rgba(255,255,255,0.3); letter-spacing: 0.06em; }
+.footer-links { display: flex; gap: 28px; }
+.footer-links a { font-size: 11px; color: rgba(255,255,255,0.35); text-decoration: none; letter-spacing: 0.06em; transition: color 0.2s; }
+.footer-links a:hover { color: rgba(255,255,255,0.7); }
+
+/* ═══════════════════════════════════════════
+   WORD / LINE REVEAL ANIMATIONS
+   Words start translated down, fade in on scroll
+   (alireza letter-by-letter entrances)
+═══════════════════════════════════════════ */
+.reveal-word {
+  display: inline-block;
+  transform: translateY(60px);
+  opacity: 0;
+  transition: transform 0.9s cubic-bezier(0.16,1,0.3,1), opacity 0.9s cubic-bezier(0.16,1,0.3,1);
+}
+.reveal-block {
+  transform: translateY(40px);
+  opacity: 0;
+  transition: transform 0.8s cubic-bezier(0.16,1,0.3,1), opacity 0.8s cubic-bezier(0.16,1,0.3,1);
+}
+.revealed .reveal-word,
+.revealed .reveal-block,
+.reveal-word.in,
+.reveal-block.in {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+/* ═══════════════════════════════════════════
+   MOBILE
+═══════════════════════════════════════════ */
+@media (max-width: 768px) {
+  #hdr { padding: 20px 24px; }
+  .hdr-divider, .hdr-auth { display: none; }
+  #sidenav { display: none; }
+  #scroll-hint { right: 24px; }
+  .hero-title { font-size: clamp(44px, 13vw, 72px); }
+  .hero-desc { position: static; text-align: center; max-width: 100%; padding: 0 24px; margin-top: 32px; }
+  .panel-inner { padding: 0 24px; grid-template-columns: 1fr; gap: 48px; }
+  .panel-inner--right { padding: 0 24px; text-align: left; align-items: flex-start; }
+  .panel-inner--right .panel-title,
+  .panel-inner--right .panel-body { text-align: left; }
+  .panel-cards { grid-template-columns: 1fr; }
+  .join-links { flex-direction: column; gap: 20px; align-items: center; }
+  #footer-bar { flex-direction: column; gap: 16px; text-align: center; }
+  .footer-links { flex-wrap: wrap; justify-content: center; }
+  #menu-overlay { padding: 80px 24px 40px; }
+  .menu-nav a { font-size: clamp(32px, 10vw, 56px); }
+}
+</style>
 </head>
 <body>
 
-<!-- ═══ GLOBAL FULL-VIEWPORT WEBGL BACKGROUND ═══ -->
-<!-- One canvas behind everything, morphs per section like alireza.com -->
-<canvas id="globalBg"></canvas>
+<!-- ONE fixed canvas. This is the entire background system. -->
+<canvas id="c"></canvas>
 
-<!-- ═══════ FLOATING PILL NAV ═══════ -->
-<nav class="nav" id="mainNav">
-  <div class="nav-inner">
-    <a href="index.html" class="nav-logo" data-no-transition>
-      <div class="logo-3d-wrap"><div class="logo-3d-inner"><img src="logo.png" alt="NEXUS"/></div></div>
-      <span class="logo-text">NEXUS</span>
-    </a>
-    <ul class="nav-links">
-      <li><a href="index.html" style="color:var(--text)">Home</a></li>
-      <li><a href="marketplace.html">Marketplace</a></li>
-      <li><a href="contact.html">Contact</a></li>
-    </ul>
-    <div class="nav-actions">
-      <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="Toggle theme">🌙</button>
-      <div class="nav-actions-auth" id="navActionsAuth">
-        <button class="btn-ghost" onclick="AuthModal.open('login')">Sign In</button>
-        <button class="btn-primary" onclick="AuthModal.open('signup')">Join Free</button>
-      </div>
-    </div>
-    <div style="display:flex;align-items:center;gap:8px;margin-left:auto">
-      <button class="theme-toggle" id="themeToggleMob" style="display:none" onclick="toggleTheme()">🌙</button>
-      <button class="nav-burger" id="navBurger"><span></span><span></span><span></span></button>
-    </div>
+<!-- HEADER -->
+<header id="hdr">
+  <a href="#" class="hdr-logo" onclick="scrollToPanel(0);return false;">
+    <img src="logo.png" alt="NEXUS"/>
+    <div class="hdr-divider"></div>
+    <span class="hdr-logo-text">NEXUS Marketplace</span>
+  </a>
+  <div class="hdr-right">
+    <nav class="hdr-auth" id="hdrAuth">
+      <a href="#" onclick="openModal('login');return false;">Sign In</a>
+      <a href="#" class="btn-join" onclick="openModal('signup');return false;">Join Free</a>
+    </nav>
+    <button id="burger" aria-label="Menu" onclick="toggleMenu()">
+      <span></span><span></span><span></span>
+    </button>
   </div>
-  <div class="mobile-menu" id="mobileMenu">
-    <div class="mobile-menu-inner">
-      <a href="index.html" class="mobile-link">Home</a>
-      <a href="marketplace.html" class="mobile-link" data-protected="true">Marketplace</a>
-      <a href="contact.html" class="mobile-link">Contact</a>
-      <div class="mobile-divider"></div>
-      <a href="privacy.html" class="mobile-link mobile-link--sm">Privacy Policy</a>
-      <a href="terms.html" class="mobile-link mobile-link--sm">Terms of Service</a>
-      <a href="refund.html" class="mobile-link mobile-link--sm">Refund Policy</a>
-      <a href="shipping.html" class="mobile-link mobile-link--sm">Shipping Policy</a>
-      <a href="cancellation.html" class="mobile-link mobile-link--sm">Cancellation Policy</a>
-      <div class="mobile-actions" id="mobileActionsAuth">
-        <button class="btn-ghost w-full" onclick="AuthModal.open('login')">Sign In</button>
-        <button class="btn-primary w-full" onclick="AuthModal.open('signup')">Join Free</button>
-      </div>
-    </div>
-  </div>
-</nav>
+</header>
 
-<!-- ═══════ HERO ═══════ -->
-<section class="hero" id="home" data-bg-scene="hero">
-  <!-- Per-section overlay: each section gets its own gradient tint -->
-  <div class="scene-overlay scene-overlay--hero"></div>
-  <div class="hero-content">
-    <div class="hero-eyebrow">
-      <span class="pulse-dot"></span>
-      <span>Live Marketplace · 12,400+ Creators</span>
-    </div>
-    <h1 class="hero-title">
-      Where <em>Art</em> Meets<br/>
-      <span class="hero-gradient">Infinite Possibility</span>
-    </h1>
-    <p class="hero-sub">
-      The premier marketplace for digital art, advertising services,<br class="desktop-only"/>
-      and entertainment — powered by creators, built for culture.
-    </p>
-    <div class="hero-cta">
-      <button class="btn-hero-primary" onclick="navigateTo('marketplace.html', true)">
-        Explore Marketplace
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-      </button>
-      <button class="btn-hero-ghost" onclick="location.href='contact.html'">Sell Your Work</button>
-    </div>
-    <div class="hero-stats">
-      <div class="stat"><span class="stat-num" data-target="12400">0</span><span class="stat-label">Creators</span></div>
-      <div class="stat-divider"></div>
-      <div class="stat"><span class="stat-num" data-target="89000">0</span><span class="stat-label">Artworks</span></div>
-      <div class="stat-divider"></div>
-      <div class="stat"><span class="stat-num" data-target="340">0</span><span class="stat-label">Advertisers</span></div>
-    </div>
-  </div>
-  <div class="hero-scroll-hint">
-    <span>Scroll</span>
-    <div class="scroll-line"></div>
-  </div>
-</section>
-
-<!-- ═══════ CATEGORIES ═══════ -->
-<section class="section categories" id="categories" data-bg-scene="categories">
-  <div class="scene-overlay scene-overlay--categories"></div>
-  <div class="container" style="position:relative;z-index:2">
-    <div class="section-header">
-      <span class="section-eyebrow">WHAT WE OFFER</span>
-      <h2 class="section-title">Three Worlds,<br/><em>One Platform</em></h2>
-    </div>
-    <div class="category-grid">
-      <div class="category-card" data-tilt>
-        <div class="cat-canvas-wrap"><canvas class="cat-canvas" id="catCanvas0"></canvas></div>
-        <div class="cat-content">
-          <div class="cat-icon">🎨</div>
-          <h3>Digital Art</h3>
-          <p>Original works, NFTs, illustrations, photography, and generative pieces from 8,000+ global artists.</p>
-          <a href="#marketplace" class="cat-link">Browse Art →</a>
-        </div>
-        <div class="cat-glow cat-glow--green"></div>
-      </div>
-      <div class="category-card" data-tilt>
-        <div class="cat-canvas-wrap"><canvas class="cat-canvas" id="catCanvas1"></canvas></div>
-        <div class="cat-content">
-          <div class="cat-icon">📡</div>
-          <h3>Ad Services</h3>
-          <p>Connect with premium creators for campaigns, branded content, influencer partnerships, and media buys.</p>
-          <a href="#marketplace" class="cat-link">Browse Services →</a>
-        </div>
-        <div class="cat-glow cat-glow--teal"></div>
-      </div>
-      <div class="category-card" data-tilt>
-        <div class="cat-canvas-wrap"><canvas class="cat-canvas" id="catCanvas2"></canvas></div>
-        <div class="cat-content">
-          <div class="cat-icon">🎬</div>
-          <h3>Entertainment</h3>
-          <p>Music, film, live performance, immersive AR/VR experiences, and interactive digital entertainment.</p>
-          <a href="#marketplace" class="cat-link">Browse Entertainment →</a>
-        </div>
-        <div class="cat-glow cat-glow--blue"></div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ═══════ MARKETPLACE ═══════ -->
-<section class="section marketplace" id="marketplace" data-bg-scene="marketplace">
-  <div class="scene-overlay scene-overlay--marketplace"></div>
-  <div class="container" style="position:relative;z-index:2">
-    <div class="section-header">
-      <span class="section-eyebrow">FEATURED LISTINGS</span>
-      <h2 class="section-title">Trending Now</h2>
-      <div class="filter-bar">
-        <button class="filter-btn active" data-filter="all">All</button>
-        <button class="filter-btn" data-filter="art">Art</button>
-        <button class="filter-btn" data-filter="ads">Ad Services</button>
-        <button class="filter-btn" data-filter="entertainment">Entertainment</button>
-      </div>
-    </div>
-    <div class="product-grid" id="productGrid"></div>
-    <div class="marketplace-cta">
-      <button class="btn-primary btn-lg" onclick="navigateTo('marketplace.html', true)">View All 89,000+ Items</button>
-    </div>
-  </div>
-</section>
-
-<!-- ═══════ XR PROMO ═══════ -->
-<section class="section xr-promo" data-bg-scene="xr">
-  <canvas id="xrCanvas"></canvas>
-  <div class="scene-overlay scene-overlay--xr"></div>
-  <div class="xr-content container" style="position:relative;z-index:2">
-    <div class="xr-badge">✦ NEW</div>
-    <h2 class="xr-title">Experience Art<br/><em>in Your Space</em></h2>
-    <p class="xr-sub">Use WebXR to place sculptures, paintings, and installations directly in your room. No app needed — just your browser.</p>
-    <div class="xr-buttons">
-      <button class="btn-xr" id="xrBtn">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>
-        Try AR Preview
-      </button>
-      <button class="btn-hero-ghost">Learn More</button>
-    </div>
-    <div class="xr-devices">
-      <span>Works with</span>
-      <strong>Chrome</strong><strong>Safari</strong><strong>Firefox</strong><strong>Vision Pro</strong><strong>Quest 3</strong>
-    </div>
-  </div>
-</section>
-
-<!-- ═══════ TESTIMONIALS ═══════ -->
-<section class="section testimonials" data-bg-scene="testimonials">
-  <div class="scene-overlay scene-overlay--testimonials"></div>
-  <div class="container" style="position:relative;z-index:2">
-    <div class="section-header">
-      <span class="section-eyebrow">COMMUNITY</span>
-      <h2 class="section-title">Creators Love NEXUS</h2>
-    </div>
-    <div class="testimonial-track" id="testimonialTrack">
-      <div class="testimonial-card">
-        <div class="t-stars">★★★★★</div>
-        <p>"Sold my first digital collection here and hit $12k in the first month. The platform is stunning and the buyers are serious."</p>
-        <div class="t-author"><div class="t-avatar" style="background:linear-gradient(135deg,#6dc44b,#228f7e)">AK</div><div><strong>Aisha Kamara</strong><span>Digital Artist, Lagos</span></div></div>
-      </div>
-      <div class="testimonial-card">
-        <div class="t-stars">★★★★★</div>
-        <p>"Used NEXUS to run a branded content campaign with 6 creators. ROI was 4x what we expected. Will be back for Q4."</p>
-        <div class="t-author"><div class="t-avatar" style="background:linear-gradient(135deg,#228f7e,#0258a3)">MR</div><div><strong>Marcus Reid</strong><span>Marketing Director, NYC</span></div></div>
-      </div>
-      <div class="testimonial-card">
-        <div class="t-stars">★★★★★</div>
-        <p>"The 3D preview and AR feature sold my sculpture collection instantly. Never had this level of presentation anywhere else."</p>
-        <div class="t-author"><div class="t-avatar" style="background:linear-gradient(135deg,#6dc44b,#0258a3,#250076);background-size:200%">SP</div><div><strong>Sofia Park</strong><span>Sculptor & Ceramicist, Seoul</span></div></div>
-      </div>
-      <div class="testimonial-card">
-        <div class="t-stars">★★★★★</div>
-        <p>"Booked 3 film scoring gigs through NEXUS Entertainment. The discovery algorithm is unreal — creators find you here."</p>
-        <div class="t-author"><div class="t-avatar" style="background:linear-gradient(135deg,#3ab26e,#0258a3)">DL</div><div><strong>David Larsson</strong><span>Film Composer, Stockholm</span></div></div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ═══════ FOOTER ═══════ -->
-<footer class="footer" data-bg-scene="footer">
-  <canvas id="footerCanvas"></canvas>
-  <div class="scene-overlay scene-overlay--footer"></div>
-  <div class="footer-inner" style="position:relative;z-index:2">
-    <div class="footer-brand">
-      <a href="#home" class="nav-logo">
-        <div class="logo-3d-wrap" style="width:32px;height:32px">
-          <div class="logo-3d-inner"><img src="logo.png" alt="NEXUS"/></div>
-        </div>
-        <span class="logo-text" style="font-family:'Syne',sans-serif;font-weight:800;font-size:18px">NEXUS</span>
-      </a>
-      <p>The marketplace where art, advertising, and entertainment converge. Built for creators. Trusted by brands.</p>
-      <div class="footer-social">
-        <a href="#" aria-label="Twitter">𝕏</a>
-        <a href="#" aria-label="Instagram">◉</a>
-        <a href="#" aria-label="Discord">⬡</a>
-        <a href="#" aria-label="YouTube">▶</a>
-      </div>
-    </div>
-    <div class="footer-col">
-      <h4>Marketplace</h4>
-      <a href="#marketplace">Browse All</a>
-      <a href="#categories">Digital Art</a>
-      <a href="#categories">Ad Services</a>
-      <a href="#categories">Entertainment</a>
-      <a href="contact.html">Become a Seller</a>
-    </div>
-    <div class="footer-col">
-      <h4>Company</h4>
-      <a href="contact.html">About NEXUS</a>
-      <a href="contact.html">Careers</a>
-      <a href="contact.html">Blog</a>
-      <a href="contact.html">Press Kit</a>
-    </div>
-    <div class="footer-col">
-      <h4>Legal</h4>
-      <a href="privacy.html">Privacy Policy</a>
-      <a href="terms.html">Terms of Service</a>
-      <a href="refund.html">Refund Policy</a>
-      <a href="shipping.html">Shipping Policy</a>
-      <a href="cancellation.html">Cancellation Policy</a>
-      <a href="contact.html">Contact Us</a>
-    </div>
-  </div>
-  <div class="footer-bottom" style="position:relative;z-index:2">
-    <p>© 2025 NEXUS Marketplace Inc. All rights reserved.</p>
-    <p>Payments secured by <strong>Stripe</strong> · SSL encrypted · PCI DSS compliant</p>
-  </div>
-</footer>
-
-<!-- ═══════ AR MODAL ═══════ -->
-<div class="ar-modal" id="arModal">
-  <div class="ar-modal-inner">
-    <button class="ar-close" id="arClose">✕</button>
-    <canvas id="arCanvas"></canvas>
-    <div class="ar-ui">
-      <div class="ar-status"><span class="pulse-dot"></span><span id="arStatusText">Initializing AR…</span></div>
-      <p class="ar-hint">Point your camera at a flat surface to place artwork</p>
-      <button class="btn-primary" onclick="document.getElementById('arModal').classList.remove('active')">Exit AR</button>
-    </div>
+<!-- FULLSCREEN MENU -->
+<div id="menu-overlay">
+  <ul class="menu-nav">
+    <li><a href="#" onclick="scrollToPanel(0);toggleMenu();return false;">Home</a></li>
+    <li><a href="#" onclick="scrollToPanel(1);toggleMenu();return false;">Art</a></li>
+    <li><a href="#" onclick="scrollToPanel(2);toggleMenu();return false;">Marketplace</a></li>
+    <li><a href="#" onclick="scrollToPanel(3);toggleMenu();return false;">Services</a></li>
+    <li><a href="contact.html">Contact</a></li>
+  </ul>
+  <div class="menu-footer">
+    <a href="privacy.html">Privacy</a>
+    <a href="terms.html">Terms</a>
+    <a href="refund.html">Refunds</a>
+    <a href="shipping.html">Shipping</a>
+    <a href="cancellation.html">Cancellation</a>
+    <a href="contact.html">Contact</a>
   </div>
 </div>
 
-<script src="main.js"></script>
+<!-- LEFT SIDE DOT NAV -->
+<nav id="sidenav">
+  <button class="sidenav-item active" onclick="scrollToPanel(0)">
+    <span class="sidenav-dot"></span>
+    <span class="sidenav-label">Home</span>
+  </button>
+  <button class="sidenav-item" onclick="scrollToPanel(1)">
+    <span class="sidenav-dot"></span>
+    <span class="sidenav-label">Art</span>
+  </button>
+  <button class="sidenav-item" onclick="scrollToPanel(2)">
+    <span class="sidenav-dot"></span>
+    <span class="sidenav-label">Marketplace</span>
+  </button>
+  <button class="sidenav-item" onclick="scrollToPanel(3)">
+    <span class="sidenav-dot"></span>
+    <span class="sidenav-label">Services</span>
+  </button>
+  <button class="sidenav-item" onclick="scrollToPanel(4)">
+    <span class="sidenav-dot"></span>
+    <span class="sidenav-label">Community</span>
+  </button>
+  <button class="sidenav-item" onclick="scrollToPanel(5)">
+    <span class="sidenav-dot"></span>
+    <span class="sidenav-label">Join</span>
+  </button>
+</nav>
+
+<!-- SCROLL HINT -->
+<div id="scroll-hint">
+  <span class="scroll-hint-text">Scroll to discover</span>
+  <div class="scroll-hint-line"></div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     PANELS — each full-viewport, NO background
+     Canvas bleeds through from behind
+═══════════════════════════════════════════════ -->
+
+<!-- PANEL 0: HERO -->
+<section class="panel panel--hero" id="p0">
+  <div style="position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;gap:0;">
+    <div class="hero-eyebrow">
+      <span class="pulse-dot"></span>
+      <span>Live · 12,400+ Creators · 89,000+ Works</span>
+    </div>
+    <h1 class="hero-title">
+      Where <em>Art</em> Meets<br/>Infinite Possibility
+    </h1>
+    <a href="#" class="btn-pill" onclick="scrollToPanel(2);return false;">
+      Explore Marketplace
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </a>
+  </div>
+  <div class="hero-desc">
+    The premier marketplace for digital art, advertising services, and entertainment — powered by creators, built for culture.
+  </div>
+</section>
+
+<!-- PANEL 1: ART / DIGITAL WORKS -->
+<section class="panel panel--content" id="p1">
+  <div class="panel-inner">
+    <div>
+      <span class="panel-label">Digital Art</span>
+      <h2 class="panel-title">Original Works<br/><em>From 8,000+<br/>Global Artists</em></h2>
+    </div>
+    <div>
+      <p class="panel-body">Original pieces, generative art, photography, illustration, and NFTs from creators across 140 countries. Every work is authenticated, high-resolution, and delivered instantly.</p>
+      <p class="panel-body" style="margin-top:28px;">
+        <a href="#" class="btn-pill" style="font-size:12px;padding:12px 28px;" onclick="scrollToPanel(2);return false;">Browse Art →</a>
+      </p>
+      <div style="margin-top:56px;display:flex;gap:48px;">
+        <div>
+          <div style="font-family:'Cormorant Garamond',serif;font-size:42px;font-weight:300;color:#fff;line-height:1">8,000<span style="color:#6dc44b">+</span></div>
+          <div style="font-size:11px;color:rgba(255,255,255,0.4);letter-spacing:0.1em;text-transform:uppercase;margin-top:6px">Artists</div>
+        </div>
+        <div>
+          <div style="font-family:'Cormorant Garamond',serif;font-size:42px;font-weight:300;color:#fff;line-height:1">140<span style="color:#6dc44b">+</span></div>
+          <div style="font-size:11px;color:rgba(255,255,255,0.4);letter-spacing:0.1em;text-transform:uppercase;margin-top:6px">Countries</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PANEL 2: MARKETPLACE LISTINGS -->
+<section class="panel panel--content" id="p2">
+  <div class="panel-inner">
+    <div>
+      <span class="panel-label">Featured Listings</span>
+      <h2 class="panel-title">Trending<br/>Now</h2>
+      <p class="panel-body" style="margin-top:24px;">Hand-picked works across art, advertising, and entertainment. Updated daily.</p>
+      <p style="margin-top:32px;">
+        <a href="marketplace.html" class="btn-pill" style="font-size:12px;padding:12px 28px;">View All 89,000+ Items</a>
+      </p>
+    </div>
+    <div class="panel-cards">
+      <div class="p-card">
+        <div class="p-card-type">Art</div>
+        <div class="p-card-title">Chromatic Void #07</div>
+        <div class="p-card-creator">Aisha Kamara</div>
+        <div class="p-card-price">$420</div>
+      </div>
+      <div class="p-card">
+        <div class="p-card-type">Ad Service</div>
+        <div class="p-card-title">Brand Launch Package</div>
+        <div class="p-card-creator">Studio Meridian</div>
+        <div class="p-card-price">$1,200</div>
+      </div>
+      <div class="p-card">
+        <div class="p-card-type">Entertainment</div>
+        <div class="p-card-title">Solstice — EP</div>
+        <div class="p-card-creator">David Larsson</div>
+        <div class="p-card-price">$18</div>
+      </div>
+      <div class="p-card">
+        <div class="p-card-type">Art</div>
+        <div class="p-card-title">Fractal Garden</div>
+        <div class="p-card-creator">Teodor Voss</div>
+        <div class="p-card-price">$550</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PANEL 3: AD SERVICES -->
+<section class="panel panel--content" id="p3">
+  <div class="panel-inner panel-inner--right" style="max-width:1400px;margin:0 auto;padding:0 120px 0 200px;">
+    <div style="max-width:560px;text-align:right;">
+      <span class="panel-label">Ad Services</span>
+      <h2 class="panel-title">Connect With<br/><em>Premium Creators</em></h2>
+      <p class="panel-body" style="text-align:right;">Campaigns, branded content, influencer partnerships, and media placements — managed end-to-end with full performance analytics.</p>
+      <div style="margin-top:48px;display:flex;gap:48px;justify-content:flex-end;">
+        <div style="text-align:right;">
+          <div style="font-family:'Cormorant Garamond',serif;font-size:42px;font-weight:300;color:#fff;line-height:1">340<span style="color:#228f7e">+</span></div>
+          <div style="font-size:11px;color:rgba(255,255,255,0.4);letter-spacing:0.1em;text-transform:uppercase;margin-top:6px">Advertisers</div>
+        </div>
+        <div style="text-align:right;">
+          <div style="font-family:'Cormorant Garamond',serif;font-size:42px;font-weight:300;color:#fff;line-height:1">4×<span style="color:#228f7e"></span></div>
+          <div style="font-size:11px;color:rgba(255,255,255,0.4);letter-spacing:0.1em;text-transform:uppercase;margin-top:6px">Avg. ROI</div>
+        </div>
+      </div>
+      <p style="margin-top:36px;text-align:right;">
+        <a href="contact.html" class="btn-pill" style="font-size:12px;padding:12px 28px;">Start a Campaign →</a>
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- PANEL 4: COMMUNITY / TESTIMONIALS -->
+<section class="panel panel--content" id="p4">
+  <div class="panel-inner">
+    <div>
+      <span class="panel-label">Community</span>
+      <h2 class="panel-title">Creators<br/><em>Love NEXUS</em></h2>
+      <p class="panel-body" style="margin-top:24px;">Trusted by artists, brands, and creators in 140+ countries. Real results, real voices.</p>
+    </div>
+    <div class="panel-testimonials">
+      <div class="t-card">
+        <div class="t-stars">★★★★★</div>
+        <p>"Sold my first digital collection and hit $12k in the first month. The platform is stunning."</p>
+        <div class="t-name">Aisha Kamara — Digital Artist, Lagos</div>
+      </div>
+      <div class="t-card">
+        <div class="t-stars">★★★★★</div>
+        <p>"Ran a branded campaign with 6 creators. ROI was 4× what we expected."</p>
+        <div class="t-name">Marcus Reid — Marketing Director, NYC</div>
+      </div>
+      <div class="t-card">
+        <div class="t-stars">★★★★★</div>
+        <p>"Booked 3 film scoring gigs through NEXUS. The discovery algorithm is unreal."</p>
+        <div class="t-name">David Larsson — Film Composer, Stockholm</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PANEL 5: JOIN / CTA -->
+<section class="panel panel--join" id="p5">
+  <div class="join-inner">
+    <h2 class="join-title">Join the<br/>Marketplace</h2>
+    <div class="join-links">
+      <a href="marketplace.html">Browse Works</a>
+      <a href="contact.html">Sell Your Work</a>
+      <a href="contact.html">Contact Us</a>
+    </div>
+    <p style="font-size:13px;color:rgba(255,255,255,0.35);letter-spacing:0.06em;">Payments secured by Stripe · SSL encrypted · PCI DSS compliant</p>
+  </div>
+</section>
+
+<!-- FOOTER BAR -->
+<footer id="footer-bar">
+  <p class="footer-copy">© 2025 NEXUS Marketplace Inc. All rights reserved.</p>
+  <nav class="footer-links">
+    <a href="privacy.html">Privacy</a>
+    <a href="terms.html">Terms</a>
+    <a href="refund.html">Refunds</a>
+    <a href="shipping.html">Shipping</a>
+    <a href="cancellation.html">Cancellation</a>
+  </nav>
+</footer>
+
+<script>
+'use strict';
+
+/* ═══════════════════════════════════════════════
+   AUTH SYSTEM (preserved from previous build)
+═══════════════════════════════════════════════ */
+const AUTH_KEY = 'nexus_user';
+const Auth = {
+  getUser() { try { return JSON.parse(localStorage.getItem(AUTH_KEY)); } catch { return null; } },
+  isLoggedIn() { return !!this.getUser(); },
+};
+window.openModal = function(mode) {
+  // Preserve auth modal from nexus-core.js if loaded, else redirect
+  if (window.AuthModal) { AuthModal.open(mode); }
+  else { location.href = 'marketplace.html'; }
+};
+
+/* ═══════════════════════════════════════════════
+   MENU TOGGLE
+═══════════════════════════════════════════════ */
+const burger = document.getElementById('burger');
+const overlay = document.getElementById('menu-overlay');
+let menuOpen = false;
+window.toggleMenu = function() {
+  menuOpen = !menuOpen;
+  burger.classList.toggle('open', menuOpen);
+  overlay.classList.toggle('open', menuOpen);
+  document.body.style.overflow = menuOpen ? 'hidden' : '';
+};
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && menuOpen) toggleMenu(); });
+
+/* ═══════════════════════════════════════════════
+   PANEL SYSTEM — scroll-based, detect which
+   panel is most visible and update sidenav
+═══════════════════════════════════════════════ */
+const PANELS = Array.from(document.querySelectorAll('.panel'));
+const sideItems = Array.from(document.querySelectorAll('.sidenav-item'));
+const sidenav = document.getElementById('sidenav');
+const scrollHint = document.getElementById('scroll-hint');
+
+window.scrollToPanel = function(i) {
+  const p = PANELS[i];
+  if (p) p.scrollIntoView({ behavior: 'smooth' });
+};
+
+let currentPanel = 0;
+
+function detectPanel() {
+  let best = 0, bestVis = 0;
+  PANELS.forEach((p, i) => {
+    const r = p.getBoundingClientRect();
+    const vis = Math.max(0, Math.min(r.bottom, innerHeight) - Math.max(r.top, 0));
+    if (vis > bestVis) { bestVis = vis; best = i; }
+  });
+  if (best !== currentPanel) {
+    currentPanel = best;
+    sideItems.forEach((el, i) => el.classList.toggle('active', i === best));
+    // WebGL camera is now driven purely by scroll — no scene swap needed
+  }
+}
+
+window.addEventListener('scroll', detectPanel, { passive: true });
+
+// Show sidenav + scroll hint after short delay
+setTimeout(() => {
+  sidenav.classList.add('visible');
+  scrollHint.classList.add('visible');
+}, 800);
+
+// Hide scroll hint once user scrolls
+window.addEventListener('scroll', () => {
+  if (window.scrollY > 80) scrollHint.style.opacity = '0';
+}, { passive: true, once: true });
+
+/* ═══════════════════════════════════════════════
+   TEXT REVEAL — IntersectionObserver
+   Words translate up into view as panels enter
+═══════════════════════════════════════════════ */
+const revObs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      const els = e.target.querySelectorAll('.reveal-word, .reveal-block');
+      els.forEach((el, i) => {
+        setTimeout(() => el.classList.add('in'), i * 55);
+      });
+      revObs.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.15 });
+PANELS.forEach(p => revObs.observe(p));
+
+// Auto-apply reveal classes to panel titles on load
+document.querySelectorAll('.panel-title').forEach(el => {
+  // Wrap each word
+  el.innerHTML = el.innerHTML.split(/(<br\/>|<em>|<\/em>)/).map(chunk => {
+    if (chunk.startsWith('<')) return chunk;
+    return chunk.split(' ').filter(w => w).map(w => `<span class="reveal-word">${w} </span>`).join('');
+  }).join('');
+});
+document.querySelectorAll('.panel-body, .panel-label, .hero-eyebrow, .hero-desc').forEach(el => {
+  el.classList.add('reveal-block');
+});
+
+/* ═══════════════════════════════════════════════
+
+   WEBGL BACKGROUND ENGINE — SCROLL-DRIVEN CAMERA
+   
+   THE REAL ALIREZA TECHNIQUE:
+   ─────────────────────────────────────────────
+   ONE scene. ONE camera. The camera travels
+   through a single 3D world as you scroll.
+   
+   No scene swapping. No blending between scenes.
+   The scroll position (0→1) maps directly to
+   camera position, rotation, and target.
+   
+   The 3D world is built like a tree cross-section:
+   
+   PANEL 0 (hero)       → Full canopy view: fronds 
+                          spread wide, camera far back,
+                          centred, looking at crown.
+   
+   PANEL 1 (art)        → Camera zooms INTO frond tips,
+                          extreme macro, dark diagonal
+                          fibres fill the frame.
+   
+   PANEL 2 (marketplace)→ Camera pulls back, pans down 
+                          to the trunk — stacked woven
+                          ring geometry, warm amber.
+   
+   PANEL 3 (services)   → Camera swings to the right,
+                          fronds come in from top-right 
+                          corner, dark teal.
+   
+   PANEL 4 (community)  → Camera tilts, date cluster
+                          glows amber in foreground,
+                          fronds frame from above.
+   
+   PANEL 5 (join)       → Camera pulls straight up,
+                          top-down view of full crown,
+                          radial symmetry, near-black.
+   
+   Implementation:
+   - scrollProgress = window.scrollY / (totalHeight - vh)
+   - panelProgress = scrollProgress * numPanels
+   - camera lerps between keyframe positions each frame
+   - ALL geometry lives in one scene, camera moves around it
+═══════════════════════════════════════════════ */
+
+(function() {
+  const canvas = document.getElementById('c');
+  if (!window.THREE) { canvas.style.display = 'none'; return; }
+
+  const mobile = window.innerWidth <= 768;
+
+  /* ── Renderer ── */
+  const R = new THREE.WebGLRenderer({ canvas, antialias: !mobile, alpha: false });
+  R.setPixelRatio(Math.min(devicePixelRatio, mobile ? 1.5 : 2));
+  R.setSize(innerWidth, innerHeight);
+  R.setClearColor(0x020c06, 1);
+
+  /* ── Single scene ── */
+  const scene = new THREE.Scene();
+  scene.background = new THREE.Color(0x020c06);
+
+  /* ── Camera ── */
+  const cam = new THREE.PerspectiveCamera(55, innerWidth / innerHeight, 0.1, 500);
+
+  /* ── Brand palette ── */
+  const GREEN  = new THREE.Color(0x6dc44b);
+  const TEAL   = new THREE.Color(0x228f7e);
+  const BLUE   = new THREE.Color(0x0258a3);
+  const AMBER  = new THREE.Color(0xc47a1a);
+  const DARK   = new THREE.Color(0x030d08);
+
+  /* ─────────────────────────────────────────────
+     BUILD THE WORLD
+     
+     One unified 3D structure the camera travels
+     through. Grouped so we can reference parts.
+     
+     Layout (Y axis = height of the "tree"):
+       +Y 12  → crown tip / frond ends
+       +Y  0  → mid-frond / canopy spread
+       -Y  4  → trunk top
+       -Y 10  → trunk mid (woven rings)
+       -Y 16  → trunk base / roots
+       
+     X/Z axis = spread of fronds / trunk girth
+  ───────────────────────────────────────────── */
+
+  /* Group for gentle idle rotation */
+  const world = new THREE.Group();
+  scene.add(world);
+
+  /* ── 1. CROWN FRONDS (canopy) ──
+     Radiating curved lines from centre-top.
+     Alireza hero: full palm crown, centred, warm lit.
+     These fill the frame when camera is at hero position.
+  ── */
+  const FROND_COUNT = mobile ? 14 : 32;
+  const frondLines = [];
+  for (let f = 0; f < FROND_COUNT; f++) {
+    const angle = (f / FROND_COUNT) * Math.PI * 2;
+    const length = 7 + Math.random() * 5;
+    const droop  = 2.5 + Math.random() * 2;
+    const pts = [];
+    const seg = mobile ? 20 : 50;
+    for (let j = 0; j <= seg; j++) {
+      const t = j / seg;
+      // Frond curves outward then droops
+      const r = t * length;
+      const droopY = -Math.pow(t, 1.6) * droop;
+      const wobble = Math.sin(t * Math.PI * 2.5) * (0.12 + Math.random() * 0.08) * length;
+      pts.push(new THREE.Vector3(
+        Math.cos(angle) * r + Math.cos(angle + Math.PI/2) * wobble,
+        droopY + 8,  // crown sits at Y=8
+        Math.sin(angle) * r + Math.sin(angle + Math.PI/2) * wobble
+      ));
+    }
+    const curve  = new THREE.CatmullRomCurve3(pts);
+    const points = curve.getPoints(seg);
+
+    // Each frond is a tube for thickness, like alireza's rendered fronds
+    const tubeGeo = new THREE.TubeGeometry(curve, seg, 0.022 + Math.random() * 0.025, 5, false);
+    const hue = 0.35 + Math.random() * 0.09; // green–teal
+    const light = 0.18 + Math.random() * 0.14;
+    const tubeMat = new THREE.MeshBasicMaterial({
+      color: new THREE.Color().setHSL(hue, 0.55, light),
+      transparent: true,
+      opacity: 0.65 + Math.random() * 0.25,
+    });
+    const tube = new THREE.Mesh(tubeGeo, tubeMat);
+    world.add(tube);
+
+    // Also add a thin spine line for sharper detail
+    const lineGeo = new THREE.BufferGeometry().setFromPoints(points);
+    const lineMat = new THREE.LineBasicMaterial({
+      color: new THREE.Color().setHSL(hue + 0.02, 0.7, light + 0.08),
+      transparent: true,
+      opacity: 0.5,
+    });
+    world.add(new THREE.Line(lineGeo, lineMat));
+
+    frondLines.push({ tube, angle, length, droop });
+  }
+
+  /* ── 2. FIBRE STRANDS (macro close-up layer) ──
+     Diagonal crossing strands — what you see when
+     camera zooms INTO the frond tips (panel 1).
+     These live at the frond-tip region, Y = 6–10, X/Z spread.
+  ── */
+  const STRAND_COUNT = mobile ? 16 : 40;
+  const strandObjs = [];
+  for (let s = 0; s < STRAND_COUNT; s++) {
+    // Random diagonal placement in the frond canopy zone
+    const startX = (Math.random() - 0.5) * 20;
+    const startZ = (Math.random() - 0.5) * 20;
+    const startY = 5 + Math.random() * 7;
+    const angle  = -0.5 + Math.random() * 0.4; // steep diagonal
+    const len    = 8 + Math.random() * 10;
+    const bend   = (Math.random() - 0.5) * 1.5;
+    const pts    = [];
+    const seg    = mobile ? 16 : 36;
+    for (let j = 0; j <= seg; j++) {
+      const t = j / seg;
+      pts.push(new THREE.Vector3(
+        startX + Math.cos(angle) * t * len + Math.sin(t * Math.PI) * bend,
+        startY + Math.sin(angle) * t * len * 0.4,
+        startZ + t * len * 0.3
+      ));
+    }
+    const curve = new THREE.CatmullRomCurve3(pts);
+    // Thicker for the macro close-up — these are what fill the screen on panel 1
+    const hue = 0.33 + Math.random() * 0.06;
+    const geo  = new THREE.TubeGeometry(curve, seg, 0.035 + Math.random() * 0.055, 5, false);
+    const mat  = new THREE.MeshBasicMaterial({
+      color: new THREE.Color().setHSL(hue, 0.45, 0.12 + Math.random() * 0.10),
+      transparent: true,
+      opacity: 0.5 + Math.random() * 0.35,
+    });
+    const mesh = new THREE.Mesh(geo, mat);
+    world.add(mesh);
+    strandObjs.push({ mesh, phase: Math.random() * Math.PI * 2, speed: 0.003 + Math.random() * 0.003 });
+  }
+
+  /* ── 3. TRUNK RINGS (trunk cross-section) ──
+     Stacked torus rings at centre, Y = -4 to -18.
+     Amber/ochre woven pattern — what fills frame on panel 2.
+  ── */
+  const RING_COUNT = mobile ? 20 : 44;
+  const trunkRings = [];
+  for (let i = 0; i < RING_COUNT; i++) {
+    const t    = i / RING_COUNT;
+    const y    = -4 - t * 14;
+    const r    = 0.9 + Math.sin(i * 0.85 + 0.3) * 0.35;
+    const thick = 0.055 + Math.random() * 0.06;
+    const hue  = 0.085 + t * 0.035; // ochre → amber
+    const light = 0.28 + t * 0.18;
+    const mesh = new THREE.Mesh(
+      new THREE.TorusGeometry(r, thick, 7, 52),
+      new THREE.MeshBasicMaterial({
+        color: new THREE.Color().setHSL(hue, 0.88, light),
+        transparent: true,
+        opacity: 0.55 + t * 0.35,
+      })
+    );
+    mesh.position.y = y;
+    mesh.rotation.x = Math.PI / 2 + (Math.random() - 0.5) * 0.2;
+    mesh.rotation.z = (Math.random() - 0.5) * 0.15;
+    world.add(mesh);
+    trunkRings.push({ mesh, rotSpeed: (Math.random() - 0.5) * 0.006 });
+  }
+
+  /* ── 4. DATE CLUSTER (fruit) ──
+     Dense warm amber sphere cluster at Y = -2, X = 2.
+     Visible on panel 4 (community) when camera tilts.
+  ── */
+  const clusterGeo = new THREE.BufferGeometry();
+  const CLN = mobile ? 180 : 550;
+  const clPos = new Float32Array(CLN * 3);
+  const clCol = new Float32Array(CLN * 3);
+  for (let i = 0; i < CLN; i++) {
+    const r  = Math.pow(Math.random(), 0.35) * 2.2;
+    const th = Math.random() * Math.PI * 2;
+    const ph = Math.acos(2 * Math.random() - 1);
+    clPos[i*3]   = 2.2 + r * Math.sin(ph) * Math.cos(th);
+    clPos[i*3+1] = -1.5 + r * Math.sin(ph) * Math.sin(th) * 0.7;
+    clPos[i*3+2] = r * Math.cos(ph) * 0.8;
+    clCol[i*3]   = 0.65 + Math.random() * 0.3;
+    clCol[i*3+1] = 0.25 + Math.random() * 0.22;
+    clCol[i*3+2] = 0.01 + Math.random() * 0.04;
+  }
+  clusterGeo.setAttribute('position', new THREE.BufferAttribute(clPos, 3));
+  clusterGeo.setAttribute('color',    new THREE.BufferAttribute(clCol, 3));
+  const cluster = new THREE.Points(clusterGeo, new THREE.PointsMaterial({
+    size: mobile ? 0.1 : 0.075, vertexColors: true, transparent: true, opacity: 0.88
+  }));
+  world.add(cluster);
+
+  /* ── 5. AMBIENT PARTICLE FIELD ──
+     Fills the negative space. Always visible but
+     very faint — gives depth to every panel.
+  ── */
+  const ambGeo = new THREE.BufferGeometry();
+  const AMB_N  = mobile ? 600 : 2000;
+  const ambPos = new Float32Array(AMB_N * 3);
+  const ambCol = new Float32Array(AMB_N * 3);
+  for (let i = 0; i < AMB_N; i++) {
+    ambPos[i*3]   = (Math.random() - 0.5) * 40;
+    ambPos[i*3+1] = -20 + Math.random() * 40;
+    ambPos[i*3+2] = -10 + Math.random() * 12;
+    const palette = [[0.42,0.76,0.29],[0.13,0.56,0.49],[0.05,0.28,0.22],[0.6,0.3,0.05]];
+    const c = palette[Math.floor(Math.random() * palette.length)];
+    ambCol[i*3]=c[0]*0.5; ambCol[i*3+1]=c[1]*0.5; ambCol[i*3+2]=c[2]*0.5;
+  }
+  ambGeo.setAttribute('position', new THREE.BufferAttribute(ambPos, 3));
+  ambGeo.setAttribute('color',    new THREE.BufferAttribute(ambCol, 3));
+  world.add(new THREE.Points(ambGeo, new THREE.PointsMaterial({
+    size: 0.04, vertexColors: true, transparent: true, opacity: 0.5
+  })));
+
+  /* ─────────────────────────────────────────────
+     CAMERA KEYFRAMES
+     
+     6 keyframes, one per panel (0–5).
+     Each keyframe defines where the camera sits
+     and where it looks (target).
+     
+     Matching each screenshot:
+     
+     KF0 HERO:     Far back, centred on crown.
+                   Fronds fill the frame symmetrically.
+     
+     KF1 ART:      Zoomed very close into one frond
+                   region. Camera slightly tilted.
+                   Dark diagonal fibres fill frame.
+     
+     KF2 MARKET:   Camera drops to trunk level,
+                   pulls slightly back. Stacked rings
+                   fill centre. Warm amber glow.
+     
+     KF3 SERVICES: Camera swings RIGHT and UP.
+                   Looking down-left at fronds.
+                   Fronds enter from top-right corner.
+     
+     KF4 COMMUNITY: Camera drops slightly, tilts.
+                   Date cluster glows in foreground.
+                   Fronds frame above and sides.
+     
+     KF5 JOIN:     Camera flies straight UP, looking
+                   DOWN. Full crown in top-down view.
+                   Near-black radial symmetry.
+  ───────────────────────────────────────────── */
+  const KEYFRAMES = [
+    // KF0 — HERO: full crown, camera back
+    {
+      pos:    new THREE.Vector3(0,    6,   14),
+      target: new THREE.Vector3(0,    5,    0),
+      fov: 55,
+    },
+    // KF1 — ART: extreme macro on fibres / frond tips
+    {
+      pos:    new THREE.Vector3(3.5,  9.5,  2.5),
+      target: new THREE.Vector3(1,    7.5,  0),
+      fov: 35,
+    },
+    // KF2 — MARKETPLACE: trunk level, camera front
+    {
+      pos:    new THREE.Vector3(0,   -8,    5.5),
+      target: new THREE.Vector3(0,   -8,    0),
+      fov: 50,
+    },
+    // KF3 — SERVICES: swung right, fronds from corner
+    {
+      pos:    new THREE.Vector3(-9,   5,    6),
+      target: new THREE.Vector3(-2,   5,    0),
+      fov: 55,
+    },
+    // KF4 — COMMUNITY: low angle, date cluster visible
+    {
+      pos:    new THREE.Vector3(-3,   1.5,  6),
+      target: new THREE.Vector3(1.5, -1,    0),
+      fov: 52,
+    },
+    // KF5 — JOIN: top-down, full radial crown
+    {
+      pos:    new THREE.Vector3(0,   22,    0.1),
+      target: new THREE.Vector3(0,    6,    0),
+      fov: 62,
+    },
+  ];
+
+  /* ─────────────────────────────────────────────
+     SCROLL → CAMERA DRIVER
+     
+     scrollProgress = raw 0→1 across whole page.
+     We map it to panelT = 0→(N-1) (float).
+     Between integer panel indices we smoothly
+     interpolate camera position, target, and FOV.
+     
+     This is the core of the alireza effect:
+     the camera never "cuts" — it flows.
+  ───────────────────────────────────────────── */
+  const N_PANELS = 6;
+  let rawScrollT  = 0;   // target (from scroll event)
+  let smoothScrollT = 0; // lerped value for butter-smooth motion
+
+  function getScrollT() {
+    const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+    return maxScroll > 0 ? window.scrollY / maxScroll : 0;
+  }
+
+  window.addEventListener('scroll', () => {
+    rawScrollT = getScrollT();
+  }, { passive: true });
+
+  /* Expose panel index so sidenav can stay in sync */
+  window.setScene = function(idx) {
+    // Smoothly scroll to that panel
+    const p = document.querySelectorAll('.panel')[idx];
+    if (p) p.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  /* ── Camera lerp helper ── */
+  function lerpV3(out, a, b, t) {
+    out.x = a.x + (b.x - a.x) * t;
+    out.y = a.y + (b.y - a.y) * t;
+    out.z = a.z + (b.z - a.z) * t;
+  }
+
+  /* Current interpolated camera state */
+  const camPos    = new THREE.Vector3(0, 6, 14);
+  const camTarget = new THREE.Vector3(0, 5,  0);
+  let   camFov    = 55;
+  let   camX = 0, camY = 0; // mouse parallax offset
+
+  /* ── Mouse parallax ── */
+  let mx = 0, my = 0;
+  if (!mobile) {
+    window.addEventListener('mousemove', e => {
+      mx = (e.clientX / innerWidth  - 0.5) * 2;
+      my = (e.clientY / innerHeight - 0.5) * 2;
+    }, { passive: true });
+  }
+
+  /* ─────────────────────────────────────────────
+     RENDER LOOP
+  ───────────────────────────────────────────── */
+  const clk = new THREE.Clock();
+  let running = true;
+  document.addEventListener('visibilitychange', () => { running = !document.hidden; });
+
+  function loop() {
+    requestAnimationFrame(loop);
+    if (!running) return;
+    const t = clk.getElapsedTime();
+
+    /* ── Smooth scroll lerp ──
+       Fast enough to feel responsive, slow enough
+       to feel cinematic (like GSAP ScrollSmoother).
+       0.07 = roughly matches alireza's smoothing. */
+    smoothScrollT += (rawScrollT - smoothScrollT) * 0.072;
+
+    /* ── Map smooth scroll to panel float ── */
+    const panelT  = smoothScrollT * (N_PANELS - 1);
+    const panelI  = Math.floor(panelT);           // lower keyframe index
+    const panelF  = panelT - panelI;               // 0→1 fraction toward next
+    const iA      = Math.min(panelI,     N_PANELS - 1);
+    const iB      = Math.min(panelI + 1, N_PANELS - 1);
+    const kfA     = KEYFRAMES[iA];
+    const kfB     = KEYFRAMES[iB];
+
+    /* Ease the fraction so camera accelerates out and decelerates in */
+    const ease    = panelF < 0.5
+      ? 2 * panelF * panelF
+      : 1 - Math.pow(-2 * panelF + 2, 2) / 2; // easeInOutQuad
+
+    /* ── Interpolate camera keyframes ── */
+    lerpV3(camPos,    kfA.pos,    kfB.pos,    ease);
+    lerpV3(camTarget, kfA.target, kfB.target, ease);
+    const targetFov = kfA.fov + (kfB.fov - kfA.fov) * ease;
+
+    /* ── Apply mouse parallax (small offset perpendicular to travel dir) ── */
+    camX += (mx * 0.4 - camX) * 0.04;
+    camY += (-my * 0.25 - camY) * 0.04;
+    cam.position.set(camPos.x + camX, camPos.y + camY, camPos.z);
+    cam.lookAt(camTarget.x + camX * 0.3, camTarget.y + camY * 0.2, camTarget.z);
+
+    /* ── FOV lerp (feel of zoom) ── */
+    camFov += (targetFov - camFov) * 0.05;
+    cam.fov = camFov;
+    cam.aspect = innerWidth / innerHeight;
+    cam.updateProjectionMatrix();
+
+    /* ── Background colour lerp ──
+       Each section has a different BG tone,
+       interpolated with the same ease as camera. */
+    const bgColors = [
+      new THREE.Color(0x020c06),  // hero: deep emerald
+      new THREE.Color(0x010608),  // art: near-black
+      new THREE.Color(0x030a02),  // marketplace: dark warm
+      new THREE.Color(0x010a0c),  // services: dark teal
+      new THREE.Color(0x020906),  // community: deep green
+      new THREE.Color(0x010508),  // join: near-black
+    ];
+    const bgA = bgColors[iA];
+    const bgB = bgColors[iB];
+    scene.background.r = bgA.r + (bgB.r - bgA.r) * ease;
+    scene.background.g = bgA.g + (bgB.g - bgA.g) * ease;
+    scene.background.b = bgA.b + (bgB.b - bgA.b) * ease;
+
+    /* ── Idle world animation ──
+       Very gentle — the camera movement is the
+       main animation; this just keeps it alive. */
+    world.rotation.y = Math.sin(t * 0.04) * 0.015;
+
+    /* ── Animate frond strands (breathing, rustling) ── */
+    strandObjs.forEach(({ mesh, phase, speed }) => {
+      mesh.rotation.z = Math.sin(t * speed + phase) * 0.03;
+    });
+
+    /* ── Animate trunk rings (slow spin) ── */
+    trunkRings.forEach(({ mesh, rotSpeed }) => {
+      mesh.rotation.z += rotSpeed;
+    });
+
+    /* ── Cluster pulse ── */
+    const cp = 1 + Math.sin(t * 0.9) * 0.04;
+    cluster.scale.setScalar(cp);
+
+    R.render(scene, cam);
+  }
+  loop();
+
+  /* ── Resize ── */
+  window.addEventListener('resize', () => {
+    R.setSize(innerWidth, innerHeight);
+    cam.aspect = innerWidth / innerHeight;
+    cam.updateProjectionMatrix();
+  }, { passive: true });
+  window.addEventListener('orientationchange', () => {
+    setTimeout(() => {
+      R.setSize(innerWidth, innerHeight);
+      cam.aspect = innerWidth / innerHeight;
+      cam.updateProjectionMatrix();
+    }, 250);
+  });
+
+})();
+})();
+
+/* ═══════════════════════════════════════════════
+   HERO ENTRANCE — words slide up on load
+═══════════════════════════════════════════════ */
+window.addEventListener('load', () => {
+  const els = document.querySelectorAll('#p0 .reveal-word, #p0 .reveal-block, #p0 .hero-eyebrow, #p0 .btn-pill, #p0 .hero-desc');
+  els.forEach((el, i) => {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(40px)';
+    el.style.transition = `opacity 1s cubic-bezier(0.16,1,0.3,1) ${0.2 + i * 0.08}s, transform 1s cubic-bezier(0.16,1,0.3,1) ${0.2 + i * 0.08}s`;
+    setTimeout(() => { el.style.opacity = '1'; el.style.transform = 'translateY(0)'; }, 50);
+  });
+});
+</script>
+
+<!-- Preserve auth modal from nexus-core.js -->
 <script src="nexus-core.js"></script>
-<script src="bg-engine.js"></script>
 </body>
 </html>
