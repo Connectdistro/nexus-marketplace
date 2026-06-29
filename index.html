@@ -965,34 +965,7 @@ body {
 }
 
 /* ── Marketplace panels ── */
-[data-theme="light"] .mp-flip-f {
-  background: rgba(232,237,231,0.82);
-  border-color: rgba(26,32,24,0.06);
-}
-[data-theme="light"] .mp-flip-b {
-  background: rgba(220,235,218,0.95);
-  border-color: rgba(109,196,75,0.3);
-}
-[data-theme="light"] .mp-fbtn {
-  border-color: rgba(26,32,24,0.14);
-  color: rgba(26,32,24,0.5);
-  background: rgba(26,32,24,0.02);
-}
-[data-theme="light"] .mp-fbtn:hover,
-[data-theme="light"] .mp-fbtn.active {
-  border-color: var(--green);
-  color: var(--green);
-}
-[data-theme="light"] .mp-fbtn.active {
-  background: var(--green);
-  color: #fff;
-}
-[data-theme="light"] .mp-search-wrap {
-  background: rgba(26,32,24,0.04);
-  border-color: rgba(26,32,24,0.1);
-}
-[data-theme="light"] .mp-search-wrap input { color: rgba(26,32,24,0.85); }
-[data-theme="light"] .mp-search-wrap svg { color: rgba(26,32,24,0.35); }
+
 
 /* ── Contact panel ── */
 [data-theme="light"] .ct-form-box {
@@ -1061,7 +1034,7 @@ body {
 .tog-moon, .tog-sun { transition-duration: inherit; }
 /* Fast elements stay fast */
 .snav-dot, #burger span, .btn-pill::after,
-.mp-flip-inner, .flip-inner { transition-duration: initial; }
+.flip-inner { transition-duration: initial; }
 
 /* ════════════════════════════════════════
    ENTRANCE ANIMATIONS
@@ -1153,18 +1126,8 @@ body {
   justify-content: center;
   align-items: flex-start;
   padding-left: 180px;
-  position: relative;
 }
-.mp-filter-row {
-  position: absolute;
-  bottom: 52px;
-  left: 180px;
-  right: 48px;
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-  align-items: center;
-}
+
 .mp-fbtn {
   padding: 8px 20px;
   border-radius: 100px;
@@ -1182,86 +1145,11 @@ body {
   background: rgba(109,196,75,0.06);
 }
 .mp-fbtn.active { color: #fff; background: var(--green); }
-.mp-search-wrap {
-  margin-left: auto;
-  display: flex; align-items: center; gap: 8px;
-  background: rgba(255,255,255,0.05);
-  border: 1px solid rgba(255,255,255,0.12);
-  border-radius: 100px; padding: 0 16px; height: 34px;
-  backdrop-filter: blur(8px);
-}
-.mp-search-wrap input {
-  background: none; border: none; outline: none;
-  color: #fff; font-family: 'Space Grotesk', sans-serif;
-  font-size: 12px; width: 140px;
-}
-.mp-search-wrap input::placeholder { color: rgba(255,255,255,0.3); }
 
-/* Grid panel */
-.mp-grid-panel {
-  align-items: flex-start;
-}
-.mp-grid-inner {
-  width: 100%;
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 80px 120px 80px 180px;
-}
-.mp-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 2px;
-}
-/* 3D marketplace flip cards */
-.mp-flip {
-  perspective: 1000px;
-  height: 290px;
-  cursor: pointer;
-}
-.mp-flip-inner {
-  position: relative; width: 100%; height: 100%;
-  transform-style: preserve-3d;
-  transition: transform 0.65s cubic-bezier(0.23,1,0.32,1);
-}
-.mp-flip:hover .mp-flip-inner,
-.mp-flip.flipped .mp-flip-inner { transform: rotateY(180deg); }
-.mp-flip-f, .mp-flip-b {
-  position: absolute; inset: 0;
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
-  padding: 28px; display: flex; flex-direction: column;
-}
-.mp-flip-f {
-  background: rgba(2,14,7,0.7);
-  border: 1px solid rgba(255,255,255,0.06);
-}
-.mp-flip-b {
-  transform: rotateY(180deg);
-  background: rgba(6,30,12,0.92);
-  border: 1px solid rgba(109,196,75,0.2);
-  justify-content: space-between;
-}
-.mp-swatch {
-  flex: 1; border-radius: 1px; margin-bottom: 16px;
-  background: linear-gradient(135deg, var(--c1,#6dc44b), var(--c2,#228f7e));
-  opacity: 0.8;
-}
-.mp-b-price { font-size: 20px; font-weight: 500; color: #fff; }
-.mp-b-btn {
-  padding: 9px 20px; border-radius: 100px;
-  background: var(--green); border: none;
-  color: #fff; font-family: 'Space Grotesk', sans-serif;
-  font-size: 11px; letter-spacing: 0.06em;
-  cursor: pointer; transition: opacity 0.2s;
-}
-.mp-b-btn:hover { opacity: 0.85; }
+
+
 
 /* Light mode marketplace */
-[data-theme="light"] .mp-flip-f { background: rgba(240,248,240,0.8); border-color: rgba(0,0,0,0.06); }
-[data-theme="light"] .mp-flip-b { background: rgba(230,248,230,0.95); border-color: rgba(109,196,75,0.35); }
-[data-theme="light"] .mp-fbtn { border-color: rgba(0,0,0,0.15); color: rgba(0,0,0,0.5); background: rgba(0,0,0,0.03); }
-[data-theme="light"] .mp-search-wrap { background: rgba(0,0,0,0.04); border-color: rgba(0,0,0,0.1); }
-[data-theme="light"] .mp-search-wrap input { color: #000; }
 
 /* ════ CONTACT PANEL (p8) ════ */
 .ct-panel {
@@ -1650,17 +1538,10 @@ select.ct-inp { cursor: pointer; appearance: none; }
 /* Mobile adjustments for new panels + footer */
 @media (max-width: 1024px) {
   .mp-section-hero { padding-left: 120px; }
-  .mp-filter-row { left: 120px; }
-  .mp-grid-inner { padding: 60px 60px 60px 120px; }
-  .mp-grid { grid-template-columns: repeat(2, 1fr); }
   .ct-inner { padding: 60px 60px 60px 120px; gap: 48px; }
 }
 @media (max-width: 768px) {
   .mp-section-hero { padding-left: 24px; }
-  .mp-filter-row { left: 24px; right: 20px; bottom: 24px; }
-  .mp-grid-inner { padding: 40px 20px; }
-  .mp-grid { grid-template-columns: 1fr; }
-  .mp-flip { height: 260px; }
   .ct-inner { padding: 40px 20px; grid-template-columns: 1fr; gap: 32px; }
   .ct-field-row { grid-template-columns: 1fr; }
   .ct-form-box { padding: 24px 18px; }
@@ -1768,9 +1649,9 @@ select.ct-inp { cursor: pointer; appearance: none; }
     <span class="snav-dot"></span><span class="snav-label">Join</span>
   </button>
   <button class="snav-item" onclick="goPanel(6)">
-    <span class="snav-dot"></span><span class="snav-label">Browse</span>
+    <span class="snav-dot"></span><span class="snav-label">Market</span>
   </button>
-  <button class="snav-item" onclick="goPanel(8)">
+  <button class="snav-item" onclick="goPanel(7)">
     <span class="snav-dot"></span><span class="snav-label">Contact</span>
   </button>
 </nav>
@@ -1969,8 +1850,8 @@ select.ct-inp { cursor: pointer; appearance: none; }
     <h2 class="join-title fade-up">Join the<br/><em>Marketplace</em></h2>
     <div class="join-links fade-up">
       <a href="#" onclick="goPanel(6);return false;">Browse Works</a>
-      <a href="#" onclick="goPanel(8);return false;">Sell Your Work</a>
-      <a href="#" onclick="goPanel(8);return false;">Contact Us</a>
+      <a href="#" onclick="goPanel(7);return false;">Sell Your Work</a>
+      <a href="#" onclick="goPanel(7);return false;">Contact Us</a>
     </div>
     <p class="fade-up" style="font-size:11px;color:rgba(255,255,255,0.25);letter-spacing:0.1em;margin-top:12px;">
       Payments secured by Stripe · SSL encrypted · PCI DSS compliant
@@ -1991,36 +1872,12 @@ select.ct-inp { cursor: pointer; appearance: none; }
       Art · Advertising · Entertainment — from creators in 140 countries.
     </p>
   </div>
-  <div class="mp-filter-row">
-    <button class="mp-fbtn active" onclick="mpFilter('All',this)">All</button>
-    <button class="mp-fbtn" onclick="mpFilter('Art',this)">Art</button>
-    <button class="mp-fbtn" onclick="mpFilter('Ad Service',this)">Ad Services</button>
-    <button class="mp-fbtn" onclick="mpFilter('Entertainment',this)">Entertainment</button>
-    <button class="mp-fbtn" onclick="mpFilter('Featured',this)">Featured</button>
-    <button class="mp-fbtn" onclick="mpFilter('New',this)">New</button>
-    <div class="mp-search-wrap">
-      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-      <input type="text" placeholder="Search works…" oninput="mpSearch(this.value)"/>
-    </div>
-  </div>
 </section>
 
 <!-- ════════════════════════════════════════════
-     PANEL 7 — PRODUCT GRID (3D flip cards)
+     PANEL 7 — CONTACT
 ════════════════════════════════════════════ -->
-<section class="panel mp-grid-panel" id="p7">
-  <div class="mp-grid-inner">
-    <div class="mp-grid" id="mpGrid"></div>
-    <div style="margin-top:36px;display:flex;gap:16px;flex-wrap:wrap;" class="fade-up">
-      <button class="btn-pill" onclick="goPanel(8)" style="font-size:12px;padding:10px 24px;">Contact Us →</button>
-    </div>
-  </div>
-</section>
-
-<!-- ════════════════════════════════════════════
-     PANEL 8 — CONTACT
-════════════════════════════════════════════ -->
-<section class="panel ct-panel" id="p8">
+<section class="panel ct-panel" id="p7">
   <div class="ct-inner">
     <!-- Left: info -->
     <div>
@@ -2142,7 +1999,7 @@ select.ct-inp { cursor: pointer; appearance: none; }
         <li><a href="#" onclick="goPanel(6);return false;">Marketplace</a></li>
         <li><a href="#" onclick="goPanel(3);return false;">Services</a></li>
         <li><a href="#" onclick="goPanel(4);return false;">Community</a></li>
-        <li><a href="#" onclick="goPanel(8);return false;">Contact</a></li>
+        <li><a href="#" onclick="goPanel(7);return false;">Contact</a></li>
       </ul>
     </div>
 
@@ -2152,7 +2009,7 @@ select.ct-inp { cursor: pointer; appearance: none; }
       <ul class="fbar-page-links">
         <li><a href="#" onclick="goPanel(6);return false;">Marketplace</a></li>
         <li><a href="#" onclick="goPanel(3);return false;">Services</a></li>
-        <li><a href="#" onclick="goPanel(8);return false;">Contact</a></li>
+        <li><a href="#" onclick="goPanel(7);return false;">Contact</a></li>
       </ul>
     </div>
 
@@ -2594,9 +2451,8 @@ applyTheme(getTheme());
     { z:  3.0, y:  0.3, fov: 46, rx: 0.06 },   // p3 services
     { z:  2.0, y: -0.2, fov: 42, rx: 0    },   // p4 community
     { z:  1.2, y:  0.0, fov: 38, rx: 0    },   // p5 join
-    { z:  2.2, y:  0.5, fov: 44, rx: 0.03 },   // p6 marketplace hero
-    { z:  3.5, y: -0.3, fov: 46, rx:-0.02 },   // p7 listings
-    { z:  5.0, y:  0.0, fov: 50, rx: 0    },   // p8 contact
+    { z:  2.2, y:  0.5, fov: 44, rx: 0.03 },   // p6 marketplace text
+    { z:  5.0, y:  0.0, fov: 50, rx: 0    },   // p7 contact
   ];
 
   let camZ = 10, camY = 0, camFov = 52, camRX = 0;
@@ -2697,76 +2553,6 @@ applyTheme(getTheme());
   });
 
 })();
-
-/* ════ MARKETPLACE PRODUCTS ════ */
-const PRODUCTS = [
-  {id:1, type:'Art',           title:'Chromatic Void #07',   creator:'Aisha Kamara',    price:'$420',   desc:'High-res generative art. 4K download. Lifetime commercial licence.',      c1:'#6dc44b',c2:'#228f7e',tag:['Featured']},
-  {id:2, type:'Ad Service',    title:'Brand Launch Pack',    creator:'Studio Meridian', price:'$1,200', desc:'6 creator placements, analytics, 30-day campaign management.',           c1:'#0258a3',c2:'#228f7e',tag:['Featured']},
-  {id:3, type:'Entertainment', title:'Solstice EP',          creator:'David Larsson',   price:'$18',    desc:'5-track ambient film score. WAV + stems. Sync licence.',                c1:'#8b4cf7',c2:'#0258a3',tag:['New']},
-  {id:4, type:'Art',           title:'Fractal Garden',       creator:'Teodor Voss',     price:'$550',   desc:'3D generative sculpture. Edition of 10. Certificate.',                   c1:'#228f7e',c2:'#6dc44b',tag:['Featured']},
-  {id:5, type:'Art',           title:'Neon Depths',          creator:'Yuki Tanaka',     price:'$280',   desc:'Abstract neon photography. 6 signed prints, edition of 25.',            c1:'#f97316',c2:'#6dc44b',tag:['New']},
-  {id:6, type:'Ad Service',    title:'Influencer Tier A',    creator:'ConnectDistro Ads',        price:'$3,500', desc:'1M+ reach, 3 platforms, fully managed influencer campaign.',             c1:'#0258a3',c2:'#6dc44b',tag:[]},
-  {id:7, type:'Entertainment', title:'Short Film: Meridian', creator:'Caro Blum',       price:'$45',    desc:'Award-winning 12-min short. 4K DRM-free + commentary.',                c1:'#ef4444',c2:'#8b4cf7',tag:['New']},
-  {id:8, type:'Art',           title:'Desert Wind Series',   creator:'Lena Müller',     price:'$890',   desc:'8 photographic prints, Sahara. Limited edition.',                       c1:'#eab308',c2:'#f97316',tag:['Featured']},
-  {id:9, type:'Ad Service',    title:'Podcast Placement',    creator:'ConnectDistro Ads',        price:'$900',   desc:'40k+ listeners/ep, 2 spots, read or produced.',                        c1:'#228f7e',c2:'#0258a3',tag:[]},
-];
-
-let mpFiltered = [...PRODUCTS];
-
-function mpCardHTML(p) {
-  return `<div class="mp-flip" onclick="this.classList.toggle('flipped')">
-    <div class="mp-flip-inner">
-      <div class="mp-flip-f">
-        <div class="mp-swatch" style="--c1:${p.c1};--c2:${p.c2}"></div>
-        <div class="p-card-t">${p.type}</div>
-        <div class="p-card-h" style="font-size:14px;font-weight:500;">${p.title}</div>
-        <div class="p-card-c">${p.creator}</div>
-        <div class="p-card-p">${p.price}</div>
-      </div>
-      <div class="mp-flip-b">
-        <div>
-          <div class="p-card-t">${p.type}${p.tag[0]?' · '+p.tag[0]:''}</div>
-          <div style="font-size:16px;font-weight:500;color:#fff;margin:8px 0;">${p.title}</div>
-          <div style="font-size:12px;line-height:1.7;color:rgba(255,255,255,0.6);">${p.desc}</div>
-        </div>
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:12px;border-top:1px solid rgba(255,255,255,0.08);">
-          <span class="mp-b-price">${p.price}</span>
-          <button class="mp-b-btn" onclick="event.stopPropagation();mpBuy(${p.id})">Buy Now</button>
-        </div>
-      </div>
-    </div>
-  </div>`;
-}
-
-function mpRender() {
-  const g = document.getElementById('mpGrid');
-  if (g) g.innerHTML = mpFiltered.map(mpCardHTML).join('');
-}
-
-window.mpFilter = function(cat, btn) {
-  document.querySelectorAll('.mp-fbtn').forEach(b => b.classList.remove('active'));
-  if (btn) btn.classList.add('active');
-  mpFiltered = cat === 'All' ? [...PRODUCTS]
-             : ['Featured','New'].includes(cat) ? PRODUCTS.filter(p=>p.tag.includes(cat))
-             : PRODUCTS.filter(p=>p.type===cat);
-  mpRender();
-};
-
-window.mpSearch = function(q) {
-  const s = q.toLowerCase();
-  mpFiltered = PRODUCTS.filter(p=>
-    p.title.toLowerCase().includes(s)||
-    p.creator.toLowerCase().includes(s)||
-    p.type.toLowerCase().includes(s)
-  );
-  mpRender();
-};
-
-window.mpBuy = function(id) {
-  if (window.NxModal) NxModal.open('login');
-};
-
-mpRender();
 
 /* ════ CONTACT FORM ════ */
 window.ctSubmit = function() {
