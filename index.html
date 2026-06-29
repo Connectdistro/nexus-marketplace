@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
@@ -668,29 +668,7 @@ body {
 }
 .join-links a:hover { opacity: 0.7; }
 
-/* ── FOOTER BAR ── */
-#fbar {
-  position: relative;
-  z-index: 10;
-  padding: 24px 40px;
-  border-top: 1px solid rgba(255,255,255,0.05);
-  background: rgba(2,14,7,0.92);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 12px;
-}
-.fbar-copy { font-size: 10px; color: rgba(255,255,255,0.25); letter-spacing: 0.08em; }
-.fbar-links { display: flex; gap: 24px; flex-wrap: wrap; }
-.fbar-links a {
-  font-size: 10px;
-  color: rgba(255,255,255,0.3);
-  text-decoration: none;
-  letter-spacing: 0.08em;
-  transition: color 0.2s;
-}
-.fbar-links a:hover { color: rgba(255,255,255,0.65); }
+/* footer CSS moved below */
 
 /* ── Theme toggle ── */
 #theme-tog {
@@ -731,9 +709,7 @@ body {
 [data-theme="light"] .menu-legal a { color: rgba(0,0,0,0.3); }
 [data-theme="light"] .menu-copy { color: rgba(0,0,0,0.25); }
 [data-theme="light"] .menu-bottom { border-color: rgba(0,0,0,0.07); }
-[data-theme="light"] #fbar { background: rgba(240,248,240,0.95); border-color: rgba(0,0,0,0.06); }
-[data-theme="light"] .fbar-copy { color: rgba(0,0,0,0.3); }
-[data-theme="light"] .fbar-links a { color: rgba(0,0,0,0.35); }
+/* old footer light overrides removed */
 [data-theme="light"] .snav-dot { background: rgba(0,0,0,0.2); }
 [data-theme="light"] .snav-label { color: rgba(0,0,0,0.4); }
 [data-theme="light"] #scroll-hint { filter: invert(1); }
@@ -787,7 +763,7 @@ body {
   .panel-inner { padding: 0 20px; grid-template-columns: 1fr; gap: 40px; }
   .p-cards { grid-template-columns: 1fr; }
   .join-links { flex-direction: column; gap: 20px; align-items: center; }
-  #fbar { flex-direction: column; text-align: center; padding: 20px; }
+  /* old fbar mobile override removed */
   #menu { padding: 80px 24px 40px; }
   .menu-sections { flex-direction: column; gap: 40px; }
   .menu-page-links a { font-size: clamp(28px, 9vw, 48px); }
@@ -846,6 +822,498 @@ body {
   flex: 1;
 }
 [data-theme="light"] .flip-desc { color: rgba(0,0,0,0.6); }
+
+/* ════ MARKETPLACE PANELS (p6, p7) ════ */
+/* Hero panel for marketplace section */
+.mp-section-hero {
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  padding-left: 180px;
+  position: relative;
+}
+.mp-filter-row {
+  position: absolute;
+  bottom: 52px;
+  left: 180px;
+  right: 48px;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.mp-fbtn {
+  padding: 8px 20px;
+  border-radius: 100px;
+  border: 1px solid rgba(255,255,255,0.18);
+  background: rgba(255,255,255,0.04);
+  backdrop-filter: blur(8px);
+  color: rgba(255,255,255,0.6);
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 11px; letter-spacing: 0.1em;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.mp-fbtn:hover, .mp-fbtn.active {
+  border-color: var(--green); color: var(--green);
+  background: rgba(109,196,75,0.06);
+}
+.mp-fbtn.active { color: #fff; background: var(--green); }
+.mp-search-wrap {
+  margin-left: auto;
+  display: flex; align-items: center; gap: 8px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 100px; padding: 0 16px; height: 34px;
+  backdrop-filter: blur(8px);
+}
+.mp-search-wrap input {
+  background: none; border: none; outline: none;
+  color: #fff; font-family: 'Space Grotesk', sans-serif;
+  font-size: 12px; width: 140px;
+}
+.mp-search-wrap input::placeholder { color: rgba(255,255,255,0.3); }
+
+/* Grid panel */
+.mp-grid-panel {
+  align-items: flex-start;
+}
+.mp-grid-inner {
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 80px 120px 80px 180px;
+}
+.mp-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2px;
+}
+/* 3D marketplace flip cards */
+.mp-flip {
+  perspective: 1000px;
+  height: 290px;
+  cursor: pointer;
+}
+.mp-flip-inner {
+  position: relative; width: 100%; height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 0.65s cubic-bezier(0.23,1,0.32,1);
+}
+.mp-flip:hover .mp-flip-inner,
+.mp-flip.flipped .mp-flip-inner { transform: rotateY(180deg); }
+.mp-flip-f, .mp-flip-b {
+  position: absolute; inset: 0;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  padding: 28px; display: flex; flex-direction: column;
+}
+.mp-flip-f {
+  background: rgba(2,14,7,0.7);
+  border: 1px solid rgba(255,255,255,0.06);
+}
+.mp-flip-b {
+  transform: rotateY(180deg);
+  background: rgba(6,30,12,0.92);
+  border: 1px solid rgba(109,196,75,0.2);
+  justify-content: space-between;
+}
+.mp-swatch {
+  flex: 1; border-radius: 1px; margin-bottom: 16px;
+  background: linear-gradient(135deg, var(--c1,#6dc44b), var(--c2,#228f7e));
+  opacity: 0.8;
+}
+.mp-b-price { font-size: 20px; font-weight: 500; color: #fff; }
+.mp-b-btn {
+  padding: 9px 20px; border-radius: 100px;
+  background: var(--green); border: none;
+  color: #fff; font-family: 'Space Grotesk', sans-serif;
+  font-size: 11px; letter-spacing: 0.06em;
+  cursor: pointer; transition: opacity 0.2s;
+}
+.mp-b-btn:hover { opacity: 0.85; }
+
+/* Light mode marketplace */
+[data-theme="light"] .mp-flip-f { background: rgba(240,248,240,0.8); border-color: rgba(0,0,0,0.06); }
+[data-theme="light"] .mp-flip-b { background: rgba(230,248,230,0.95); border-color: rgba(109,196,75,0.35); }
+[data-theme="light"] .mp-fbtn { border-color: rgba(0,0,0,0.15); color: rgba(0,0,0,0.5); background: rgba(0,0,0,0.03); }
+[data-theme="light"] .mp-search-wrap { background: rgba(0,0,0,0.04); border-color: rgba(0,0,0,0.1); }
+[data-theme="light"] .mp-search-wrap input { color: #000; }
+
+/* ════ CONTACT PANEL (p8) ════ */
+.ct-panel {
+  align-items: stretch;
+}
+.ct-inner {
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 80px 120px 80px 180px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: center;
+}
+.ct-channels { margin-top: 36px; display: flex; flex-direction: column; }
+.ct-channel {
+  padding: 16px 0;
+  border-top: 1px solid rgba(255,255,255,0.07);
+  display: flex; align-items: flex-start; gap: 14px;
+}
+.ct-channel:last-child { border-bottom: 1px solid rgba(255,255,255,0.07); }
+.ct-ch-icon {
+  width: 32px; height: 32px;
+  border: 1px solid rgba(255,255,255,0.12);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--green); font-size: 12px; flex-shrink: 0;
+}
+.ct-ch-lbl { font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(255,255,255,0.3); margin-bottom: 3px; }
+.ct-ch-val { font-size: 13px; color: rgba(255,255,255,0.75); text-decoration: none; transition: color 0.2s; }
+.ct-ch-val:hover { color: var(--green); }
+/* Contact form */
+.ct-form-box {
+  background: rgba(2,14,7,0.6);
+  border: 1px solid rgba(255,255,255,0.07);
+  padding: 36px 32px;
+  backdrop-filter: blur(10px);
+}
+.ct-form-ttl { font-size: 17px; font-weight: 500; color: #fff; margin-bottom: 6px; }
+.ct-form-sub { font-size: 12px; color: rgba(255,255,255,0.4); margin-bottom: 24px; }
+.ct-field { display: flex; flex-direction: column; gap: 5px; margin-bottom: 12px; }
+.ct-field label { font-size: 9px; letter-spacing: 0.16em; text-transform: uppercase; color: rgba(255,255,255,0.35); }
+.ct-field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.ct-inp {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: #fff; font-family: 'Space Grotesk', sans-serif;
+  font-size: 13px; padding: 10px 13px; outline: none; width: 100%;
+  transition: border-color 0.2s;
+}
+.ct-inp:focus { border-color: var(--green); }
+.ct-inp::placeholder { color: rgba(255,255,255,0.25); }
+textarea.ct-inp { resize: vertical; min-height: 80px; }
+select.ct-inp { cursor: pointer; appearance: none; }
+.ct-check {
+  display: flex; align-items: flex-start; gap: 9px; margin-bottom: 14px;
+}
+.ct-check input { accent-color: var(--green); margin-top: 2px; flex-shrink: 0; }
+.ct-check label { font-size: 11px; color: rgba(255,255,255,0.4); line-height: 1.6; }
+.ct-check a { color: var(--green); text-decoration: none; }
+.ct-err-msg { font-size: 11px; color: #ef4444; min-height: 14px; margin-bottom: 8px; }
+.ct-sub-btn {
+  width: 100%; height: 44px;
+  background: var(--green); border: none;
+  color: #fff; font-family: 'Space Grotesk', sans-serif;
+  font-size: 13px; font-weight: 500; letter-spacing: 0.06em;
+  cursor: pointer; display: flex; align-items: center;
+  justify-content: center; gap: 8px; transition: opacity 0.2s;
+}
+.ct-sub-btn:hover { opacity: 0.85; }
+.ct-sub-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.ct-ok-msg {
+  display: none; flex-direction: column;
+  align-items: center; text-align: center;
+  padding: 28px 0; gap: 10px;
+}
+.ct-ok-msg.show { display: flex; }
+.ct-ok-msg-icon { font-size: 34px; }
+.ct-ok-msg h3 { font-size: 17px; font-weight: 500; }
+.ct-ok-msg p { font-size: 12px; color: rgba(255,255,255,0.5); }
+/* Light mode contact */
+[data-theme="light"] .ct-form-box { background: rgba(240,248,240,0.85); border-color: rgba(0,0,0,0.07); }
+[data-theme="light"] .ct-form-ttl { color: rgba(0,0,0,0.88); }
+[data-theme="light"] .ct-form-sub { color: rgba(0,0,0,0.5); }
+[data-theme="light"] .ct-field label { color: rgba(0,0,0,0.4); }
+[data-theme="light"] .ct-inp { background: rgba(0,0,0,0.04); border-color: rgba(0,0,0,0.1); color: rgba(0,0,0,0.88); }
+[data-theme="light"] .ct-inp::placeholder { color: rgba(0,0,0,0.3); }
+[data-theme="light"] .ct-check label { color: rgba(0,0,0,0.5); }
+[data-theme="light"] .ct-channel { border-color: rgba(0,0,0,0.07); }
+[data-theme="light"] .ct-ch-icon { border-color: rgba(0,0,0,0.1); }
+[data-theme="light"] .ct-ch-lbl { color: rgba(0,0,0,0.3); }
+[data-theme="light"] .ct-ch-val { color: rgba(0,0,0,0.75); }
+
+/* ════════════════════════════════════════
+   FOOTER — full-viewport, exact alireza reference
+   
+   The footer IS the last full-screen view.
+   Occupies 100vh. Splits into two zones:
+   
+   MAIN AREA (flex:1):
+   ┌──────────────────────┬─────────────────────────┐
+   │  HOMEPAGE            │  OTHER PAGES            │
+   │  (label)             │  (label)                │
+   │                      │                         │
+   │  Art                 │  Marketplace            │
+   │  Marketplace         │                         │
+   │  Services            │  Services               │
+   │  Community           │                         │
+   │  Contact             │  Contact                │
+   └──────────────────────┴─────────────────────────┘
+   
+   BOTTOM STRIP (pinned to base):
+   ──────────────────────────────── rule ───────────
+   Privacy · Terms & Conditions  |  NEXUS  |  © 2025
+   ────────────────────────────────────────────────
+   LinkedIn  |  Telefax · Telephone  |  📍 Head Office
+════════════════════════════════════════ */
+
+/* Footer is full viewport height — the scroll terminator */
+#fbar {
+  position: relative;
+  z-index: 10;
+  min-height: 100vh;
+  background: rgba(2,10,5,0.98);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  display: flex;
+  flex-direction: column;
+  padding: 80px 64px 40px;
+  overflow: hidden;
+}
+
+/* ── MAIN AREA: two-column nav (like the fullscreen menu) ── */
+.fbar-main {
+  display: flex;
+  gap: 0;
+  flex: 1;
+  align-items: flex-start;
+  padding-bottom: 48px;
+}
+
+/* Left column — "HOMEPAGE" + section links */
+.fbar-col-left {
+  width: 380px;
+  flex-shrink: 0;
+  padding-right: 60px;
+}
+
+/* Right column — "OTHER PAGES" + big display links */
+.fbar-col-right {
+  flex: 1;
+}
+
+/* Column labels — exactly like menu: tiny all-caps, dim */
+.fbar-col-lbl {
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.3);
+  margin-bottom: 28px;
+  font-weight: 400;
+}
+
+/* Section links — left col: medium, dim */
+.fbar-nav-links {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.fbar-nav-links a {
+  font-size: 17px;
+  font-weight: 300;
+  color: rgba(255,255,255,0.45);
+  text-decoration: none;
+  letter-spacing: 0.01em;
+  line-height: 1.6;
+  display: block;
+  transition: color 0.2s;
+}
+.fbar-nav-links a:hover { color: rgba(255,255,255,0.85); }
+
+/* Page links — right col: huge display type, white, stacked */
+.fbar-page-links {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+.fbar-page-links li { overflow: hidden; }
+.fbar-page-links a {
+  font-size: clamp(52px, 6vw, 88px);
+  font-weight: 300;
+  letter-spacing: -0.02em;
+  color: rgba(255,255,255,0.88);
+  text-decoration: none;
+  line-height: 1.1;
+  display: block;
+  transition: color 0.2s, transform 0.25s cubic-bezier(0.16,1,0.3,1);
+}
+.fbar-page-links a:hover {
+  color: #fff;
+  transform: translateX(6px);
+}
+
+/* ── BOTTOM STRIP: two rows separated by a rule ── */
+.fbar-strip {
+  border-top: 1px solid rgba(255,255,255,0.08);
+  padding-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Strip row 1: Privacy · Terms  |  Company name  |  © Copyright */
+.fbar-strip-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.fbar-legal-links {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.fbar-legal-links a {
+  font-size: 11px;
+  letter-spacing: 0.05em;
+  color: rgba(255,255,255,0.4);
+  text-decoration: none;
+  transition: color 0.2s;
+  white-space: nowrap;
+}
+.fbar-legal-links a:hover { color: rgba(255,255,255,0.8); }
+.fbar-co-name {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.65);
+}
+.fbar-copy {
+  font-size: 11px;
+  letter-spacing: 0.05em;
+  color: rgba(255,255,255,0.3);
+}
+
+/* Rule between the two bottom rows */
+.fbar-strip-rule {
+  height: 1px;
+  background: rgba(255,255,255,0.07);
+}
+
+/* Strip row 2: LinkedIn  |  Telefax · Telephone  |  📍 Head Office */
+.fbar-strip-bot {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 24px;
+}
+
+/* LinkedIn — left */
+.fbar-social a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px; height: 32px;
+  border: 1px solid rgba(255,255,255,0.18);
+  border-radius: 50%;
+  color: rgba(255,255,255,0.5);
+  text-decoration: none;
+  transition: border-color 0.2s, color 0.2s;
+}
+.fbar-social a:hover { border-color: var(--green); color: var(--green); }
+.fbar-social svg { width: 13px; height: 13px; fill: currentColor; }
+
+/* Telefax + Telephone — centre */
+.fbar-contact {
+  display: flex;
+  gap: 56px;
+  align-items: flex-start;
+}
+.fbar-contact-item { display: flex; flex-direction: column; gap: 5px; }
+.fbar-contact-label {
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.28);
+}
+.fbar-contact-val {
+  font-size: 13px;
+  color: rgba(255,255,255,0.65);
+  letter-spacing: 0.02em;
+}
+
+/* Head Office — right */
+.fbar-address {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+.fbar-address-pin {
+  width: 30px; height: 30px;
+  border: 1px solid rgba(255,255,255,0.14);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  color: rgba(255,255,255,0.35); font-size: 12px;
+  flex-shrink: 0; margin-top: 1px;
+}
+.fbar-address-label {
+  font-size: 9px; letter-spacing: 0.18em;
+  text-transform: uppercase; color: rgba(255,255,255,0.28);
+  margin-bottom: 5px;
+}
+.fbar-address-val {
+  font-size: 13px; color: rgba(255,255,255,0.65);
+  line-height: 1.5;
+}
+
+/* ── LIGHT MODE ── */
+[data-theme="light"] #fbar {
+  background: rgba(234,244,234,0.99);
+}
+[data-theme="light"] .fbar-col-lbl { color: rgba(0,0,0,0.3); }
+[data-theme="light"] .fbar-nav-links a { color: rgba(0,0,0,0.45); }
+[data-theme="light"] .fbar-nav-links a:hover { color: rgba(0,0,0,0.85); }
+[data-theme="light"] .fbar-page-links a { color: rgba(0,0,0,0.82); }
+[data-theme="light"] .fbar-page-links a:hover { color: rgba(0,0,0,1); }
+[data-theme="light"] .fbar-strip { border-color: rgba(0,0,0,0.07); }
+[data-theme="light"] .fbar-strip-rule { background: rgba(0,0,0,0.06); }
+[data-theme="light"] .fbar-legal-links a { color: rgba(0,0,0,0.45); }
+[data-theme="light"] .fbar-co-name { color: rgba(0,0,0,0.6); }
+[data-theme="light"] .fbar-copy { color: rgba(0,0,0,0.3); }
+[data-theme="light"] .fbar-social a { border-color: rgba(0,0,0,0.15); color: rgba(0,0,0,0.4); }
+[data-theme="light"] .fbar-contact-label { color: rgba(0,0,0,0.3); }
+[data-theme="light"] .fbar-contact-val { color: rgba(0,0,0,0.7); }
+[data-theme="light"] .fbar-address-pin { border-color: rgba(0,0,0,0.12); color: rgba(0,0,0,0.35); }
+[data-theme="light"] .fbar-address-label { color: rgba(0,0,0,0.3); }
+[data-theme="light"] .fbar-address-val { color: rgba(0,0,0,0.7); }
+
+/* ── MOBILE ── */
+@media (max-width: 768px) {
+  #fbar { padding: 52px 24px 32px; min-height: 100svh; }
+  .fbar-main { flex-direction: column; gap: 40px; padding-bottom: 40px; }
+  .fbar-col-left { width: 100%; padding-right: 0; }
+  .fbar-page-links a { font-size: clamp(36px, 11vw, 56px); }
+  .fbar-strip-top { flex-direction: column; align-items: flex-start; gap: 8px; }
+  .fbar-co-name { display: none; }
+  .fbar-strip-bot { flex-direction: column; gap: 16px; }
+  .fbar-contact { gap: 28px; }
+}
+
+/* Mobile adjustments for new panels + footer */
+@media (max-width: 1024px) {
+  .mp-section-hero { padding-left: 120px; }
+  .mp-filter-row { left: 120px; }
+  .mp-grid-inner { padding: 60px 60px 60px 120px; }
+  .mp-grid { grid-template-columns: repeat(2, 1fr); }
+  .ct-inner { padding: 60px 60px 60px 120px; gap: 48px; }
+}
+@media (max-width: 768px) {
+  .mp-section-hero { padding-left: 24px; }
+  .mp-filter-row { left: 24px; right: 20px; bottom: 24px; }
+  .mp-grid-inner { padding: 40px 20px; }
+  .mp-grid { grid-template-columns: 1fr; }
+  .mp-flip { height: 260px; }
+  .ct-inner { padding: 40px 20px; grid-template-columns: 1fr; gap: 32px; }
+  .ct-field-row { grid-template-columns: 1fr; }
+  .ct-form-box { padding: 24px 18px; }
+  #fbar { grid-template-columns: 1fr; gap: 32px; padding: 36px 20px 28px; }
+}
 </style>
 </head>
 <body>
@@ -953,6 +1421,15 @@ body {
   </button>
   <button class="snav-item" onclick="goPanel(5)">
     <span class="snav-dot"></span><span class="snav-label">Join</span>
+  </button>
+  <button class="snav-item" onclick="goPanel(6)">
+    <span class="snav-dot"></span><span class="snav-label">Browse</span>
+  </button>
+  <button class="snav-item" onclick="goPanel(7)">
+    <span class="snav-dot"></span><span class="snav-label">Listings</span>
+  </button>
+  <button class="snav-item" onclick="goPanel(8)">
+    <span class="snav-dot"></span><span class="snav-label">Contact</span>
   </button>
 </nav>
 
@@ -1144,14 +1621,14 @@ body {
   </div>
 </section>
 
-<!-- PANEL 5: JOIN — exact alireza "Grow with us" -->
+<!-- PANEL 5: JOIN -->
 <section class="panel panel--join" id="p5">
   <div class="join-inner">
-    <h2 class="join-title fade-up">Join the<br/>Marketplace</h2>
+    <h2 class="join-title fade-up">Join the<br/><em>Marketplace</em></h2>
     <div class="join-links fade-up">
-      <a href="marketplace.html">Browse Works</a>
-      <a href="contact.html">Sell Your Work</a>
-      <a href="contact.html">Contact Us</a>
+      <a href="#" onclick="goPanel(6);return false;">Browse Works</a>
+      <a href="#" onclick="goPanel(8);return false;">Sell Your Work</a>
+      <a href="#" onclick="goPanel(8);return false;">Contact Us</a>
     </div>
     <p class="fade-up" style="font-size:11px;color:rgba(255,255,255,0.25);letter-spacing:0.1em;margin-top:12px;">
       Payments secured by Stripe · SSL encrypted · PCI DSS compliant
@@ -1159,17 +1636,238 @@ body {
   </div>
 </section>
 
-<!-- ════ FOOTER BAR ════ -->
+<!-- ════════════════════════════════════════════
+     PANEL 6 — MARKETPLACE HERO + FILTER BAR
+════════════════════════════════════════════ -->
+<section class="panel mp-section-hero" id="p6">
+  <div style="position:relative;z-index:2;">
+    <span class="p-label fade-up" style="display:block;margin-bottom:12px;">Marketplace</span>
+    <h2 class="p-title fade-up" style="font-size:clamp(40px,6vw,80px);">
+      89,000+<br/><em>Works Available</em>
+    </h2>
+    <p class="p-body fade-up" style="margin-top:20px;max-width:280px;">
+      Art · Advertising · Entertainment — from creators in 140 countries.
+    </p>
+  </div>
+  <div class="mp-filter-row">
+    <button class="mp-fbtn active" onclick="mpFilter('All',this)">All</button>
+    <button class="mp-fbtn" onclick="mpFilter('Art',this)">Art</button>
+    <button class="mp-fbtn" onclick="mpFilter('Ad Service',this)">Ad Services</button>
+    <button class="mp-fbtn" onclick="mpFilter('Entertainment',this)">Entertainment</button>
+    <button class="mp-fbtn" onclick="mpFilter('Featured',this)">Featured</button>
+    <button class="mp-fbtn" onclick="mpFilter('New',this)">New</button>
+    <div class="mp-search-wrap">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Search works…" oninput="mpSearch(this.value)"/>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════
+     PANEL 7 — PRODUCT GRID (3D flip cards)
+════════════════════════════════════════════ -->
+<section class="panel mp-grid-panel" id="p7">
+  <div class="mp-grid-inner">
+    <div class="mp-grid" id="mpGrid"></div>
+    <div style="margin-top:36px;display:flex;gap:16px;flex-wrap:wrap;" class="fade-up">
+      <button class="btn-pill" onclick="goPanel(8)" style="font-size:12px;padding:10px 24px;">Contact Us →</button>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════
+     PANEL 8 — CONTACT
+════════════════════════════════════════════ -->
+<section class="panel ct-panel" id="p8">
+  <div class="ct-inner">
+    <!-- Left: info -->
+    <div>
+      <span class="p-label fade-up">Contact</span>
+      <h2 class="p-title fade-up" style="margin-top:12px;">
+        Let's build<br/><em>something</em><br/>together
+      </h2>
+      <div class="ct-channels fade-up">
+        <div class="ct-channel">
+          <div class="ct-ch-icon">✉</div>
+          <div>
+            <p class="ct-ch-lbl">Email</p>
+            <a class="ct-ch-val" href="mailto:hello@nexus.market">hello@nexus.market</a>
+          </div>
+        </div>
+        <div class="ct-channel">
+          <div class="ct-ch-icon">◆</div>
+          <div>
+            <p class="ct-ch-lbl">Support</p>
+            <a class="ct-ch-val" href="mailto:support@nexus.market">support@nexus.market</a>
+          </div>
+        </div>
+        <div class="ct-channel">
+          <div class="ct-ch-icon">⚡</div>
+          <div>
+            <p class="ct-ch-lbl">Response time</p>
+            <span class="ct-ch-val">Within 24 hours</span>
+          </div>
+        </div>
+        <div class="ct-channel">
+          <div class="ct-ch-icon">🌍</div>
+          <div>
+            <p class="ct-ch-lbl">Headquarters</p>
+            <span class="ct-ch-val">Global · Remote-first</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Right: form -->
+    <div class="ct-form-box fade-up">
+      <p class="ct-form-ttl">Send a message</p>
+      <p class="ct-form-sub">We reply to every message within 24 hours.</p>
+      <div id="ctFormInner">
+        <div class="ct-field-row">
+          <div class="ct-field">
+            <label>First Name *</label>
+            <input class="ct-inp" type="text" id="ct-first" placeholder="Aisha"/>
+          </div>
+          <div class="ct-field">
+            <label>Last Name</label>
+            <input class="ct-inp" type="text" id="ct-last" placeholder="Kamara"/>
+          </div>
+        </div>
+        <div class="ct-field">
+          <label>Email *</label>
+          <input class="ct-inp" type="email" id="ct-email" placeholder="you@example.com"/>
+        </div>
+        <div class="ct-field">
+          <label>I'm a…</label>
+          <select class="ct-inp" id="ct-role">
+            <option value="">Select one</option>
+            <option>Creator / Artist</option>
+            <option>Brand / Advertiser</option>
+            <option>Entertainment Professional</option>
+            <option>Investor</option>
+            <option>Press / Media</option>
+          </select>
+        </div>
+        <div class="ct-field">
+          <label>Subject *</label>
+          <select class="ct-inp" id="ct-subject">
+            <option value="">Select subject</option>
+            <option>Selling on NEXUS</option>
+            <option>Running an ad campaign</option>
+            <option>Partnership inquiry</option>
+            <option>Technical support</option>
+            <option>Press inquiry</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="ct-field">
+          <label>Message *</label>
+          <textarea class="ct-inp" id="ct-msg" rows="3" placeholder="Tell us about your project…"></textarea>
+        </div>
+        <div class="ct-check">
+          <input type="checkbox" id="ct-consent"/>
+          <label for="ct-consent">I agree to the <a href="privacy.html">Privacy Policy</a> and consent to NEXUS contacting me.</label>
+        </div>
+        <p style="font-size:10px;color:rgba(255,255,255,0.2);margin-bottom:12px;letter-spacing:0.06em;">
+          Payments secured by Stripe · SSL encrypted · GDPR compliant
+        </p>
+        <p class="ct-err-msg" id="ctErr"></p>
+        <button class="ct-sub-btn" id="ctBtn" onclick="ctSubmit()">
+          <span id="ctBtnTxt">Send Message</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </button>
+      </div>
+      <div class="ct-ok-msg" id="ctOkMsg">
+        <div class="ct-ok-msg-icon">✅</div>
+        <h3>Message sent!</h3>
+        <p id="ctReplyEmail">We'll reply within 24 hours.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════ FOOTER — full viewport, ends the scroll ════ -->
 <footer id="fbar">
-  <p class="fbar-copy">© 2025 NEXUS Marketplace Inc. All rights reserved.</p>
-  <nav class="fbar-links">
-    <a href="privacy.html">Privacy</a>
-    <a href="terms.html">Terms</a>
-    <a href="refund.html">Refunds</a>
-    <a href="shipping.html">Shipping</a>
-    <a href="cancellation.html">Cancellation</a>
-    <a href="contact.html">Contact</a>
-  </nav>
+
+  <!-- MAIN AREA: two-column nav — mirrors the fullscreen menu exactly -->
+  <div class="fbar-main">
+
+    <!-- LEFT: "HOMEPAGE" label + section links (dim, medium size) -->
+    <div class="fbar-col-left">
+      <p class="fbar-col-lbl">Homepage</p>
+      <ul class="fbar-nav-links">
+        <li><a href="#" onclick="goPanel(0);return false;">Home</a></li>
+        <li><a href="#" onclick="goPanel(1);return false;">Art</a></li>
+        <li><a href="#" onclick="goPanel(6);return false;">Marketplace</a></li>
+        <li><a href="#" onclick="goPanel(3);return false;">Services</a></li>
+        <li><a href="#" onclick="goPanel(4);return false;">Community</a></li>
+        <li><a href="#" onclick="goPanel(8);return false;">Contact</a></li>
+      </ul>
+    </div>
+
+    <!-- RIGHT: "OTHER PAGES" label + big display links (huge, white) -->
+    <div class="fbar-col-right">
+      <p class="fbar-col-lbl">Other Pages</p>
+      <ul class="fbar-page-links">
+        <li><a href="#" onclick="goPanel(6);return false;">Marketplace</a></li>
+        <li><a href="#" onclick="goPanel(3);return false;">Services</a></li>
+        <li><a href="#" onclick="goPanel(8);return false;">Contact</a></li>
+      </ul>
+    </div>
+
+  </div>
+
+  <!-- BOTTOM STRIP: pinned to base -->
+  <div class="fbar-strip">
+
+    <!-- Row 1: Privacy · Terms  |  Company name  |  © Copyright -->
+    <div class="fbar-strip-top">
+      <nav class="fbar-legal-links">
+        <a href="privacy.html">Privacy</a>
+        <a href="terms.html">Terms &amp; Conditions</a>
+        <a href="refund.html">Refund Policy</a>
+        <a href="shipping.html">Shipping</a>
+        <a href="cancellation.html">Cancellation</a>
+      </nav>
+      <p class="fbar-co-name">NEXUS Marketplace Inc.</p>
+      <p class="fbar-copy">© Copyright NEXUS 2025</p>
+    </div>
+
+    <!-- Rule -->
+    <div class="fbar-strip-rule"></div>
+
+    <!-- Row 2: LinkedIn  |  Telefax · Telephone  |  📍 Head Office -->
+    <div class="fbar-strip-bot">
+
+      <div class="fbar-social">
+        <a href="https://linkedin.com" target="_blank" rel="noopener" aria-label="LinkedIn">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M4.98 3.5C4.98 4.88 3.87 6 2.5 6S.02 4.88.02 3.5C.02 2.12 1.13 1 2.5 1S4.98 2.12 4.98 3.5zM.5 8.5H4.5V24H.5V8.5zM8.5 8.5H12.3V10.3h.05c.53-1 1.83-2.05 3.77-2.05 4.03 0 4.78 2.65 4.78 6.1V24H16.9V15.2c0-2.12-.04-4.85-2.96-4.85-2.97 0-3.42 2.32-3.42 4.7V24H6.5V8.5h2z"/>
+          </svg>
+        </a>
+      </div>
+
+      <div class="fbar-contact">
+        <div class="fbar-contact-item">
+          <span class="fbar-contact-label">Telefax</span>
+          <span class="fbar-contact-val">+ 1 (555) 648 3923</span>
+        </div>
+        <div class="fbar-contact-item">
+          <span class="fbar-contact-label">Telephone</span>
+          <span class="fbar-contact-val">+ 1 (555) 647 2233</span>
+        </div>
+      </div>
+
+      <div class="fbar-address">
+        <div class="fbar-address-pin">📍</div>
+        <div>
+          <p class="fbar-address-label">Head Office</p>
+          <p class="fbar-address-val">P.O. Box 8, Digital District<br/>New York, NY 10001, USA</p>
+        </div>
+      </div>
+
+    </div>
+  </div><!-- /fbar-strip -->
+
 </footer>
 
 <script>
@@ -1521,12 +2219,15 @@ applyTheme(getTheme());
 
   /* Camera keyframes: {z, y, fov, rotY} */
   const CAM_KF = [
-    { z: 10.0, y:  0.0, fov: 52, rx: 0 },      // hero: full ∞ shape visible
-    { z:  7.0, y:  0.8, fov: 48, rx: 0.04 },   // art: zooming in
-    { z:  4.5, y: -0.5, fov: 44, rx: -0.03 },  // marketplace: inside the loop
-    { z:  3.0, y:  0.3, fov: 46, rx: 0.06 },   // services: travelling through
-    { z:  2.0, y: -0.2, fov: 42, rx: 0 },      // community: very close
-    { z:  1.2, y:  0.0, fov: 38, rx: 0 },      // join: particles fill the frame
+    { z: 10.0, y:  0.0, fov: 52, rx: 0    },   // p0 hero
+    { z:  7.0, y:  0.8, fov: 48, rx: 0.04 },   // p1 art
+    { z:  4.5, y: -0.5, fov: 44, rx:-0.03 },   // p2 marketplace preview
+    { z:  3.0, y:  0.3, fov: 46, rx: 0.06 },   // p3 services
+    { z:  2.0, y: -0.2, fov: 42, rx: 0    },   // p4 community
+    { z:  1.2, y:  0.0, fov: 38, rx: 0    },   // p5 join
+    { z:  2.2, y:  0.5, fov: 44, rx: 0.03 },   // p6 marketplace hero
+    { z:  3.5, y: -0.3, fov: 46, rx:-0.02 },   // p7 listings
+    { z:  5.0, y:  0.0, fov: 50, rx: 0    },   // p8 contact
   ];
 
   let camZ = 10, camY = 0, camFov = 52, camRX = 0;
@@ -1627,6 +2328,101 @@ applyTheme(getTheme());
   });
 
 })();
+
+/* ════ MARKETPLACE PRODUCTS ════ */
+const PRODUCTS = [
+  {id:1, type:'Art',           title:'Chromatic Void #07',   creator:'Aisha Kamara',    price:'$420',   desc:'High-res generative art. 4K download. Lifetime commercial licence.',      c1:'#6dc44b',c2:'#228f7e',tag:['Featured']},
+  {id:2, type:'Ad Service',    title:'Brand Launch Pack',    creator:'Studio Meridian', price:'$1,200', desc:'6 creator placements, analytics, 30-day campaign management.',           c1:'#0258a3',c2:'#228f7e',tag:['Featured']},
+  {id:3, type:'Entertainment', title:'Solstice EP',          creator:'David Larsson',   price:'$18',    desc:'5-track ambient film score. WAV + stems. Sync licence.',                c1:'#8b4cf7',c2:'#0258a3',tag:['New']},
+  {id:4, type:'Art',           title:'Fractal Garden',       creator:'Teodor Voss',     price:'$550',   desc:'3D generative sculpture. Edition of 10. Certificate.',                   c1:'#228f7e',c2:'#6dc44b',tag:['Featured']},
+  {id:5, type:'Art',           title:'Neon Depths',          creator:'Yuki Tanaka',     price:'$280',   desc:'Abstract neon photography. 6 signed prints, edition of 25.',            c1:'#f97316',c2:'#6dc44b',tag:['New']},
+  {id:6, type:'Ad Service',    title:'Influencer Tier A',    creator:'NexusAds',        price:'$3,500', desc:'1M+ reach, 3 platforms, fully managed influencer campaign.',             c1:'#0258a3',c2:'#6dc44b',tag:[]},
+  {id:7, type:'Entertainment', title:'Short Film: Meridian', creator:'Caro Blum',       price:'$45',    desc:'Award-winning 12-min short. 4K DRM-free + commentary.',                c1:'#ef4444',c2:'#8b4cf7',tag:['New']},
+  {id:8, type:'Art',           title:'Desert Wind Series',   creator:'Lena Müller',     price:'$890',   desc:'8 photographic prints, Sahara. Limited edition.',                       c1:'#eab308',c2:'#f97316',tag:['Featured']},
+  {id:9, type:'Ad Service',    title:'Podcast Placement',    creator:'NexusAds',        price:'$900',   desc:'40k+ listeners/ep, 2 spots, read or produced.',                        c1:'#228f7e',c2:'#0258a3',tag:[]},
+];
+
+let mpFiltered = [...PRODUCTS];
+
+function mpCardHTML(p) {
+  return `<div class="mp-flip" onclick="this.classList.toggle('flipped')">
+    <div class="mp-flip-inner">
+      <div class="mp-flip-f">
+        <div class="mp-swatch" style="--c1:${p.c1};--c2:${p.c2}"></div>
+        <div class="p-card-t">${p.type}</div>
+        <div class="p-card-h" style="font-size:14px;font-weight:500;">${p.title}</div>
+        <div class="p-card-c">${p.creator}</div>
+        <div class="p-card-p">${p.price}</div>
+      </div>
+      <div class="mp-flip-b">
+        <div>
+          <div class="p-card-t">${p.type}${p.tag[0]?' · '+p.tag[0]:''}</div>
+          <div style="font-size:16px;font-weight:500;color:#fff;margin:8px 0;">${p.title}</div>
+          <div style="font-size:12px;line-height:1.7;color:rgba(255,255,255,0.6);">${p.desc}</div>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:12px;border-top:1px solid rgba(255,255,255,0.08);">
+          <span class="mp-b-price">${p.price}</span>
+          <button class="mp-b-btn" onclick="event.stopPropagation();mpBuy(${p.id})">Buy Now</button>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function mpRender() {
+  const g = document.getElementById('mpGrid');
+  if (g) g.innerHTML = mpFiltered.map(mpCardHTML).join('');
+}
+
+window.mpFilter = function(cat, btn) {
+  document.querySelectorAll('.mp-fbtn').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  mpFiltered = cat === 'All' ? [...PRODUCTS]
+             : ['Featured','New'].includes(cat) ? PRODUCTS.filter(p=>p.tag.includes(cat))
+             : PRODUCTS.filter(p=>p.type===cat);
+  mpRender();
+};
+
+window.mpSearch = function(q) {
+  const s = q.toLowerCase();
+  mpFiltered = PRODUCTS.filter(p=>
+    p.title.toLowerCase().includes(s)||
+    p.creator.toLowerCase().includes(s)||
+    p.type.toLowerCase().includes(s)
+  );
+  mpRender();
+};
+
+window.mpBuy = function(id) {
+  if (window.NxModal) NxModal.open('login');
+};
+
+mpRender();
+
+/* ════ CONTACT FORM ════ */
+window.ctSubmit = function() {
+  const first   = (document.getElementById('ct-first').value||'').trim();
+  const email   = (document.getElementById('ct-email').value||'').trim();
+  const subject = document.getElementById('ct-subject').value;
+  const msg     = (document.getElementById('ct-msg').value||'').trim();
+  const consent = document.getElementById('ct-consent').checked;
+  const errEl   = document.getElementById('ctErr');
+  errEl.textContent = '';
+  if (!first)   { errEl.textContent='Please enter your first name.'; return; }
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { errEl.textContent='Enter a valid email.'; return; }
+  if (!subject) { errEl.textContent='Please select a subject.'; return; }
+  if (!msg)     { errEl.textContent='Please write a message.'; return; }
+  if (!consent) { errEl.textContent='Please agree to the privacy policy.'; return; }
+  const btn = document.getElementById('ctBtn');
+  const txt = document.getElementById('ctBtnTxt');
+  btn.disabled = true; txt.textContent = 'Sending…';
+  setTimeout(() => {
+    document.getElementById('ctFormInner').style.display = 'none';
+    document.getElementById('ctReplyEmail').textContent = 'We\'ll reply to ' + email + ' within 24 hours.';
+    document.getElementById('ctOkMsg').classList.add('show');
+  }, 900);
+};
+
 </script>
 
 <script src="nexus-nav.js"></script>
