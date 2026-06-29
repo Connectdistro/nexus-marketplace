@@ -1,3 +1,12 @@
+
+/* ── CRITICAL: Ensure body is always visible ── */
+(function() {
+  document.body.style.opacity = '1';
+  document.addEventListener('DOMContentLoaded', function() {
+    document.body.style.opacity = '1';
+    document.body.classList.add('nx-page-ready');
+  });
+})();
 /* ═══════════════════════════════════════════════
    NEXUS CORE — Shared across all pages
    Theme · Auth · Page Transitions · Nav
@@ -74,6 +83,7 @@ const PageTransition = {
 
   revealPage() {
     document.body.classList.add('nx-page-ready');
+    document.body.style.opacity = '1';
     const curtain = document.getElementById('nx-curtain');
     if (curtain) {
       curtain.classList.add('nx-curtain-out');
@@ -83,7 +93,8 @@ const PageTransition = {
     setTimeout(() => {
       document.body.style.opacity = '1';
       document.body.classList.add('nx-page-ready');
-    }, 2000);
+    document.body.style.opacity = '1';
+    }, 200);
   },
 
   leavePage(cb) {

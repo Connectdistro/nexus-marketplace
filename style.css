@@ -709,7 +709,8 @@ ul { list-style: none; }
 @keyframes curtainLoad { to { width: 100%; } }
 
 /* Body reveal */
-body { opacity: 0; transition: opacity 0.35s var(--ease); }
+/* body opacity managed by JS only — never set to 0 in CSS */
+body { opacity: 1; transition: opacity 0.35s var(--ease); }
 body.nx-page-ready { opacity: 1; }
 
 /* ── Auth Modal ── */
@@ -1648,8 +1649,26 @@ html, body {
 }
 
 /* ── ALL sections are transparent so canvas bleeds through ── */
+/* Solid fallback — if WebGL canvas fails, dark bg shows instead of white blank */
 body {
   background: #02080e;
+}
+/* Fallback solid colours per section if canvas/JS fails */
+.hero         { background: #02080e !important; }
+.categories   { background: #01060a !important; }
+.marketplace  { background: #020804 !important; }
+.xr-promo     { background: #010608 !important; }
+.testimonials { background: #010608 !important; }
+.footer       { background: #010408 !important; }
+/* Override back to transparent ONLY when canvas is confirmed working */
+body.bg-ready .hero,
+body.bg-ready .section,
+body.bg-ready .categories,
+body.bg-ready .marketplace,
+body.bg-ready .xr-promo,
+body.bg-ready .testimonials,
+body.bg-ready .footer {
+  background: transparent !important;
 }
 
 .hero,
@@ -1709,7 +1728,7 @@ body {
     radial-gradient(ellipse 90% 70% at 80% 80%,
       rgba(1,14,18,0.15) 0%,
       rgba(1,6,8,0.78) 55%,
-      rgba(1,4,6,0.95) 100%);
+      rgba(1,4,6,0.82) 100%);
 }
 .scene-overlay--testimonials { background: var(--scene-xr-grad, rgba(1,6,8,0.8)); }
 
@@ -1801,3 +1820,19 @@ body {
 .categories { padding: 120px 0; }
 .marketplace { padding: 120px 0; }
 .testimonials { padding: 120px 0; }
+
+/* ── Content z-index safety — always above scene overlays ── */
+.section-header,
+.product-grid,
+.filter-bar,
+.marketplace-cta,
+.category-grid,
+.testimonial-track,
+.footer-inner,
+.footer-bottom,
+.xr-content { position: relative; z-index: 2; }
+
+/* ── Scene overlay max opacity — never block content ── */
+.scene-overlay {
+  max-opacity: 0.85;
+}

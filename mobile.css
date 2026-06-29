@@ -1086,3 +1086,83 @@
     display: block;
   }
 }
+
+/* ═══════════════════════════════════════════════
+   NEXUS v5 MOBILE — Global Canvas Adjustments
+═══════════════════════════════════════════════ */
+@media (max-width: 768px) {
+
+  /* Global background canvas */
+  #globalBgCanvas {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100% !important;
+    height: 100% !important;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  /* Hero: transparent, canvas behind it */
+  .hero {
+    background: transparent !important;
+    min-height: 100svh;
+    position: relative;
+  }
+
+  /* Hero overlay on mobile — stronger vignette */
+  .hero-overlay {
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 110% 80% at 50% 50%,
+        transparent 0%,
+        rgba(3,6,15,0.60) 50%,
+        rgba(3,6,15,0.88) 80%,
+        var(--bg) 100%
+      );
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  /* All sections transparent on mobile */
+  .section,
+  .xr-promo,
+  .testimonials {
+    background: transparent !important;
+  }
+
+  /* Section backdrop panels on mobile */
+  .section::before,
+  .xr-promo::before,
+  .testimonials::before {
+    background: rgba(3,6,15,0.75);
+  }
+
+  /* Footer stays opaque on mobile */
+  .footer {
+    background: rgba(3,6,15,0.95) !important;
+  }
+
+  /* Glass cards on mobile */
+  .category-card {
+    background: rgba(7,12,24,0.72) !important;
+    backdrop-filter: blur(28px) saturate(180%);
+    -webkit-backdrop-filter: blur(28px) saturate(180%);
+  }
+  .product-face {
+    background: rgba(7,12,24,0.78) !important;
+    backdrop-filter: blur(20px);
+  }
+
+  /* Keep content above canvas */
+  .hero-content { z-index: 3; position: relative; }
+}
+
+/* ── BG-READY: Remove fallback backgrounds when canvas confirmed ── */
+body.bg-ready .hero         { background: transparent !important; }
+body.bg-ready .section      { background: transparent !important; }
+body.bg-ready .categories   { background: transparent !important; }
+body.bg-ready .marketplace  { background: transparent !important; }
+body.bg-ready .xr-promo     { background: transparent !important; }
+body.bg-ready .testimonials { background: transparent !important; }
+body.bg-ready .footer       { background: transparent !important; }

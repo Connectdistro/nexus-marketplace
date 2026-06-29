@@ -22,6 +22,13 @@
 'use strict';
 
 (function NexusBG() {
+  // Wait for DOM
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', NexusBGInit);
+    return;
+  }
+  NexusBGInit();
+  function NexusBGInit() {
   if (!window.THREE) return;
   const canvas = document.getElementById('globalBg');
   if (!canvas) return;
@@ -437,5 +444,12 @@
       cam.updateProjectionMatrix();
     }, 250);
   });
+
+
+  // Signal CSS that canvas is confirmed working — reveal transparent sections
+  canvas.style.opacity = '1';
+  document.body.classList.add('bg-ready');
+  console.log('[NEXUS BG] Canvas ready — bg-ready class added');
+  } // end NexusBGInit
 
 })();
