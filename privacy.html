@@ -1,171 +1,1309 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="dark">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>Privacy Policy — NEXUS Marketplace</title>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Syne:wght@400;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css" />
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+<title>Privacy Policy — ConnectDistro</title>
+<meta name="description" content="How ConnectDistro collects, uses, and protects your personal information."/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+<style>
+/* ════════════════════════════════════════
+   RESET — identical to index.html
+════════════════════════════════════════ */
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+:root {
+  --green:  #6dc44b;
+  --teal:   #228f7e;
+  --blue:   #0258a3;
+  --white:  #ffffff;
+  --dim:    rgba(255,255,255,0.45);
+  --dimmer: rgba(255,255,255,0.22);
+  --bg:     #020e07;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--white);
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 300;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ════════════════════════════════════════
+   FIXED CANVAS — the only background
+════════════════════════════════════════ */
+#c {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  width: 100vw;
+  height: 100vh;
+  display: block;
+}
+
+/* ════════════════════════════════════════
+   HEADER — identical to index.html
+════════════════════════════════════════ */
+#hdr {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 200;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  padding: 0 40px;
+}
+
+.hdr-logo {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  text-decoration: none;
+  color: var(--white);
+  flex-shrink: 0;
+}
+
+.logo-icon {
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.logo-icon img {
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
+  opacity: 0.95;
+}
+
+.hdr-divider {
+  width: 1px;
+  height: 32px;
+  background: rgba(255,255,255,0.18);
+  margin: 0 18px;
+  flex-shrink: 0;
+}
+
+.hdr-name {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.hdr-name-top {
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.9);
+  line-height: 1;
+}
+.hdr-name-sub {
+  font-size: 9px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.35);
+  line-height: 1;
+}
+
+.hdr-spacer { flex: 1; }
+
+.hdr-right {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  flex-shrink: 0;
+}
+
+/* Hamburger — 3D staged morph, identical to index.html */
+#burger {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  width: 26px;
+  height: 22px;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0;
+  flex-shrink: 0;
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1);
+}
+#burger:active { transform: scale(0.88); }
+
+#burger span {
+  display: block;
+  height: 1px;
+  background: rgba(255,255,255,0.82);
+  border-radius: 1px;
+  transform-origin: center center;
+  transition:
+    transform  0.42s cubic-bezier(0.34,1.2,0.64,1),
+    opacity    0.28s ease,
+    width      0.3s  cubic-bezier(0.16,1,0.3,1),
+    background 0.3s  ease;
+  will-change: transform, opacity;
+}
+
+#burger span:nth-child(1) { width: 100%; }
+#burger span:nth-child(2) { width: 70%; }
+#burger span:nth-child(3) { width: 100%; }
+
+#burger.open span:nth-child(1) {
+  transform: translateY(6px) rotate(45deg);
+  width: 100%;
+  background: rgba(255,255,255,0.9);
+}
+#burger.open span:nth-child(2) {
+  opacity: 0;
+  width: 0%;
+}
+#burger.open span:nth-child(3) {
+  transform: translateY(-6px) rotate(-45deg);
+  width: 100%;
+  transition-delay: 0.04s;
+  background: rgba(255,255,255,0.9);
+}
+
+[data-theme="light"] #burger span { background: rgba(0,0,0,0.72); }
+[data-theme="light"] #burger.open span:nth-child(1),
+[data-theme="light"] #burger.open span:nth-child(3) { background: rgba(0,0,0,0.88); }
+
+/* ════════════════════════════════════════
+   FULLSCREEN MENU — identical to index.html
+════════════════════════════════════════ */
+#menu {
+  position: fixed;
+  inset: 0;
+  z-index: 190;
+  background: rgba(2,10,5,0.96);
+  display: flex;
+  flex-direction: column;
+  padding: 100px 60px 50px;
+  overflow: auto;
+  opacity: 0;
+  pointer-events: none;
+  perspective: 1200px;
+  transform-origin: center top;
+  transform: rotateX(-10deg) scale(0.98);
+  transition:
+    opacity 0.45s cubic-bezier(0.16,1,0.3,1),
+    transform 0.5s cubic-bezier(0.16,1,0.3,1);
+  will-change: opacity, transform;
+}
+#menu.open {
+  opacity: 1;
+  pointer-events: all;
+  transform: rotateX(0deg) scale(1);
+}
+#menu.closing {
+  opacity: 0;
+  pointer-events: none;
+  transform: rotateX(6deg) scale(1.01);
+  transition:
+    opacity 0.35s cubic-bezier(0.4,0,1,1),
+    transform 0.38s cubic-bezier(0.4,0,1,1);
+}
+
+.menu-sections {
+  display: flex;
+  gap: 80px;
+  flex: 1;
+  align-items: flex-start;
+}
+
+.menu-col-left { min-width: 260px; }
+.menu-col-label {
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.28);
+  margin-bottom: 24px;
+}
+
+.menu-section-links { list-style: none; margin-bottom: 40px; }
+.menu-section-links li { overflow: hidden; margin-bottom: 2px; }
+.menu-section-links a {
+  display: block;
+  font-size: 17px;
+  font-weight: 300;
+  color: rgba(255,255,255,0.45);
+  text-decoration: none;
+  letter-spacing: 0.01em;
+  padding: 7px 0;
+  transform: translateY(110%);
+  opacity: 0;
+  transition:
+    transform 0.55s cubic-bezier(0.16,1,0.3,1),
+    opacity 0.45s ease,
+    color 0.25s ease;
+}
+.menu-section-links a:hover { color: var(--green); }
+#menu.open .menu-section-links a { transform: translateY(0); opacity: 1; }
+#menu.open .menu-section-links li:nth-child(1) a { transition-delay: 0.12s; }
+#menu.open .menu-section-links li:nth-child(2) a { transition-delay: 0.17s; }
+#menu.open .menu-section-links li:nth-child(3) a { transition-delay: 0.22s; }
+#menu.open .menu-section-links li:nth-child(4) a { transition-delay: 0.27s; }
+#menu.open .menu-section-links li:nth-child(5) a { transition-delay: 0.32s; }
+#menu.closing .menu-section-links a {
+  transform: translateY(110%);
+  opacity: 0;
+  transition: transform 0.22s ease, opacity 0.18s ease;
+}
+
+.menu-col-right {}
+.menu-page-links { list-style: none; }
+.menu-page-links li { overflow: hidden; margin-bottom: 4px; }
+.menu-page-links a {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-weight: 300;
+  font-size: clamp(44px, 5.5vw, 80px);
+  color: rgba(255,255,255,0.88);
+  letter-spacing: -0.025em;
+  text-decoration: none;
+  line-height: 1.05;
+  transform: translateY(100%);
+  opacity: 0;
+  transition: transform 0.55s cubic-bezier(0.16,1,0.3,1), opacity 0.4s ease, color 0.2s;
+}
+.menu-page-links a::before {
+  content: '';
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--green);
+  opacity: 0;
+  transition: opacity 0.2s;
+  flex-shrink: 0;
+}
+.menu-page-links a:hover { color: var(--white); }
+.menu-page-links a:hover::before { opacity: 1; }
+#menu.open .menu-page-links a { transform: translateY(0); opacity: 1; }
+#menu.open .menu-page-links li:nth-child(1) a { transition-delay: 0.10s; }
+#menu.open .menu-page-links li:nth-child(2) a { transition-delay: 0.17s; }
+#menu.open .menu-page-links li:nth-child(3) a { transition-delay: 0.24s; }
+#menu.open .menu-page-links li:nth-child(4) a { transition-delay: 0.31s; }
+#menu.closing .menu-page-links a {
+  transform: translateY(110%);
+  opacity: 0;
+  transition: transform 0.2s ease, opacity 0.16s ease;
+}
+
+.menu-bottom {
+  border-top: 1px solid rgba(255,255,255,0.07);
+  padding-top: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+.menu-legal {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+.menu-legal a {
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.28);
+  text-decoration: none;
+  transition: color 0.25s ease;
+}
+.menu-legal a:hover { color: rgba(255,255,255,0.7); }
+.menu-copy {
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0.18em;
+  color: rgba(255,255,255,0.22);
+}
+
+/* ════════════════════════════════════════
+   Theme toggle — identical to index.html
+════════════════════════════════════════ */
+#theme-tog {
+  width: 48px; height: 26px;
+  border-radius: 100px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.09);
+  position: relative; cursor: pointer;
+  flex-shrink: 0; outline: none;
+  transition: background 1.1s ease,
+              border-color 1.1s ease,
+              box-shadow 0.8s ease;
+}
+#theme-tog:hover {
+  background: rgba(255,255,255,0.06);
+  border-color: rgba(255,255,255,0.18);
+  box-shadow: 0 0 0 3px rgba(255,255,255,0.04);
+}
+#theme-tog::before {
+  content: '';
+  position: absolute; top: 4px; left: 4px;
+  width: 16px; height: 16px; border-radius: 50%;
+  background: rgba(255,255,255,0.55);
+  transition: transform  1.0s cubic-bezier(0.4,0,0.2,1),
+              background 1.1s ease,
+              opacity    0.9s ease;
+  opacity: 0.7;
+}
+[data-theme="light"] #theme-tog {
+  background: rgba(109,196,75,0.08);
+  border-color: rgba(109,196,75,0.2);
+}
+[data-theme="light"] #theme-tog:hover {
+  background: rgba(109,196,75,0.13);
+  border-color: rgba(109,196,75,0.35);
+}
+[data-theme="light"] #theme-tog::before {
+  transform: translateX(22px);
+  background: var(--green);
+  opacity: 1;
+}
+.tog-moon, .tog-sun {
+  position: absolute; top: 50%;
+  font-size: 9px; pointer-events: none;
+  transition: opacity 1.1s ease, transform 1.1s cubic-bezier(0.4,0,0.2,1);
+}
+.tog-moon { left: 4px; transform: translateY(-50%) scale(1); opacity: 0.5; }
+.tog-sun  { right: 4px; transform: translateY(-50%) scale(0.75); opacity: 0.18; }
+[data-theme="light"] .tog-moon { opacity: 0.15; transform: translateY(-50%) scale(0.75); }
+[data-theme="light"] .tog-sun  { opacity: 0.75; transform: translateY(-50%) scale(1); }
+
+/* ════════════════════════════════════════
+   POLICY PAGE CONTENT — new, matches
+   the visual language of the panel system
+   (p-label / p-title / p-body typography)
+════════════════════════════════════════ */
+.policy-main {
+  position: relative;
+  z-index: 10;
+  padding-top: 160px;
+}
+
+.policy-hero {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 0 24px 60px;
+  text-align: left;
+}
+.policy-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.3);
+  margin-bottom: 24px;
+}
+.policy-eyebrow .pulse {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--green);
+  animation: pulse 2.2s ease infinite;
+}
+@keyframes pulse {
+  0%,100% { opacity:1; transform:scale(1); }
+  50%      { opacity:0.4; transform:scale(1.5); }
+}
+.policy-hero h1 {
+  font-weight: 300;
+  font-size: clamp(40px, 6vw, 68px);
+  line-height: 1.02;
+  letter-spacing: -0.025em;
+  color: rgba(255,255,255,0.92);
+  margin-bottom: 18px;
+}
+.policy-hero p {
+  font-size: 15px;
+  font-weight: 300;
+  line-height: 1.7;
+  color: rgba(255,255,255,0.45);
+  max-width: 520px;
+}
+
+.policy-content {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 0 24px 140px;
+  background: rgba(2,14,7,0.55);
+  border-top: 1px solid rgba(255,255,255,0.07);
+}
+.policy-updated {
+  display: block;
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.28);
+  padding-top: 40px;
+  margin-bottom: 40px;
+}
+.policy-content h2 {
+  font-weight: 400;
+  font-size: 13px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--green);
+  margin: 48px 0 16px;
+}
+.policy-content h2:first-of-type { margin-top: 0; }
+.policy-content p {
+  font-size: 15px;
+  font-weight: 300;
+  line-height: 1.8;
+  color: rgba(255,255,255,0.55);
+  margin-bottom: 14px;
+  letter-spacing: 0.01em;
+}
+.policy-content ul {
+  margin: 0 0 16px 0;
+  padding-left: 20px;
+}
+.policy-content li {
+  font-size: 15px;
+  font-weight: 300;
+  line-height: 1.8;
+  color: rgba(255,255,255,0.55);
+  margin-bottom: 8px;
+}
+.policy-content strong {
+  color: rgba(255,255,255,0.82);
+  font-weight: 500;
+}
+.policy-content a {
+  color: var(--green);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(109,196,75,0.3);
+  transition: color 0.25s ease, border-color 0.25s ease;
+}
+.policy-content a:hover {
+  color: #fff;
+  border-color: rgba(255,255,255,0.4);
+}
+
+/* fade-up entrance, identical mechanism to index.html */
+.fade-up {
+  opacity: 0;
+  transform: translateY(36px);
+  transition: opacity 0.9s cubic-bezier(0.16,1,0.3,1), transform 0.9s cubic-bezier(0.16,1,0.3,1);
+}
+.fade-up.in { opacity: 1; transform: translateY(0); }
+
+/* ════════════════════════════════════════
+   LIGHT THEME — identical variables to index.html
+════════════════════════════════════════ */
+[data-theme="light"] body { background: #f0f4ef; color: #1a2018; }
+[data-theme="light"] #c { filter: invert(1) hue-rotate(165deg) brightness(1.05) saturate(0.9); }
+
+[data-theme="light"] #hdr { background: rgba(240,244,239,0.12); }
+[data-theme="light"] .hdr-divider { background: rgba(26,32,24,0.1); }
+[data-theme="light"] .hdr-name-top { color: rgba(26,32,24,0.82); }
+[data-theme="light"] .hdr-name-sub { color: rgba(26,32,24,0.32); }
+
+[data-theme="light"] #menu { background: rgba(240,244,239,0.97); }
+[data-theme="light"] .menu-col-label { color: rgba(26,32,24,0.28); }
+[data-theme="light"] .menu-section-links a { color: rgba(26,32,24,0.45); }
+[data-theme="light"] .menu-section-links a:hover { color: var(--green); }
+[data-theme="light"] .menu-page-links a { color: rgba(26,32,24,0.82); }
+[data-theme="light"] .menu-page-links a:hover { color: rgba(26,32,24,1); }
+[data-theme="light"] .menu-legal a { color: rgba(26,32,24,0.28); }
+[data-theme="light"] .menu-legal a:hover { color: rgba(26,32,24,0.65); }
+[data-theme="light"] .menu-copy { color: rgba(26,32,24,0.22); }
+[data-theme="light"] .menu-bottom { border-color: rgba(26,32,24,0.07); }
+
+[data-theme="light"] .policy-eyebrow { color: rgba(26,32,24,0.3); }
+[data-theme="light"] .policy-hero h1 { color: rgba(26,32,24,0.88); }
+[data-theme="light"] .policy-hero p { color: rgba(26,32,24,0.5); }
+[data-theme="light"] .policy-content { background: rgba(232,237,231,0.7); border-color: rgba(26,32,24,0.07); }
+[data-theme="light"] .policy-updated { color: rgba(26,32,24,0.32); }
+[data-theme="light"] .policy-content h2 { color: var(--green); }
+[data-theme="light"] .policy-content p,
+[data-theme="light"] .policy-content li { color: rgba(26,32,24,0.62); }
+[data-theme="light"] .policy-content strong { color: rgba(26,32,24,0.88); }
+[data-theme="light"] .policy-content a { color: var(--green); border-color: rgba(109,196,75,0.35); }
+[data-theme="light"] .policy-content a:hover { color: rgba(26,32,24,0.9); border-color: rgba(26,32,24,0.4); }
+
+/* ════════════════════════════════════════
+   FOOTER — identical to index.html
+════════════════════════════════════════ */
+#fbar {
+  position: relative;
+  z-index: 10;
+  min-height: 100vh;
+  background: rgba(2,10,5,0.72);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  display: flex;
+  flex-direction: column;
+  padding: 80px 64px 40px;
+  overflow: hidden;
+}
+#fbar::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(2,10,5,0.1) 0%,
+    rgba(2,10,5,0.4) 60%,
+    rgba(2,10,5,0.55) 100%
+  );
+  pointer-events: none;
+  z-index: 0;
+}
+#fbar > * { position: relative; z-index: 1; }
+
+.fbar-main {
+  display: flex;
+  gap: 0;
+  flex: 1;
+  align-items: flex-start;
+  padding-bottom: 48px;
+}
+.fbar-col-left { width: 380px; flex-shrink: 0; padding-right: 60px; }
+.fbar-col-right { flex: 1; }
+.fbar-col-lbl {
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.3);
+  margin-bottom: 28px;
+  font-weight: 400;
+}
+.fbar-nav-links { list-style: none; display: flex; flex-direction: column; gap: 4px; }
+.fbar-nav-links a {
+  font-size: 17px;
+  font-weight: 300;
+  color: rgba(255,255,255,0.45);
+  text-decoration: none;
+  letter-spacing: 0.01em;
+  line-height: 1.6;
+  display: block;
+  transition: color 0.2s;
+}
+.fbar-nav-links a:hover { color: rgba(255,255,255,0.85); }
+.fbar-page-links { list-style: none; display: flex; flex-direction: column; gap: 0; }
+.fbar-page-links li { overflow: hidden; }
+.fbar-page-links a {
+  font-size: clamp(52px, 6vw, 88px);
+  font-weight: 300;
+  letter-spacing: -0.02em;
+  color: rgba(255,255,255,0.88);
+  text-decoration: none;
+  line-height: 1.1;
+  display: block;
+  transition: color 0.2s, transform 0.25s cubic-bezier(0.16,1,0.3,1);
+}
+.fbar-page-links a:hover { color: #fff; transform: translateX(6px); }
+
+.fbar-strip {
+  border-top: 1px solid rgba(255,255,255,0.08);
+  padding-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.fbar-strip-top { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
+.fbar-legal-links { display: flex; gap: 20px; align-items: center; flex-wrap: wrap; }
+.fbar-legal-links a {
+  font-size: 11px;
+  letter-spacing: 0.05em;
+  color: rgba(255,255,255,0.4);
+  text-decoration: none;
+  transition: color 0.2s;
+  white-space: nowrap;
+}
+.fbar-legal-links a:hover { color: rgba(255,255,255,0.8); }
+.fbar-co-name { font-size: 11px; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(255,255,255,0.65); }
+.fbar-copy { font-size: 11px; letter-spacing: 0.05em; color: rgba(255,255,255,0.3); }
+.fbar-strip-rule { height: 1px; background: rgba(255,255,255,0.07); }
+.fbar-strip-bot { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 24px; }
+.fbar-social a {
+  display: flex; align-items: center; justify-content: center;
+  width: 32px; height: 32px;
+  border: 1px solid rgba(255,255,255,0.18);
+  border-radius: 50%;
+  color: rgba(255,255,255,0.5);
+  text-decoration: none;
+  transition: border-color 0.2s, color 0.2s;
+}
+.fbar-social a:hover { border-color: var(--green); color: var(--green); }
+.fbar-social svg { width: 13px; height: 13px; fill: currentColor; }
+.fbar-contact { display: flex; gap: 56px; align-items: flex-start; }
+.fbar-contact-item { display: flex; flex-direction: column; gap: 5px; }
+.fbar-contact-label { font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(255,255,255,0.28); }
+.fbar-contact-val { font-size: 13px; color: rgba(255,255,255,0.65); letter-spacing: 0.02em; }
+.fbar-address { display: flex; align-items: flex-start; gap: 12px; }
+.fbar-address-pin {
+  width: 30px; height: 30px;
+  border: 1px solid rgba(255,255,255,0.14);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  color: rgba(255,255,255,0.35); font-size: 12px;
+  flex-shrink: 0; margin-top: 1px;
+}
+.fbar-address-label { font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(255,255,255,0.28); margin-bottom: 5px; }
+.fbar-address-val { font-size: 13px; color: rgba(255,255,255,0.65); line-height: 1.5; }
+
+[data-theme="light"] #fbar { background: rgba(234,244,234,0.75); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
+[data-theme="light"] #fbar::before {
+  background: linear-gradient(to bottom, rgba(234,244,234,0.05) 0%, rgba(234,244,234,0.35) 60%, rgba(234,244,234,0.5) 100%);
+}
+[data-theme="light"] .fbar-col-lbl { color: rgba(0,0,0,0.3); }
+[data-theme="light"] .fbar-nav-links a { color: rgba(0,0,0,0.45); }
+[data-theme="light"] .fbar-nav-links a:hover { color: rgba(0,0,0,0.85); }
+[data-theme="light"] .fbar-page-links a { color: rgba(0,0,0,0.82); }
+[data-theme="light"] .fbar-page-links a:hover { color: rgba(0,0,0,1); }
+[data-theme="light"] .fbar-strip { border-color: rgba(0,0,0,0.07); }
+[data-theme="light"] .fbar-strip-rule { background: rgba(0,0,0,0.06); }
+[data-theme="light"] .fbar-legal-links a { color: rgba(0,0,0,0.45); }
+[data-theme="light"] .fbar-co-name { color: rgba(0,0,0,0.6); }
+[data-theme="light"] .fbar-copy { color: rgba(0,0,0,0.3); }
+[data-theme="light"] .fbar-social a { border-color: rgba(0,0,0,0.15); color: rgba(0,0,0,0.4); }
+[data-theme="light"] .fbar-contact-label { color: rgba(0,0,0,0.3); }
+[data-theme="light"] .fbar-contact-val { color: rgba(0,0,0,0.7); }
+[data-theme="light"] .fbar-address-pin { border-color: rgba(0,0,0,0.12); color: rgba(0,0,0,0.35); }
+[data-theme="light"] .fbar-address-label { color: rgba(0,0,0,0.3); }
+[data-theme="light"] .fbar-address-val { color: rgba(0,0,0,0.7); }
+
+/* Global smooth theme-switch transition — identical to index.html */
+*, *::before, *::after {
+  transition-property: background-color, color, border-color, opacity, box-shadow;
+  transition-duration: 1.1s;
+  transition-timing-function: ease;
+}
+#theme-tog, #theme-tog::before, .tog-moon, .tog-sun { transition-duration: inherit; }
+#burger span { transition-duration: initial; }
+
+/* ════════════════════════════════════════
+   MOBILE — identical breakpoints
+════════════════════════════════════════ */
+@media (max-width: 768px) {
+  #hdr { padding: 0 20px; height: 64px; }
+  .hdr-name-sub { display: none; }
+  #menu { padding: 80px 24px 40px; }
+  .menu-sections { flex-direction: column; gap: 40px; }
+  .menu-page-links a { font-size: clamp(28px, 9vw, 48px); }
+
+  .policy-main { padding-top: 120px; }
+  .policy-hero { padding: 0 20px 40px; }
+  .policy-content { padding: 0 20px 100px; }
+
+  #fbar { padding: 52px 24px 32px; min-height: 100svh; }
+  .fbar-main { flex-direction: column; gap: 40px; padding-bottom: 40px; }
+  .fbar-col-left { width: 100%; padding-right: 0; }
+  .fbar-page-links a { font-size: clamp(36px, 11vw, 56px); }
+  .fbar-strip-top { flex-direction: column; align-items: flex-start; gap: 8px; }
+  .fbar-co-name { display: none; }
+  .fbar-strip-bot { flex-direction: column; gap: 16px; }
+  .fbar-contact { gap: 28px; }
+}
+</style>
 </head>
 <body>
-<nav class="nav" id="mainNav">
-  <div class="nav-inner">
-    <a href="index.html" class="nav-logo" data-no-transition>
-      <div class="logo-3d-wrap"><div class="logo-3d-inner"><img src="logo.png" alt="NEXUS"/></div></div>
-      <span class="logo-text">NEXUS</span>
-    </a>
-    <ul class="nav-links">
-      <li><a href="index.html">Home</a></li>
-      <li><a href="marketplace.html">Marketplace</a></li>
-      <li><a href="contact.html">Contact</a></li>
-    </ul>
-    <div class="nav-actions">
-      <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme">🌙</button>
-      <div class="nav-actions-auth" id="navActionsAuth">
-        <button class="btn-ghost" onclick="AuthModal.open('login')">Sign In</button>
-        <button class="btn-primary" onclick="AuthModal.open('signup')">Join Free</button>
-      </div>
-    </div>
-    <div style="display:flex;align-items:center;gap:8px;margin-left:auto">
-      <button class="theme-toggle" id="themeToggleMob" style="display:none" onclick="toggleTheme()">🌙</button>
-      <button class="nav-burger" id="navBurger"><span></span><span></span><span></span></button>
-    </div>
-  </div>
-  <div class="mobile-menu" id="mobileMenu">
-    <div class="mobile-menu-inner">
-      <a href="index.html" class="mobile-link">Home</a>
-      <a href="marketplace.html" class="mobile-link" data-protected="true">Marketplace</a>
-      <a href="contact.html" class="mobile-link">Contact</a>
-      <div class="mobile-divider"></div>
-      <a href="privacy.html" class="mobile-link mobile-link--sm">Privacy Policy</a>
-      <a href="terms.html" class="mobile-link mobile-link--sm">Terms of Service</a>
-      <a href="refund.html" class="mobile-link mobile-link--sm">Refund Policy</a>
-      <a href="shipping.html" class="mobile-link mobile-link--sm">Shipping Policy</a>
-      <a href="cancellation.html" class="mobile-link mobile-link--sm">Cancellation Policy</a>
-      <div class="mobile-actions" id="mobileActionsAuth">
-        <button class="btn-ghost w-full" onclick="AuthModal.open('login')">Sign In</button>
-        <button class="btn-primary w-full" onclick="AuthModal.open('signup')">Join Free</button>
-      </div>
-    </div>
-  </div>
-</nav>
 
-<main class="policy-page">
+<!-- ════ FIXED CANVAS ════ -->
+<canvas id="c"></canvas>
+
+<!-- ════════════════════════════════════════
+     HEADER — identical structure to index.html
+════════════════════════════════════════ -->
+<header id="hdr">
+  <a class="hdr-logo" href="index.html">
+    <div class="logo-icon">
+      <img src="logo.png" alt="ConnectDistro"/>
+    </div>
+    <div class="hdr-divider"></div>
+    <div class="hdr-name">
+      <span class="hdr-name-top">ConnectDistro</span>
+      <span class="hdr-name-sub">Art · Ads · Entertainment</span>
+    </div>
+  </a>
+
+  <div class="hdr-spacer"></div>
+
+  <div class="hdr-right">
+    <button id="theme-tog" onclick="toggleTheme()" aria-label="Toggle theme" title="Toggle light/dark">
+      <span class="tog-moon">🌙</span>
+      <span class="tog-sun">☀️</span>
+    </button>
+
+    <button id="burger" aria-label="Menu" onclick="toggleMenu()">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<!-- ════════════════════════════════════════
+     FULLSCREEN MENU — identical structure
+════════════════════════════════════════ -->
+<div id="menu">
+  <div class="menu-sections">
+    <div class="menu-col-left">
+      <p class="menu-col-label">Homepage</p>
+      <ul class="menu-section-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="index.html#p1">Art</a></li>
+        <li><a href="marketplace.html">Marketplace</a></li>
+        <li><a href="index.html#p3">Services</a></li>
+        <li><a href="index.html#p4">Community</a></li>
+      </ul>
+    </div>
+
+    <div class="menu-col-right">
+      <p class="menu-col-label">Other pages</p>
+      <ul class="menu-page-links">
+        <li><a href="marketplace.html">Marketplace</a></li>
+        <li><a href="contact.html">Contact</a></li>
+        <li><a href="privacy.html">Privacy</a></li>
+        <li><a href="terms.html">Terms</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="menu-bottom">
+    <nav class="menu-legal">
+      <a href="privacy.html">Privacy Policy</a>
+      <a href="terms.html">Terms of Service</a>
+      <a href="refund.html">Refund Policy</a>
+      <a href="shipping.html">Shipping Policy</a>
+      <a href="cancellation.html">Cancellation Policy</a>
+    </nav>
+    <p class="menu-copy">© 2025 ConnectDistro Inc.</p>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════
+     POLICY CONTENT
+════════════════════════════════════════ -->
+<main class="policy-main">
   <div class="policy-hero">
-    <span class="section-eyebrow">LEGAL</span>
-    <h1>Privacy Policy</h1>
-    <p>How NEXUS collects, uses, and protects your personal information.</p>
-  </div>
-  <div class="container" style="max-width:860px">
-    <div class="policy-content">
-      <span class="policy-updated">Last Updated: January 15, 2025 · Effective: January 15, 2025</span>
-
-      <h2>1. Introduction</h2>
-      <p>NEXUS Marketplace Inc. ("NEXUS," "we," "us," or "our") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our platform, website, and services (collectively, the "Services").</p>
-      <p>By using NEXUS, you agree to the collection and use of information in accordance with this policy. If you do not agree, please do not access or use our Services.</p>
-
-      <h2>2. Information We Collect</h2>
-      <p><strong>Information you provide directly:</strong></p>
-      <ul>
-        <li>Account registration information (name, email address, username, password)</li>
-        <li>Profile information (bio, profile picture, location, social links)</li>
-        <li>Payment information (processed securely by Stripe — we do not store card numbers)</li>
-        <li>Transaction history and purchase records</li>
-        <li>Communications you send us (support tickets, emails, feedback)</li>
-        <li>Content you upload or list (artwork, services, descriptions)</li>
-      </ul>
-      <p><strong>Information collected automatically:</strong></p>
-      <ul>
-        <li>Device information (IP address, browser type, operating system)</li>
-        <li>Usage data (pages visited, time on site, click patterns)</li>
-        <li>Cookies and similar tracking technologies</li>
-        <li>Log data (access times, error logs, referral URLs)</li>
-      </ul>
-
-      <h2>3. How We Use Your Information</h2>
-      <ul>
-        <li>To create and manage your account</li>
-        <li>To process transactions and send related information (receipts, confirmations)</li>
-        <li>To connect buyers with sellers and facilitate marketplace transactions</li>
-        <li>To send transactional emails and important service announcements</li>
-        <li>To send marketing communications (with your consent, opt-out available)</li>
-        <li>To improve, personalize, and expand our Services</li>
-        <li>To detect, prevent, and address fraud, abuse, and security issues</li>
-        <li>To comply with legal obligations</li>
-      </ul>
-
-      <h2>4. Payment Processing</h2>
-      <p>All payment processing is handled by <strong>Stripe, Inc.</strong> We do not store, process, or transmit your credit card or bank account information. Stripe's use of your personal information is governed by <a href="https://stripe.com/privacy" target="_blank">Stripe's Privacy Policy</a>. Stripe is PCI-DSS Level 1 certified.</p>
-
-      <h2>5. Sharing Your Information</h2>
-      <p>We do not sell your personal data. We may share your information with:</p>
-      <ul>
-        <li><strong>Service Providers:</strong> Stripe (payments), AWS (infrastructure), Mailgun (email), analytics providers</li>
-        <li><strong>Other Users:</strong> Your public profile information and listed content is visible to other platform users</li>
-        <li><strong>Legal Requirements:</strong> When required by law, court order, or governmental authority</li>
-        <li><strong>Business Transfers:</strong> In connection with a merger, acquisition, or sale of assets</li>
-      </ul>
-
-      <h2>6. Cookies</h2>
-      <p>We use cookies and similar technologies to operate and improve our Services. You can control cookies through your browser settings. Disabling cookies may affect some platform features.</p>
-
-      <h2>7. Data Retention</h2>
-      <p>We retain your personal information for as long as your account is active or as needed to provide Services. You may request deletion of your account and data by contacting <a href="contact.html">our support team</a>. Some information may be retained as required by law.</p>
-
-      <h2>8. Your Rights</h2>
-      <ul>
-        <li><strong>Access:</strong> Request a copy of your personal data</li>
-        <li><strong>Correction:</strong> Update inaccurate or incomplete data</li>
-        <li><strong>Deletion:</strong> Request deletion of your data</li>
-        <li><strong>Portability:</strong> Receive your data in a machine-readable format</li>
-        <li><strong>Opt-Out:</strong> Unsubscribe from marketing communications at any time</li>
-        <li><strong>GDPR/CCPA:</strong> EU and California residents have additional rights under applicable law</li>
-      </ul>
-
-      <h2>9. Security</h2>
-      <p>We implement industry-standard security measures including SSL/TLS encryption, two-factor authentication, and regular security audits. No method of transmission over the Internet is 100% secure; we cannot guarantee absolute security.</p>
-
-      <h2>10. Children's Privacy</h2>
-      <p>NEXUS is not directed at children under 13 (or 16 in the EU). We do not knowingly collect personal information from children. If you believe a child has provided us data, please contact us immediately.</p>
-
-      <h2>11. International Transfers</h2>
-      <p>Your information may be transferred to and processed in the United States or other countries. We ensure appropriate safeguards are in place for international transfers.</p>
-
-      <h2>12. Changes to This Policy</h2>
-      <p>We may update this Privacy Policy periodically. We will notify you of significant changes by email or prominent notice on our platform. Continued use after changes constitutes acceptance.</p>
-
-      <h2>13. Contact Us</h2>
-      <p>For privacy-related questions or to exercise your rights:<br/>
-        <strong>Email:</strong> <a href="mailto:privacy@nexusmarketplace.com">privacy@nexusmarketplace.com</a><br/>
-        <strong>Mail:</strong> NEXUS Marketplace Inc., Privacy Office, 350 Fifth Avenue, Suite 4000, New York, NY 10118<br/>
-        Or use our <a href="contact.html">contact form</a>.
-      </p>
+    <div class="policy-eyebrow fade-up">
+      <span class="pulse"></span>
+      <span>Legal</span>
     </div>
+    <h1 class="fade-up">Privacy Policy</h1>
+    <p class="fade-up">How ConnectDistro collects, uses, and protects your personal information.</p>
+  </div>
+
+  <div class="policy-content fade-up">
+    <span class="policy-updated">Last Updated: January 15, 2025 · Effective: January 15, 2025</span>
+
+    <h2>1. Introduction</h2>
+    <p>ConnectDistro Inc. ("ConnectDistro," "we," "us," or "our") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our platform, website, and services (collectively, the "Services").</p>
+    <p>By using ConnectDistro, you agree to the collection and use of information in accordance with this policy. If you do not agree, please do not access or use our Services.</p>
+
+    <h2>2. Information We Collect</h2>
+    <p><strong>Information you provide directly:</strong></p>
+    <ul>
+      <li>Account registration information (name, email address, username, password)</li>
+      <li>Profile information (bio, profile picture, location, social links)</li>
+      <li>Payment information (processed securely by Stripe — we do not store card numbers)</li>
+      <li>Transaction history and purchase records</li>
+      <li>Communications you send us (support tickets, emails, feedback)</li>
+      <li>Content you upload or list (artwork, services, descriptions)</li>
+    </ul>
+    <p><strong>Information collected automatically:</strong></p>
+    <ul>
+      <li>Device information (IP address, browser type, operating system)</li>
+      <li>Usage data (pages visited, time on site, click patterns)</li>
+      <li>Cookies and similar tracking technologies</li>
+      <li>Log data (access times, error logs, referral URLs)</li>
+    </ul>
+
+    <h2>3. How We Use Your Information</h2>
+    <ul>
+      <li>To create and manage your account</li>
+      <li>To process transactions and send related information (receipts, confirmations)</li>
+      <li>To connect buyers with sellers and facilitate marketplace transactions</li>
+      <li>To send transactional emails and important service announcements</li>
+      <li>To send marketing communications (with your consent, opt-out available)</li>
+      <li>To improve, personalize, and expand our Services</li>
+      <li>To detect, prevent, and address fraud, abuse, and security issues</li>
+      <li>To comply with legal obligations</li>
+    </ul>
+
+    <h2>4. Payment Processing</h2>
+    <p>All payment processing is handled by <strong>Stripe, Inc.</strong> We do not store, process, or transmit your credit card or bank account information. Stripe's use of your personal information is governed by <a href="https://stripe.com/privacy" target="_blank" rel="noopener">Stripe's Privacy Policy</a>. Stripe is PCI-DSS Level 1 certified.</p>
+
+    <h2>5. Sharing Your Information</h2>
+    <p>We do not sell your personal data. We may share your information with:</p>
+    <ul>
+      <li><strong>Service Providers:</strong> Stripe (payments), AWS (infrastructure), Mailgun (email), analytics providers</li>
+      <li><strong>Other Users:</strong> Your public profile information and listed content is visible to other platform users</li>
+      <li><strong>Legal Requirements:</strong> When required by law, court order, or governmental authority</li>
+      <li><strong>Business Transfers:</strong> In connection with a merger, acquisition, or sale of assets</li>
+    </ul>
+
+    <h2>6. Cookies</h2>
+    <p>We use cookies and similar technologies to operate and improve our Services. You can control cookies through your browser settings. Disabling cookies may affect some platform features.</p>
+
+    <h2>7. Data Retention</h2>
+    <p>We retain your personal information for as long as your account is active or as needed to provide Services. You may request deletion of your account and data by contacting <a href="contact.html">our support team</a>. Some information may be retained as required by law.</p>
+
+    <h2>8. Your Rights</h2>
+    <ul>
+      <li><strong>Access:</strong> Request a copy of your personal data</li>
+      <li><strong>Correction:</strong> Update inaccurate or incomplete data</li>
+      <li><strong>Deletion:</strong> Request deletion of your data</li>
+      <li><strong>Portability:</strong> Receive your data in a machine-readable format</li>
+      <li><strong>Opt-Out:</strong> Unsubscribe from marketing communications at any time</li>
+      <li><strong>GDPR/CCPA:</strong> EU and California residents have additional rights under applicable law</li>
+    </ul>
+
+    <h2>9. Security</h2>
+    <p>We implement industry-standard security measures including SSL/TLS encryption, two-factor authentication, and regular security audits. No method of transmission over the Internet is 100% secure; we cannot guarantee absolute security.</p>
+
+    <h2>10. Children's Privacy</h2>
+    <p>ConnectDistro is not directed at children under 13 (or 16 in the EU). We do not knowingly collect personal information from children. If you believe a child has provided us data, please contact us immediately.</p>
+
+    <h2>11. International Transfers</h2>
+    <p>Your information may be transferred to and processed in the United States or other countries. We ensure appropriate safeguards are in place for international transfers.</p>
+
+    <h2>12. Changes to This Policy</h2>
+    <p>We may update this Privacy Policy periodically. We will notify you of significant changes by email or prominent notice on our platform. Continued use after changes constitutes acceptance.</p>
+
+    <h2>13. Contact Us</h2>
+    <p>For privacy-related questions or to exercise your rights:<br/>
+      <strong>Email:</strong> <a href="mailto:privacy@connectdistro.com">privacy@connectdistro.com</a><br/>
+      <strong>Mail:</strong> ConnectDistro Inc., 1209 Mountain Road Pl NE, STE R, Albuquerque, NM 87110, USA<br/>
+      Or use our <a href="contact.html">contact form</a>.
+    </p>
   </div>
 </main>
 
-<footer class="footer" style="padding:0">
-  <div class="footer-bottom" style="max-width:1280px;margin:0 auto">
-    <p>2025 NEXUS Marketplace Inc. All rights reserved.</p>
-    <div style="display:flex;gap:20px;flex-wrap:wrap">
-      <a href="privacy.html" style="color:var(--text-30);font-size:12px">Privacy</a>
-      <a href="terms.html" style="color:var(--text-30);font-size:12px">Terms</a>
-      <a href="refund.html" style="color:var(--text-30);font-size:12px">Refund</a>
-      <a href="shipping.html" style="color:var(--text-30);font-size:12px">Shipping</a>
-      <a href="cancellation.html" style="color:var(--text-30);font-size:12px">Cancellation</a>
-      <a href="contact.html" style="color:var(--text-30);font-size:12px">Contact</a>
+<!-- ════ FOOTER — identical structure to index.html ════ -->
+<footer id="fbar">
+  <div class="fbar-main">
+    <div class="fbar-col-left">
+      <p class="fbar-col-lbl">Homepage</p>
+      <ul class="fbar-nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="index.html#p1">Art</a></li>
+        <li><a href="marketplace.html">Marketplace</a></li>
+        <li><a href="index.html#p3">Services</a></li>
+        <li><a href="index.html#p4">Community</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+    </div>
+
+    <div class="fbar-col-right">
+      <p class="fbar-col-lbl">Other Pages</p>
+      <ul class="fbar-page-links">
+        <li><a href="marketplace.html">Marketplace</a></li>
+        <li><a href="index.html#p3">Services</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="fbar-strip">
+    <div class="fbar-strip-top">
+      <nav class="fbar-legal-links">
+        <a href="privacy.html">Privacy</a>
+        <a href="terms.html">Terms &amp; Conditions</a>
+        <a href="refund.html">Refund Policy</a>
+        <a href="shipping.html">Shipping</a>
+        <a href="cancellation.html">Cancellation</a>
+      </nav>
+      <p class="fbar-co-name">ConnectDistro Inc.</p>
+      <p class="fbar-copy">© Copyright ConnectDistro 2025</p>
+    </div>
+
+    <div class="fbar-strip-rule"></div>
+
+    <div class="fbar-strip-bot">
+      <div class="fbar-social">
+        <a href="https://linkedin.com" target="_blank" rel="noopener" aria-label="LinkedIn">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M4.98 3.5C4.98 4.88 3.87 6 2.5 6S.02 4.88.02 3.5C.02 2.12 1.13 1 2.5 1S4.98 2.12 4.98 3.5zM.5 8.5H4.5V24H.5V8.5zM8.5 8.5H12.3V10.3h.05c.53-1 1.83-2.05 3.77-2.05 4.03 0 4.78 2.65 4.78 6.1V24H16.9V15.2c0-2.12-.04-4.85-2.96-4.85-2.97 0-3.42 2.32-3.42 4.7V24H6.5V8.5h2z"/>
+          </svg>
+        </a>
+      </div>
+
+      <div class="fbar-contact">
+        <div class="fbar-contact-item">
+          <span class="fbar-contact-label">Telefax</span>
+          <span class="fbar-contact-val">+234 814 401 2453</span>
+        </div>
+        <div class="fbar-contact-item">
+          <span class="fbar-contact-label">Telephone</span>
+          <span class="fbar-contact-val">+234 814 401 2453</span>
+        </div>
+      </div>
+
+      <div class="fbar-address">
+        <div class="fbar-address-pin">📍</div>
+        <div>
+          <p class="fbar-address-label">Head Office</p>
+          <p class="fbar-address-val">1209 Mountain Road Pl NE, STE R<br/>Albuquerque, NM 87110, USA</p>
+        </div>
+      </div>
     </div>
   </div>
 </footer>
 
 <script>
-const nav = document.querySelector('.nav');
-document.getElementById('navBurger').addEventListener('click', function() {
-  const m = document.getElementById('mobileMenu');
-  m.classList.toggle('open');
-  document.body.style.overflow = m.classList.contains('open') ? 'hidden' : '';
-});
+'use strict';
+
+/* ════════════════════════════════════════
+   MENU TOGGLE — identical logic to index.html
+════════════════════════════════════════ */
+const burger = document.getElementById('burger');
+const menu   = document.getElementById('menu');
+let menuOpen = false;
+
+window.toggleMenu = function() {
+  menuOpen = !menuOpen;
+  burger.classList.toggle('open', menuOpen);
+
+  if (menuOpen) {
+    menu.classList.remove('closing');
+    menu.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  } else {
+    menu.classList.add('closing');
+    document.body.style.overflow = '';
+    setTimeout(() => {
+      menu.classList.remove('open');
+      menu.classList.remove('closing');
+    }, 380);
+  }
+};
+
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && menuOpen) toggleMenu(); });
+
+/* ════════════════════════════════════════
+   THEME TOGGLE — identical logic to index.html
+════════════════════════════════════════ */
+const THEME_KEY = 'cd-theme';
+function getTheme() { return localStorage.getItem(THEME_KEY) || 'dark'; }
+function applyTheme(t) {
+  document.documentElement.setAttribute('data-theme', t);
+  localStorage.setItem(THEME_KEY, t);
+}
+window.toggleTheme = function() { applyTheme(getTheme() === 'dark' ? 'light' : 'dark'); };
+applyTheme(getTheme());
+
+/* ════════════════════════════════════════
+   FADE-UP ON SCROLL — identical mechanism
+════════════════════════════════════════ */
+function onScroll() {
+  document.querySelectorAll('.fade-up:not(.in)').forEach(el => {
+    const r = el.getBoundingClientRect();
+    if (r.top < innerHeight * 0.92) el.classList.add('in');
+  });
+}
+window.addEventListener('scroll', onScroll, { passive: true });
+setTimeout(onScroll, 100);
+
+/* Auth modal hook (nexus-nav.js), kept for consistency */
+window.openAuth = function(mode) {
+  if (window.NxModal) NxModal.open(mode);
+  else if (window.AuthModal) AuthModal.open(mode);
+};
+
+/* ════════════════════════════════════════
+   INFINITY BACKGROUND ANIMATION
+   Identical Three.js scene to index.html so
+   the canvas feels continuous across pages.
+════════════════════════════════════════ */
+(function() {
+  const canvas = document.getElementById('c');
+  if (!window.THREE) { canvas.style.display = 'none'; return; }
+
+  const mobile = window.innerWidth <= 768;
+
+  const R = new THREE.WebGLRenderer({ canvas, antialias: !mobile, alpha: false });
+  R.setPixelRatio(Math.min(devicePixelRatio, mobile ? 1.5 : 2));
+  R.setSize(innerWidth, innerHeight);
+  R.setClearColor(0x020e07, 1);
+
+  const scene = new THREE.Scene();
+  scene.background = new THREE.Color(0x020e07);
+  const cam = new THREE.PerspectiveCamera(52, innerWidth / innerHeight, 0.01, 500);
+  cam.position.set(0, 0, 10);
+
+  function lemniscate(t, a) {
+    const denom = 1 + Math.sin(t) * Math.sin(t);
+    const x = a * Math.cos(t) / denom;
+    const y = a * Math.sin(t) * Math.cos(t) / denom;
+    return { x, y };
+  }
+
+  function buildLemniscatePts(a, numPts) {
+    const pts = [];
+    for (let i = 0; i <= numPts; i++) {
+      const t = (i / numPts) * Math.PI * 2;
+      const p = lemniscate(t, a);
+      pts.push(new THREE.Vector3(p.x, p.y, 0));
+    }
+    return pts;
+  }
+
+  const RIBBON_LAYERS = mobile ? 3 : 6;
+  const RIBBON_PTS    = mobile ? 800 : 2200;
+  const ribbonObjs    = [];
+
+  const COLS = [
+    [0.427, 0.769, 0.294],
+    [0.133, 0.561, 0.494],
+    [0.227, 0.698, 0.494],
+    [0.008, 0.345, 0.639],
+    [0.094, 0.655, 0.525],
+    [0.42,  0.769, 0.29 ],
+  ];
+
+  for (let layer = 0; layer < RIBBON_LAYERS; layer++) {
+    const scale = 3.0 + layer * 0.65;
+    const zOff  = layer * 0.18 - (RIBBON_LAYERS * 0.09);
+    const N     = RIBBON_PTS;
+
+    const geo   = new THREE.BufferGeometry();
+    const pos   = new Float32Array(N * 3);
+    const col   = new Float32Array(N * 3);
+    const phase = new Float32Array(N);
+    const speed = new Float32Array(N);
+
+    for (let i = 0; i < N; i++) {
+      phase[i] = Math.random() * Math.PI * 2;
+      speed[i] = 0.004 + Math.random() * 0.004;
+
+      const p = lemniscate(phase[i], scale);
+      pos[i*3]   = p.x + (Math.random() - 0.5) * 0.06;
+      pos[i*3+1] = p.y + (Math.random() - 0.5) * 0.06;
+      pos[i*3+2] = zOff + (Math.random() - 0.5) * 0.12;
+
+      const c = COLS[layer % COLS.length];
+      const bright = 0.6 + Math.random() * 0.4;
+      col[i*3]   = c[0] * bright;
+      col[i*3+1] = c[1] * bright;
+      col[i*3+2] = c[2] * bright;
+    }
+
+    geo.setAttribute('position', new THREE.BufferAttribute(pos,   3));
+    geo.setAttribute('color',    new THREE.BufferAttribute(col,   3));
+
+    const mat = new THREE.PointsMaterial({
+      size: mobile ? 0.045 : 0.03,
+      vertexColors: true,
+      transparent: true,
+      opacity: 0.75 - layer * 0.07,
+      sizeAttenuation: true,
+    });
+
+    const pts = new THREE.Points(geo, mat);
+    scene.add(pts);
+    ribbonObjs.push({ pts, geo, pos, phase, speed, scale, zOff });
+  }
+
+  const ringScales = mobile
+    ? [2.2, 3.5, 4.8]
+    : [1.6, 2.4, 3.3, 4.4, 5.6];
+
+  ringScales.forEach((scale, idx) => {
+    const ptCount = 300;
+    const pathPts = buildLemniscatePts(scale, ptCount);
+    const curve   = new THREE.CatmullRomCurve3(pathPts, true);
+    const geo     = new THREE.TubeGeometry(curve, ptCount, 0.008 + idx * 0.002, 4, true);
+    const hue     = 0.36 + idx * 0.03;
+    const mat     = new THREE.MeshBasicMaterial({
+      color: new THREE.Color().setHSL(hue, 0.7, 0.28 - idx * 0.03),
+      transparent: true,
+      opacity: 0.35 - idx * 0.05,
+    });
+    const mesh = new THREE.Mesh(geo, mat);
+    mesh.position.z = -idx * 0.3;
+    scene.add(mesh);
+  });
+
+  const DIAMOND_COUNT = mobile ? 40 : 120;
+  const diamondMeshes = [];
+
+  function makeDiamondGeo(size) {
+    const geo = new THREE.BufferGeometry();
+    const s   = size;
+    const verts = new Float32Array([
+       0,  s,  0,
+      -s * 0.6, 0, 0,
+       0, -s, 0,
+       s * 0.6, 0, 0,
+    ]);
+    const idx = new Uint16Array([0,1,2,  0,2,3]);
+    geo.setAttribute('position', new THREE.BufferAttribute(verts, 3));
+    geo.setIndex(new THREE.BufferAttribute(idx, 1));
+    return geo;
+  }
+
+  for (let i = 0; i < DIAMOND_COUNT; i++) {
+    const size = 0.04 + Math.random() * 0.12;
+    const geo  = makeDiamondGeo(size);
+    const hue  = 0.35 + Math.random() * 0.15;
+    const mat  = new THREE.MeshBasicMaterial({
+      color: new THREE.Color().setHSL(hue, 0.6, 0.25 + Math.random() * 0.2),
+      transparent: true,
+      opacity: 0.15 + Math.random() * 0.25,
+      side: THREE.DoubleSide,
+    });
+    const mesh = new THREE.Mesh(geo, mat);
+    mesh.position.set(
+      (Math.random() - 0.5) * 24,
+      (Math.random() - 0.5) * 16,
+      -2 - Math.random() * 14
+    );
+    mesh.rotation.z = Math.random() * Math.PI;
+    scene.add(mesh);
+    diamondMeshes.push({
+      mesh,
+      rotSpeedZ: (Math.random() - 0.5) * 0.015,
+      floatSpeed: 0.3 + Math.random() * 0.5,
+      floatAmp:   0.08 + Math.random() * 0.12,
+      baseY:      mesh.position.y,
+      phase:      Math.random() * Math.PI * 2,
+    });
+  }
+
+  const AMB_N = mobile ? 400 : 1200;
+  const ambGeo = new THREE.BufferGeometry();
+  const ambPos = new Float32Array(AMB_N * 3);
+  const ambCol = new Float32Array(AMB_N * 3);
+  for (let i = 0; i < AMB_N; i++) {
+    ambPos[i*3]   = (Math.random() - 0.5) * 36;
+    ambPos[i*3+1] = (Math.random() - 0.5) * 24;
+    ambPos[i*3+2] = -4 - Math.random() * 16;
+    const c = COLS[Math.floor(Math.random() * COLS.length)];
+    ambCol[i*3]=c[0]*0.4; ambCol[i*3+1]=c[1]*0.4; ambCol[i*3+2]=c[2]*0.4;
+  }
+  ambGeo.setAttribute('position', new THREE.BufferAttribute(ambPos, 3));
+  ambGeo.setAttribute('color',    new THREE.BufferAttribute(ambCol, 3));
+  scene.add(new THREE.Points(ambGeo, new THREE.PointsMaterial({
+    size: 0.025, vertexColors: true, transparent: true, opacity: 0.45
+  })));
+
+  let rawT    = 0;
+  let smoothT = 0;
+
+  function getScrollT() {
+    const max = document.documentElement.scrollHeight - window.innerHeight;
+    return max > 0 ? window.scrollY / max : 0;
+  }
+  window.addEventListener('scroll', () => { rawT = getScrollT(); }, { passive: true });
+
+  /* Two-stage keyframes — gentle drift for a single long-scroll page */
+  const CAM_KF = [
+    { z: 10.0, y:  0.0, fov: 52, rx: 0    },
+    { z:  6.0, y:  0.6, fov: 47, rx: 0.03 },
+    { z:  4.0, y: -0.3, fov: 44, rx: 0    },
+  ];
+
+  let camZ = 10, camY = 0, camFov = 52, camRX = 0;
+  let mx = 0, my = 0;
+  if (!mobile) {
+    window.addEventListener('mousemove', e => {
+      mx = (e.clientX / innerWidth  - 0.5) * 2;
+      my = (e.clientY / innerHeight - 0.5) * 2;
+    }, { passive: true });
+  }
+  let prlX = 0, prlY = 0;
+
+  const clk = new THREE.Clock();
+  let running = true;
+  document.addEventListener('visibilitychange', () => { running = !document.hidden; });
+
+  function loop() {
+    requestAnimationFrame(loop);
+    if (!running) return;
+    const t = clk.getElapsedTime();
+
+    smoothT += (rawT - smoothT) * 0.06;
+    const panelT = smoothT * (CAM_KF.length - 1);
+    const i0 = Math.min(Math.floor(panelT), CAM_KF.length - 2);
+    const i1 = i0 + 1;
+    const f  = panelT - i0;
+    const e  = f < 0.5 ? 4*f*f*f : 1 - Math.pow(-2*f+2,3)/2;
+
+    const kA = CAM_KF[i0], kB = CAM_KF[i1];
+    const tZ   = kA.z   + (kB.z   - kA.z)   * e;
+    const tY   = kA.y   + (kB.y   - kA.y)   * e;
+    const tFov = kA.fov + (kB.fov - kA.fov) * e;
+    const tRX  = kA.rx  + (kB.rx  - kA.rx)  * e;
+
+    camZ   += (tZ   - camZ)   * 0.05;
+    camY   += (tY   - camY)   * 0.05;
+    camFov += (tFov - camFov) * 0.05;
+    camRX  += (tRX  - camRX)  * 0.05;
+
+    prlX += (mx * 0.18 - prlX) * 0.04;
+    prlY += (-my * 0.12 - prlY) * 0.04;
+
+    cam.position.set(prlX, camY + prlY, camZ);
+    cam.rotation.x = camRX;
+    cam.fov = camFov;
+    cam.aspect = innerWidth / innerHeight;
+    cam.updateProjectionMatrix();
+
+    ribbonObjs.forEach(({ geo, pos, phase, speed, scale, zOff }) => {
+      const posArr = geo.attributes.position.array;
+      const N = phase.length;
+      for (let i = 0; i < N; i++) {
+        phase[i] += speed[i];
+        if (phase[i] > Math.PI * 2) phase[i] -= Math.PI * 2;
+
+        const p = lemniscate(phase[i], scale);
+        posArr[i*3]   = p.x + (Math.random() - 0.5) * 0.03;
+        posArr[i*3+1] = p.y + (Math.random() - 0.5) * 0.03;
+        posArr[i*3+2] = zOff + (Math.random() - 0.5) * 0.08;
+      }
+      geo.attributes.position.needsUpdate = true;
+    });
+
+    const breathe = 1 + Math.sin(t * 0.4) * 0.025;
+    ribbonObjs.forEach(({ pts }) => {
+      pts.scale.set(breathe, breathe, 1);
+    });
+
+    scene.rotation.z = Math.sin(t * 0.06) * 0.04;
+
+    diamondMeshes.forEach(({ mesh, rotSpeedZ, floatSpeed, floatAmp, baseY, phase: ph }) => {
+      mesh.rotation.z += rotSpeedZ;
+      mesh.position.y  = baseY + Math.sin(t * floatSpeed + ph) * floatAmp;
+    });
+
+    R.render(scene, cam);
+  }
+
+  loop();
+
+  window.addEventListener('resize', () => {
+    R.setSize(innerWidth, innerHeight);
+    cam.aspect = innerWidth / innerHeight;
+    cam.updateProjectionMatrix();
+  }, { passive: true });
+  window.addEventListener('orientationchange', () => {
+    setTimeout(() => { R.setSize(innerWidth, innerHeight); cam.aspect = innerWidth / innerHeight; cam.updateProjectionMatrix(); }, 250);
+  });
+})();
 </script>
-<script src="nexus-core.js"></script>
+
+<script src="nexus-nav.js"></script>
 </body>
 </html>
