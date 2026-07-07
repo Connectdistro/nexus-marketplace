@@ -1,0 +1,1753 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+<title>Contact — ConnectDistro</title>
+<meta name="description" content="Get in touch with ConnectDistro. Business information, support contacts, and a direct message form."/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+<style>
+/* ════════════════════════════════════════
+   RESET — identical to index.html
+════════════════════════════════════════ */
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+:root {
+  --green:  #6dc44b;
+  --teal:   #228f7e;
+  --blue:   #0258a3;
+  --white:  #ffffff;
+  --dim:    rgba(255,255,255,0.45);
+  --dimmer: rgba(255,255,255,0.22);
+  --bg:     #020e07;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--white);
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 300;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ════════════════════════════════════════
+   FIXED CANVAS — the only background
+════════════════════════════════════════ */
+#c {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  width: 100vw;
+  height: 100vh;
+  display: block;
+}
+
+/* ════════════════════════════════════════
+   HEADER — identical to index.html
+════════════════════════════════════════ */
+#hdr {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 200;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  padding: 0 40px;
+}
+
+.hdr-logo {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  text-decoration: none;
+  color: var(--white);
+  flex-shrink: 0;
+}
+
+.logo-icon {
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.logo-icon img {
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
+  opacity: 0.95;
+}
+
+.hdr-divider {
+  width: 1px;
+  height: 32px;
+  background: rgba(255,255,255,0.18);
+  margin: 0 18px;
+  flex-shrink: 0;
+}
+
+.hdr-name {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.hdr-name-top {
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.9);
+  line-height: 1;
+}
+.hdr-name-sub {
+  font-size: 9px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.35);
+  line-height: 1;
+}
+
+.hdr-spacer { flex: 1; }
+
+.hdr-right {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  flex-shrink: 0;
+}
+
+/* Hamburger — 3D staged morph, identical to index.html */
+#burger {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  width: 26px;
+  height: 22px;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0;
+  flex-shrink: 0;
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1);
+}
+#burger:active { transform: scale(0.88); }
+
+#burger span {
+  display: block;
+  height: 1px;
+  background: rgba(255,255,255,0.82);
+  border-radius: 1px;
+  transform-origin: center center;
+  transition:
+    transform  0.42s cubic-bezier(0.34,1.2,0.64,1),
+    opacity    0.28s ease,
+    width      0.3s  cubic-bezier(0.16,1,0.3,1),
+    background 0.3s  ease;
+  will-change: transform, opacity;
+}
+
+#burger span:nth-child(1) { width: 100%; }
+#burger span:nth-child(2) { width: 70%; }
+#burger span:nth-child(3) { width: 100%; }
+
+#burger.open span:nth-child(1) {
+  transform: translateY(6px) rotate(45deg);
+  width: 100%;
+  background: rgba(255,255,255,0.9);
+}
+#burger.open span:nth-child(2) {
+  opacity: 0;
+  width: 0%;
+}
+#burger.open span:nth-child(3) {
+  transform: translateY(-6px) rotate(-45deg);
+  width: 100%;
+  transition-delay: 0.04s;
+  background: rgba(255,255,255,0.9);
+}
+
+[data-theme="light"] #burger span { background: rgba(0,0,0,0.72); }
+[data-theme="light"] #burger.open span:nth-child(1),
+[data-theme="light"] #burger.open span:nth-child(3) { background: rgba(0,0,0,0.88); }
+
+/* ════════════════════════════════════════
+   FULLSCREEN MENU — identical to index.html
+════════════════════════════════════════ */
+#menu {
+  position: fixed;
+  inset: 0;
+  z-index: 190;
+  background: rgba(2,10,5,0.96);
+  display: flex;
+  flex-direction: column;
+  padding: 100px 60px 50px;
+  overflow: auto;
+  opacity: 0;
+  pointer-events: none;
+  perspective: 1200px;
+  transform-origin: center top;
+  transform: rotateX(-10deg) scale(0.98);
+  transition:
+    opacity 0.45s cubic-bezier(0.16,1,0.3,1),
+    transform 0.5s cubic-bezier(0.16,1,0.3,1);
+  will-change: opacity, transform;
+}
+#menu.open {
+  opacity: 1;
+  pointer-events: all;
+  transform: rotateX(0deg) scale(1);
+}
+#menu.closing {
+  opacity: 0;
+  pointer-events: none;
+  transform: rotateX(6deg) scale(1.01);
+  transition:
+    opacity 0.35s cubic-bezier(0.4,0,1,1),
+    transform 0.38s cubic-bezier(0.4,0,1,1);
+}
+
+.menu-sections {
+  display: flex;
+  gap: 80px;
+  flex: 1;
+  align-items: flex-start;
+}
+
+.menu-col-left { min-width: 260px; }
+.menu-col-label {
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.28);
+  margin-bottom: 24px;
+}
+
+.menu-section-links { list-style: none; margin-bottom: 40px; }
+.menu-section-links li { overflow: hidden; margin-bottom: 2px; }
+.menu-section-links a {
+  display: block;
+  font-size: 17px;
+  font-weight: 300;
+  color: rgba(255,255,255,0.45);
+  text-decoration: none;
+  letter-spacing: 0.01em;
+  padding: 7px 0;
+  transform: translateY(110%);
+  opacity: 0;
+  transition:
+    transform 0.55s cubic-bezier(0.16,1,0.3,1),
+    opacity 0.45s ease,
+    color 0.25s ease;
+}
+.menu-section-links a:hover { color: var(--green); }
+#menu.open .menu-section-links a { transform: translateY(0); opacity: 1; }
+#menu.open .menu-section-links li:nth-child(1) a { transition-delay: 0.12s; }
+#menu.open .menu-section-links li:nth-child(2) a { transition-delay: 0.17s; }
+#menu.open .menu-section-links li:nth-child(3) a { transition-delay: 0.22s; }
+#menu.open .menu-section-links li:nth-child(4) a { transition-delay: 0.27s; }
+#menu.open .menu-section-links li:nth-child(5) a { transition-delay: 0.32s; }
+#menu.closing .menu-section-links a {
+  transform: translateY(110%);
+  opacity: 0;
+  transition: transform 0.22s ease, opacity 0.18s ease;
+}
+
+.menu-col-right {}
+.menu-page-links { list-style: none; }
+.menu-page-links li { overflow: hidden; margin-bottom: 4px; }
+.menu-page-links a {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-weight: 300;
+  font-size: clamp(44px, 5.5vw, 80px);
+  color: rgba(255,255,255,0.88);
+  letter-spacing: -0.025em;
+  text-decoration: none;
+  line-height: 1.05;
+  transform: translateY(100%);
+  opacity: 0;
+  transition: transform 0.55s cubic-bezier(0.16,1,0.3,1), opacity 0.4s ease, color 0.2s;
+}
+.menu-page-links a::before {
+  content: '';
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--green);
+  opacity: 0;
+  transition: opacity 0.2s;
+  flex-shrink: 0;
+}
+.menu-page-links a:hover { color: var(--white); }
+.menu-page-links a:hover::before { opacity: 1; }
+#menu.open .menu-page-links a { transform: translateY(0); opacity: 1; }
+#menu.open .menu-page-links li:nth-child(1) a { transition-delay: 0.10s; }
+#menu.open .menu-page-links li:nth-child(2) a { transition-delay: 0.17s; }
+#menu.open .menu-page-links li:nth-child(3) a { transition-delay: 0.24s; }
+#menu.open .menu-page-links li:nth-child(4) a { transition-delay: 0.31s; }
+#menu.closing .menu-page-links a {
+  transform: translateY(110%);
+  opacity: 0;
+  transition: transform 0.2s ease, opacity 0.16s ease;
+}
+
+.menu-bottom {
+  border-top: 1px solid rgba(255,255,255,0.07);
+  padding-top: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+.menu-legal {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+.menu-legal a {
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.28);
+  text-decoration: none;
+  transition: color 0.25s ease;
+}
+.menu-legal a:hover { color: rgba(255,255,255,0.7); }
+.menu-copy {
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0.18em;
+  color: rgba(255,255,255,0.22);
+}
+
+/* ════════════════════════════════════════
+   Theme toggle — identical to index.html
+════════════════════════════════════════ */
+#theme-tog {
+  width: 48px; height: 26px;
+  border-radius: 100px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.09);
+  position: relative; cursor: pointer;
+  flex-shrink: 0; outline: none;
+  transition: background 1.1s ease,
+              border-color 1.1s ease,
+              box-shadow 0.8s ease;
+}
+#theme-tog:hover {
+  background: rgba(255,255,255,0.06);
+  border-color: rgba(255,255,255,0.18);
+  box-shadow: 0 0 0 3px rgba(255,255,255,0.04);
+}
+#theme-tog::before {
+  content: '';
+  position: absolute; top: 4px; left: 4px;
+  width: 16px; height: 16px; border-radius: 50%;
+  background: rgba(255,255,255,0.55);
+  transition: transform  1.0s cubic-bezier(0.4,0,0.2,1),
+              background 1.1s ease,
+              opacity    0.9s ease;
+  opacity: 0.7;
+}
+[data-theme="light"] #theme-tog {
+  background: rgba(109,196,75,0.08);
+  border-color: rgba(109,196,75,0.2);
+}
+[data-theme="light"] #theme-tog:hover {
+  background: rgba(109,196,75,0.13);
+  border-color: rgba(109,196,75,0.35);
+}
+[data-theme="light"] #theme-tog::before {
+  transform: translateX(22px);
+  background: var(--green);
+  opacity: 1;
+}
+.tog-moon, .tog-sun {
+  position: absolute; top: 50%;
+  font-size: 9px; pointer-events: none;
+  transition: opacity 1.1s ease, transform 1.1s cubic-bezier(0.4,0,0.2,1);
+}
+.tog-moon { left: 4px; transform: translateY(-50%) scale(1); opacity: 0.5; }
+.tog-sun  { right: 4px; transform: translateY(-50%) scale(0.75); opacity: 0.18; }
+[data-theme="light"] .tog-moon { opacity: 0.15; transform: translateY(-50%) scale(0.75); }
+[data-theme="light"] .tog-sun  { opacity: 0.75; transform: translateY(-50%) scale(1); }
+
+/* ════════════════════════════════════════
+   POLICY PAGE CONTENT — new, matches
+   the visual language of the panel system
+   (p-label / p-title / p-body typography)
+════════════════════════════════════════ */
+.policy-main {
+  position: relative;
+  z-index: 10;
+  padding-top: 160px;
+}
+
+.policy-hero {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 0 24px 60px;
+  text-align: left;
+}
+.policy-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.3);
+  margin-bottom: 24px;
+}
+.policy-eyebrow .pulse {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--green);
+  animation: pulse 2.2s ease infinite;
+}
+@keyframes pulse {
+  0%,100% { opacity:1; transform:scale(1); }
+  50%      { opacity:0.4; transform:scale(1.5); }
+}
+.policy-hero h1 {
+  font-weight: 300;
+  font-size: clamp(40px, 6vw, 68px);
+  line-height: 1.02;
+  letter-spacing: -0.025em;
+  color: rgba(255,255,255,0.92);
+  margin-bottom: 18px;
+}
+.policy-hero p {
+  font-size: 15px;
+  font-weight: 300;
+  line-height: 1.7;
+  color: rgba(255,255,255,0.45);
+  max-width: 520px;
+}
+
+.policy-content {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 0 24px 140px;
+  background: rgba(2,14,7,0.55);
+  border-top: 1px solid rgba(255,255,255,0.07);
+}
+.policy-updated {
+  display: block;
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.28);
+  padding-top: 40px;
+  margin-bottom: 40px;
+}
+.policy-content h2 {
+  font-weight: 400;
+  font-size: 13px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--green);
+  margin: 48px 0 16px;
+}
+.policy-content h2:first-of-type { margin-top: 0; }
+.policy-content p {
+  font-size: 15px;
+  font-weight: 300;
+  line-height: 1.8;
+  color: rgba(255,255,255,0.55);
+  margin-bottom: 14px;
+  letter-spacing: 0.01em;
+}
+.policy-content ul {
+  margin: 0 0 16px 0;
+  padding-left: 20px;
+}
+.policy-content li {
+  font-size: 15px;
+  font-weight: 300;
+  line-height: 1.8;
+  color: rgba(255,255,255,0.55);
+  margin-bottom: 8px;
+}
+.policy-content strong {
+  color: rgba(255,255,255,0.82);
+  font-weight: 500;
+}
+.policy-content a {
+  color: var(--green);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(109,196,75,0.3);
+  transition: color 0.25s ease, border-color 0.25s ease;
+}
+.policy-content a:hover {
+  color: #fff;
+  border-color: rgba(255,255,255,0.4);
+}
+
+/* fade-up entrance, identical mechanism to index.html */
+.fade-up {
+  opacity: 0;
+  transform: translateY(36px);
+  transition: opacity 0.9s cubic-bezier(0.16,1,0.3,1), transform 0.9s cubic-bezier(0.16,1,0.3,1);
+}
+.fade-up.in { opacity: 1; transform: translateY(0); }
+
+/* ════════════════════════════════════════
+   CONTACT PAGE — business info + form +
+   animated support-card deck (same visual
+   language as index.html's #p7 panel, so
+   navigating between the two feels seamless)
+════════════════════════════════════════ */
+
+.contact-grid {
+  max-width: 1160px;
+  margin: 0 auto 100px;
+  padding: 0 24px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: start;
+}
+
+/* ── Business information (Stripe/compliance-facing) ── */
+.biz-info-ttl {
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.3);
+  margin-bottom: 20px;
+}
+.biz-info-list {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  margin-bottom: 40px;
+}
+.biz-info-item { display: flex; flex-direction: column; gap: 4px; }
+.biz-info-label {
+  font-size: 9px;
+  font-weight: 400;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.28);
+}
+.biz-info-val {
+  font-size: 15px;
+  font-weight: 300;
+  line-height: 1.6;
+  color: rgba(255,255,255,0.82);
+  letter-spacing: 0.01em;
+}
+.biz-info-val a { color: var(--green); text-decoration: none; border-bottom: 1px solid rgba(109,196,75,0.3); }
+.biz-info-val a:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
+
+/* ── Animated support deck — copied verbatim from index.html #p7 ── */
+.ct-deck-wrap {
+  position: relative;
+  height: 260px;
+  overflow: hidden;
+  perspective: 800px;
+  transform-style: preserve-3d;
+}
+.ct-deck {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  will-change: transform;
+  transform-style: preserve-3d;
+}
+.ct-card {
+  width: 100%;
+  padding: 28px 32px;
+  background: rgba(2,14,7,0.65);
+  border: 1px solid rgba(255,255,255,0.07);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex-shrink: 0;
+  transition:
+    border-color   0.45s ease,
+    background     0.45s ease,
+    box-shadow     0.45s ease,
+    transform      0.45s cubic-bezier(0.16,1,0.3,1),
+    opacity        0.45s ease;
+  cursor: default;
+}
+.ct-card:hover {
+  border-color: rgba(109,196,75,0.3);
+  background: rgba(6,24,10,0.75);
+  box-shadow: 0 8px 40px rgba(0,0,0,0.35), 0 0 0 1px rgba(109,196,75,0.1);
+}
+.ct-card.ct-active { border-color: rgba(109,196,75,0.18); background: rgba(4,18,8,0.72); }
+.ct-card-lbl {
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--green);
+}
+.ct-card-val {
+  font-size: clamp(18px, 2.5vw, 26px);
+  font-weight: 300;
+  letter-spacing: -0.01em;
+  color: rgba(255,255,255,0.88);
+  text-decoration: none;
+  line-height: 1.2;
+  transition: color 0.3s ease;
+}
+a.ct-card-val:hover { color: #fff; }
+.ct-card-note {
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0.06em;
+  color: rgba(255,255,255,0.28);
+  margin-top: 4px;
+}
+.ct-deck-wrap::before, .ct-deck-wrap::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 0;
+  height: 80px;
+  z-index: 2;
+  pointer-events: none;
+}
+.ct-deck-wrap::before { top: 0; background: linear-gradient(to bottom, var(--bg, #020e07) 0%, transparent 100%); }
+.ct-deck-wrap::after  { bottom: 0; background: linear-gradient(to top, var(--bg, #020e07) 0%, transparent 100%); }
+.ct-pause-hint {
+  position: absolute;
+  bottom: 12px;
+  right: 0;
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.22);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+.ct-deck-wrap:hover .ct-pause-hint { opacity: 1; }
+
+/* ── Message form ── */
+.contact-form-wrap {
+  max-width: 720px;
+  margin: 0 auto 140px;
+  padding: 0 24px;
+}
+.ct-form-box {
+  background: rgba(2,14,7,0.6);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 4px;
+  padding: 48px;
+}
+.ct-form-ttl {
+  font-weight: 300;
+  font-size: clamp(26px, 3.5vw, 34px);
+  letter-spacing: -0.01em;
+  color: rgba(255,255,255,0.9);
+  margin-bottom: 8px;
+}
+.ct-form-sub {
+  font-size: 14px;
+  font-weight: 300;
+  color: rgba(255,255,255,0.45);
+  line-height: 1.6;
+  margin-bottom: 32px;
+}
+.ct-form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.ct-field { display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px; }
+.ct-field label {
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.4);
+}
+.ct-inp {
+  width: 100%;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 3px;
+  padding: 12px 14px;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 14px;
+  font-weight: 300;
+  color: rgba(255,255,255,0.9);
+  outline: none;
+  transition: border-color 0.25s ease, background 0.25s ease;
+}
+.ct-inp::placeholder { color: rgba(255,255,255,0.28); }
+.ct-inp:focus { border-color: var(--green); background: rgba(109,196,75,0.05); }
+textarea.ct-inp { resize: vertical; min-height: 120px; line-height: 1.6; }
+select.ct-inp { cursor: pointer; }
+.ct-check {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin: 8px 0 28px;
+}
+.ct-check input { position: absolute; opacity: 0; width: 0; height: 0; }
+.ct-ch-icon {
+  width: 16px; height: 16px;
+  border: 1px solid rgba(255,255,255,0.22);
+  border-radius: 3px;
+  flex-shrink: 0;
+  margin-top: 2px;
+  position: relative;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+.ct-check input:checked + .ct-ch-icon {
+  background: var(--green);
+  border-color: var(--green);
+}
+.ct-check input:checked + .ct-ch-icon::after {
+  content: '';
+  position: absolute;
+  left: 4px; top: 1px;
+  width: 4px; height: 8px;
+  border: solid #04170a;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+.ct-check label {
+  font-size: 12px;
+  font-weight: 300;
+  line-height: 1.6;
+  color: rgba(255,255,255,0.45);
+  cursor: pointer;
+}
+.ct-check label a { color: var(--green); text-decoration: none; }
+.ct-check label a:hover { color: #fff; }
+.ct-form-status {
+  font-size: 12px;
+  letter-spacing: 0.02em;
+  margin-top: 16px;
+  min-height: 18px;
+  color: var(--green);
+}
+
+/* ════════════════════════════════════════
+   LIGHT THEME — identical variables to index.html
+════════════════════════════════════════ */
+[data-theme="light"] body { background: #f0f4ef; color: #1a2018; }
+[data-theme="light"] #c { filter: invert(1) hue-rotate(165deg) brightness(1.05) saturate(0.9); }
+
+[data-theme="light"] #hdr { background: rgba(240,244,239,0.12); }
+[data-theme="light"] .hdr-divider { background: rgba(26,32,24,0.1); }
+[data-theme="light"] .hdr-name-top { color: rgba(26,32,24,0.82); }
+[data-theme="light"] .hdr-name-sub { color: rgba(26,32,24,0.32); }
+
+[data-theme="light"] #menu { background: rgba(240,244,239,0.97); }
+[data-theme="light"] .menu-col-label { color: rgba(26,32,24,0.28); }
+[data-theme="light"] .menu-section-links a { color: rgba(26,32,24,0.45); }
+[data-theme="light"] .menu-section-links a:hover { color: var(--green); }
+[data-theme="light"] .menu-page-links a { color: rgba(26,32,24,0.82); }
+[data-theme="light"] .menu-page-links a:hover { color: rgba(26,32,24,1); }
+[data-theme="light"] .menu-legal a { color: rgba(26,32,24,0.28); }
+[data-theme="light"] .menu-legal a:hover { color: rgba(26,32,24,0.65); }
+[data-theme="light"] .menu-copy { color: rgba(26,32,24,0.22); }
+[data-theme="light"] .menu-bottom { border-color: rgba(26,32,24,0.07); }
+
+[data-theme="light"] .policy-eyebrow { color: rgba(26,32,24,0.3); }
+[data-theme="light"] .policy-hero h1 { color: rgba(26,32,24,0.88); }
+[data-theme="light"] .policy-hero p { color: rgba(26,32,24,0.5); }
+[data-theme="light"] .policy-content { background: rgba(232,237,231,0.7); border-color: rgba(26,32,24,0.07); }
+[data-theme="light"] .policy-updated { color: rgba(26,32,24,0.32); }
+[data-theme="light"] .policy-content h2 { color: var(--green); }
+[data-theme="light"] .policy-content p,
+[data-theme="light"] .policy-content li { color: rgba(26,32,24,0.62); }
+[data-theme="light"] .policy-content strong { color: rgba(26,32,24,0.88); }
+[data-theme="light"] .policy-content a { color: var(--green); border-color: rgba(109,196,75,0.35); }
+[data-theme="light"] .policy-content a:hover { color: rgba(26,32,24,0.9); border-color: rgba(26,32,24,0.4); }
+
+/* ── Contact page: light theme ── */
+[data-theme="light"] .biz-info-ttl { color: rgba(26,32,24,0.3); }
+[data-theme="light"] .biz-info-label { color: rgba(26,32,24,0.3); }
+[data-theme="light"] .biz-info-val { color: rgba(26,32,24,0.78); }
+[data-theme="light"] .biz-info-val a { color: var(--green); border-color: rgba(109,196,75,0.35); }
+[data-theme="light"] .biz-info-val a:hover { color: rgba(26,32,24,0.9); border-color: rgba(26,32,24,0.4); }
+
+[data-theme="light"] .ct-card { background: rgba(232,237,231,0.75); border-color: rgba(26,32,24,0.06); }
+[data-theme="light"] .ct-card:hover {
+  background: rgba(220,232,218,0.9);
+  border-color: rgba(109,196,75,0.3);
+  box-shadow: 0 8px 40px rgba(0,0,0,0.08), 0 0 0 1px rgba(109,196,75,0.12);
+}
+[data-theme="light"] .ct-card.ct-active { background: rgba(225,236,222,0.85); border-color: rgba(109,196,75,0.2); }
+[data-theme="light"] .ct-card-val { color: rgba(26,32,24,0.85); }
+[data-theme="light"] a.ct-card-val:hover { color: rgba(26,32,24,1); }
+[data-theme="light"] .ct-card-note { color: rgba(26,32,24,0.32); }
+[data-theme="light"] .ct-deck-wrap::before { background: linear-gradient(to bottom, #f0f4ef 0%, transparent 100%); }
+[data-theme="light"] .ct-deck-wrap::after  { background: linear-gradient(to top, #f0f4ef 0%, transparent 100%); }
+[data-theme="light"] .ct-pause-hint { color: rgba(26,32,24,0.22); }
+
+[data-theme="light"] .ct-form-box { background: rgba(240,248,240,0.85); border-color: rgba(0,0,0,0.07); }
+[data-theme="light"] .ct-form-ttl { color: rgba(0,0,0,0.88); }
+[data-theme="light"] .ct-form-sub { color: rgba(0,0,0,0.5); }
+[data-theme="light"] .ct-field label { color: rgba(0,0,0,0.4); }
+[data-theme="light"] .ct-inp { background: rgba(0,0,0,0.04); border-color: rgba(0,0,0,0.1); color: rgba(0,0,0,0.88); }
+[data-theme="light"] .ct-inp::placeholder { color: rgba(0,0,0,0.3); }
+[data-theme="light"] .ct-check label { color: rgba(0,0,0,0.5); }
+[data-theme="light"] .ct-ch-icon { border-color: rgba(0,0,0,0.15); }
+
+/* ════════════════════════════════════════
+   FOOTER — identical to index.html
+════════════════════════════════════════ */
+#fbar {
+  position: relative;
+  z-index: 10;
+  min-height: 100vh;
+  background: rgba(2,10,5,0.72);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  display: flex;
+  flex-direction: column;
+  padding: 80px 64px 40px;
+  overflow: hidden;
+}
+#fbar::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(2,10,5,0.1) 0%,
+    rgba(2,10,5,0.4) 60%,
+    rgba(2,10,5,0.55) 100%
+  );
+  pointer-events: none;
+  z-index: 0;
+}
+#fbar > * { position: relative; z-index: 1; }
+
+.fbar-main {
+  display: flex;
+  gap: 0;
+  flex: 1;
+  align-items: flex-start;
+  padding-bottom: 48px;
+}
+.fbar-col-left { width: 380px; flex-shrink: 0; padding-right: 60px; }
+.fbar-col-right { flex: 1; }
+.fbar-col-lbl {
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.3);
+  margin-bottom: 28px;
+  font-weight: 400;
+}
+.fbar-nav-links { list-style: none; display: flex; flex-direction: column; gap: 4px; }
+.fbar-nav-links a {
+  font-size: 17px;
+  font-weight: 300;
+  color: rgba(255,255,255,0.45);
+  text-decoration: none;
+  letter-spacing: 0.01em;
+  line-height: 1.6;
+  display: block;
+  transition: color 0.2s;
+}
+.fbar-nav-links a:hover { color: rgba(255,255,255,0.85); }
+.fbar-page-links { list-style: none; display: flex; flex-direction: column; gap: 0; }
+.fbar-page-links li { overflow: hidden; }
+.fbar-page-links a {
+  font-size: clamp(52px, 6vw, 88px);
+  font-weight: 300;
+  letter-spacing: -0.02em;
+  color: rgba(255,255,255,0.88);
+  text-decoration: none;
+  line-height: 1.1;
+  display: block;
+  transition: color 0.2s, transform 0.25s cubic-bezier(0.16,1,0.3,1);
+}
+.fbar-page-links a:hover { color: #fff; transform: translateX(6px); }
+
+.fbar-strip {
+  border-top: 1px solid rgba(255,255,255,0.08);
+  padding-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.fbar-strip-top { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
+.fbar-legal-links { display: flex; gap: 20px; align-items: center; flex-wrap: wrap; }
+.fbar-legal-links a {
+  font-size: 11px;
+  letter-spacing: 0.05em;
+  color: rgba(255,255,255,0.4);
+  text-decoration: none;
+  transition: color 0.2s;
+  white-space: nowrap;
+}
+.fbar-legal-links a:hover { color: rgba(255,255,255,0.8); }
+.fbar-co-name { font-size: 11px; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(255,255,255,0.65); }
+.fbar-copy { font-size: 11px; letter-spacing: 0.05em; color: rgba(255,255,255,0.3); }
+.fbar-strip-rule { height: 1px; background: rgba(255,255,255,0.07); }
+.fbar-strip-bot { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 24px; }
+.fbar-social a {
+  display: flex; align-items: center; justify-content: center;
+  width: 32px; height: 32px;
+  border: 1px solid rgba(255,255,255,0.18);
+  border-radius: 50%;
+  color: rgba(255,255,255,0.5);
+  text-decoration: none;
+  transition: border-color 0.2s, color 0.2s;
+}
+.fbar-social a:hover { border-color: var(--green); color: var(--green); }
+.fbar-social svg { width: 13px; height: 13px; fill: currentColor; }
+.fbar-contact { display: flex; gap: 56px; align-items: flex-start; }
+.fbar-contact-item { display: flex; flex-direction: column; gap: 5px; }
+.fbar-contact-label { font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(255,255,255,0.28); }
+.fbar-contact-val { font-size: 13px; color: rgba(255,255,255,0.65); letter-spacing: 0.02em; }
+.fbar-address { display: flex; align-items: flex-start; gap: 12px; }
+.fbar-address-pin {
+  width: 30px; height: 30px;
+  border: 1px solid rgba(255,255,255,0.14);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  color: rgba(255,255,255,0.35); font-size: 12px;
+  flex-shrink: 0; margin-top: 1px;
+}
+.fbar-address-label { font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(255,255,255,0.28); margin-bottom: 5px; }
+.fbar-address-val { font-size: 13px; color: rgba(255,255,255,0.65); line-height: 1.5; }
+
+[data-theme="light"] #fbar { background: rgba(234,244,234,0.75); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
+[data-theme="light"] #fbar::before {
+  background: linear-gradient(to bottom, rgba(234,244,234,0.05) 0%, rgba(234,244,234,0.35) 60%, rgba(234,244,234,0.5) 100%);
+}
+[data-theme="light"] .fbar-col-lbl { color: rgba(0,0,0,0.3); }
+[data-theme="light"] .fbar-nav-links a { color: rgba(0,0,0,0.45); }
+[data-theme="light"] .fbar-nav-links a:hover { color: rgba(0,0,0,0.85); }
+[data-theme="light"] .fbar-page-links a { color: rgba(0,0,0,0.82); }
+[data-theme="light"] .fbar-page-links a:hover { color: rgba(0,0,0,1); }
+[data-theme="light"] .fbar-strip { border-color: rgba(0,0,0,0.07); }
+[data-theme="light"] .fbar-strip-rule { background: rgba(0,0,0,0.06); }
+[data-theme="light"] .fbar-legal-links a { color: rgba(0,0,0,0.45); }
+[data-theme="light"] .fbar-co-name { color: rgba(0,0,0,0.6); }
+[data-theme="light"] .fbar-copy { color: rgba(0,0,0,0.3); }
+[data-theme="light"] .fbar-social a { border-color: rgba(0,0,0,0.15); color: rgba(0,0,0,0.4); }
+[data-theme="light"] .fbar-contact-label { color: rgba(0,0,0,0.3); }
+[data-theme="light"] .fbar-contact-val { color: rgba(0,0,0,0.7); }
+[data-theme="light"] .fbar-address-pin { border-color: rgba(0,0,0,0.12); color: rgba(0,0,0,0.35); }
+[data-theme="light"] .fbar-address-label { color: rgba(0,0,0,0.3); }
+[data-theme="light"] .fbar-address-val { color: rgba(0,0,0,0.7); }
+
+/* Global smooth theme-switch transition — identical to index.html */
+*, *::before, *::after {
+  transition-property: background-color, color, border-color, opacity, box-shadow;
+  transition-duration: 1.1s;
+  transition-timing-function: ease;
+}
+#theme-tog, #theme-tog::before, .tog-moon, .tog-sun { transition-duration: inherit; }
+#burger span { transition-duration: initial; }
+
+/* ════════════════════════════════════════
+   MOBILE — identical breakpoints
+════════════════════════════════════════ */
+@media (max-width: 768px) {
+  #hdr { padding: 0 20px; height: 64px; }
+  .hdr-name-sub { display: none; }
+  #menu { padding: 80px 24px 40px; }
+  .menu-sections { flex-direction: column; gap: 40px; }
+  .menu-page-links a { font-size: clamp(28px, 9vw, 48px); }
+
+  .policy-main { padding-top: 120px; }
+  .policy-hero { padding: 0 20px 40px; }
+  .policy-content { padding: 0 20px 100px; }
+
+  .contact-grid { grid-template-columns: 1fr; gap: 40px; padding: 0 20px; margin-bottom: 60px; }
+  .ct-deck-wrap { height: 220px; }
+  .ct-card { padding: 22px 20px; }
+  .ct-card-val { font-size: clamp(16px, 4vw, 22px); }
+  .contact-form-wrap { padding: 0 20px; margin-bottom: 100px; }
+  .ct-form-box { padding: 28px 22px; }
+  .ct-form-row { grid-template-columns: 1fr; gap: 0; }
+
+  #fbar { padding: 52px 24px 32px; min-height: 100svh; }
+  .fbar-main { flex-direction: column; gap: 40px; padding-bottom: 40px; }
+  .fbar-col-left { width: 100%; padding-right: 0; }
+  .fbar-page-links a { font-size: clamp(36px, 11vw, 56px); }
+  .fbar-strip-top { flex-direction: column; align-items: flex-start; gap: 8px; }
+  .fbar-co-name { display: none; }
+  .fbar-strip-bot { flex-direction: column; gap: 16px; }
+  .fbar-contact { gap: 28px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ════ FIXED CANVAS ════ -->
+<canvas id="c"></canvas>
+
+<!-- ════════════════════════════════════════
+     HEADER — identical structure to index.html
+════════════════════════════════════════ -->
+<header id="hdr">
+  <a class="hdr-logo" href="index.html">
+    <div class="logo-icon">
+      <img src="logo.png" alt="ConnectDistro"/>
+    </div>
+    <div class="hdr-divider"></div>
+    <div class="hdr-name">
+      <span class="hdr-name-top">ConnectDistro</span>
+      <span class="hdr-name-sub">Art · Ads · Entertainment</span>
+    </div>
+  </a>
+
+  <div class="hdr-spacer"></div>
+
+  <div class="hdr-right">
+    <button id="theme-tog" onclick="toggleTheme()" aria-label="Toggle theme" title="Toggle light/dark">
+      <span class="tog-moon">🌙</span>
+      <span class="tog-sun">☀️</span>
+    </button>
+
+    <button id="burger" aria-label="Menu" onclick="toggleMenu()">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<!-- ════════════════════════════════════════
+     FULLSCREEN MENU — identical structure
+════════════════════════════════════════ -->
+<div id="menu">
+  <div class="menu-sections">
+    <div class="menu-col-left">
+      <p class="menu-col-label">Homepage</p>
+      <ul class="menu-section-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="index.html#p1">Art</a></li>
+        <li><a href="marketplace.html">Marketplace</a></li>
+        <li><a href="index.html#p3">Services</a></li>
+        <li><a href="index.html#p4">Community</a></li>
+      </ul>
+    </div>
+
+    <div class="menu-col-right">
+      <p class="menu-col-label">Other pages</p>
+      <ul class="menu-page-links">
+        <li><a href="marketplace.html">Marketplace</a></li>
+        <li><a href="contact.html">Contact</a></li>
+        <li><a href="privacy.html">Privacy</a></li>
+        <li><a href="terms.html">Terms</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="menu-bottom">
+    <nav class="menu-legal">
+      <a href="privacy.html">Privacy Policy</a>
+      <a href="terms.html">Terms of Service</a>
+      <a href="refund.html">Refund Policy</a>
+      <a href="shipping.html">Shipping Policy</a>
+      <a href="cancellation.html">Cancellation Policy</a>
+    </nav>
+    <p class="menu-copy">© 2025 ConnectDistro Inc.</p>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════
+     POLICY CONTENT
+════════════════════════════════════════ -->
+<main class="policy-main">
+  <div class="policy-hero">
+    <div class="policy-eyebrow fade-up">
+      <span class="pulse"></span>
+      <span>Contact</span>
+    </div>
+    <h1 class="fade-up">Get in touch<br/><em style="font-style:normal;color:rgba(255,255,255,0.5)">with us</em></h1>
+    <p class="fade-up">We reply to every message within 24 hours. Reach out however works best for you — or send a message directly below.</p>
+  </div>
+
+  <div class="contact-grid fade-up">
+    <!-- LEFT: Business information — visible, static (Stripe / KYC friendly) -->
+    <div>
+      <p class="biz-info-ttl">Business Information</p>
+      <div class="biz-info-list">
+        <div class="biz-info-item">
+          <span class="biz-info-label">Legal Business Name</span>
+          <span class="biz-info-val">ConnectDistro Inc.</span>
+        </div>
+        <div class="biz-info-item">
+          <span class="biz-info-label">What We Do</span>
+          <span class="biz-info-val">Digital marketplace for art, advertising services, and entertainment content.</span>
+        </div>
+        <div class="biz-info-item">
+          <span class="biz-info-label">Registered Address</span>
+          <span class="biz-info-val">1209 Mountain Road Pl NE, STE R<br/>Albuquerque, NM 87110, USA</span>
+        </div>
+        <div class="biz-info-item">
+          <span class="biz-info-label">General Enquiries</span>
+          <span class="biz-info-val"><a href="mailto:hello@connectdistro.com">hello@connectdistro.com</a></span>
+        </div>
+        <div class="biz-info-item">
+          <span class="biz-info-label">Customer Support</span>
+          <span class="biz-info-val"><a href="mailto:support@connectdistro.com">support@connectdistro.com</a></span>
+        </div>
+        <div class="biz-info-item">
+          <span class="biz-info-label">Phone</span>
+          <span class="biz-info-val">+234 814 401 2453</span>
+        </div>
+        <div class="biz-info-item">
+          <span class="biz-info-label">Support Hours</span>
+          <span class="biz-info-val">Monday – Friday, all time zones</span>
+        </div>
+      </div>
+      <div class="p-stats">
+        <div>
+          <div class="p-stat-n">&lt;24<span>h</span></div>
+          <div class="p-stat-l">Response</div>
+        </div>
+        <div>
+          <div class="p-stat-n">140<span>+</span></div>
+          <div class="p-stat-l">Countries</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT: Animated support-card deck — same as index.html #p7 -->
+    <div class="ct-deck-wrap" id="ctDeckWrap">
+      <div class="ct-deck" id="ctDeck">
+        <div class="ct-card">
+          <span class="ct-card-lbl">Email</span>
+          <a class="ct-card-val" href="mailto:hello@connectdistro.com">hello@connectdistro.com</a>
+          <span class="ct-card-note">General enquiries</span>
+        </div>
+        <div class="ct-card">
+          <span class="ct-card-lbl">Support</span>
+          <a class="ct-card-val" href="mailto:support@connectdistro.com">support@connectdistro.com</a>
+          <span class="ct-card-note">Technical help &amp; orders</span>
+        </div>
+        <div class="ct-card">
+          <span class="ct-card-lbl">Response time</span>
+          <span class="ct-card-val">Within 24 hours</span>
+          <span class="ct-card-note">Mon – Fri, all time zones</span>
+        </div>
+        <div class="ct-card">
+          <span class="ct-card-lbl">Headquarters</span>
+          <span class="ct-card-val">Albuquerque, NM</span>
+          <span class="ct-card-note">USA</span>
+        </div>
+        <!-- duplicate set for seamless loop -->
+        <div class="ct-card">
+          <span class="ct-card-lbl">Email</span>
+          <a class="ct-card-val" href="mailto:hello@connectdistro.com">hello@connectdistro.com</a>
+          <span class="ct-card-note">General enquiries</span>
+        </div>
+        <div class="ct-card">
+          <span class="ct-card-lbl">Support</span>
+          <a class="ct-card-val" href="mailto:support@connectdistro.com">support@connectdistro.com</a>
+          <span class="ct-card-note">Technical help &amp; orders</span>
+        </div>
+        <div class="ct-card">
+          <span class="ct-card-lbl">Response time</span>
+          <span class="ct-card-val">Within 24 hours</span>
+          <span class="ct-card-note">Mon – Fri, all time zones</span>
+        </div>
+        <div class="ct-card">
+          <span class="ct-card-lbl">Headquarters</span>
+          <span class="ct-card-val">Albuquerque, NM</span>
+          <span class="ct-card-note">USA</span>
+        </div>
+      </div>
+      <span class="ct-pause-hint">Paused</span>
+    </div>
+  </div>
+
+  <!-- Message form -->
+  <div class="contact-form-wrap fade-up">
+    <div class="ct-form-box">
+      <h2 class="ct-form-ttl">Send us a message</h2>
+      <p class="ct-form-sub">Fill out the form below and our team will get back to you within 24 hours.</p>
+
+      <form id="contactForm" novalidate>
+        <div class="ct-form-row">
+          <div class="ct-field">
+            <label for="cfName">Name</label>
+            <input class="ct-inp" type="text" id="cfName" name="name" placeholder="Your full name" required/>
+          </div>
+          <div class="ct-field">
+            <label for="cfEmail">Email</label>
+            <input class="ct-inp" type="email" id="cfEmail" name="email" placeholder="you@example.com" required/>
+          </div>
+        </div>
+
+        <div class="ct-form-row">
+          <div class="ct-field">
+            <label for="cfTopic">Topic</label>
+            <select class="ct-inp" id="cfTopic" name="topic">
+              <option value="General Enquiry">General Enquiry</option>
+              <option value="Order / Order Number">Order Support</option>
+              <option value="Billing">Billing</option>
+              <option value="Selling on ConnectDistro">Selling on ConnectDistro</option>
+              <option value="Advertising Services">Advertising Services</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+          <div class="ct-field">
+            <label for="cfOrder">Order Number (optional)</label>
+            <input class="ct-inp" type="text" id="cfOrder" name="order" placeholder="e.g. CD-10492"/>
+          </div>
+        </div>
+
+        <div class="ct-field">
+          <label for="cfMessage">Message</label>
+          <textarea class="ct-inp" id="cfMessage" name="message" placeholder="How can we help?" required></textarea>
+        </div>
+
+        <div class="ct-check">
+          <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;">
+            <input type="checkbox" id="cfConsent" required/>
+            <span class="ct-ch-icon"></span>
+            <span>I agree to the <a href="privacy.html">Privacy Policy</a> and consent to being contacted about my enquiry.</span>
+          </label>
+        </div>
+
+        <button type="submit" class="btn-pill" style="border:none;cursor:pointer;">
+          Send Message
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </button>
+        <p class="ct-form-status" id="cfStatus"></p>
+      </form>
+    </div>
+  </div>
+</main>
+
+<!-- ════ FOOTER — identical structure to index.html ════ -->
+<footer id="fbar">
+  <div class="fbar-main">
+    <div class="fbar-col-left">
+      <p class="fbar-col-lbl">Homepage</p>
+      <ul class="fbar-nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="index.html#p1">Art</a></li>
+        <li><a href="marketplace.html">Marketplace</a></li>
+        <li><a href="index.html#p3">Services</a></li>
+        <li><a href="index.html#p4">Community</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+    </div>
+
+    <div class="fbar-col-right">
+      <p class="fbar-col-lbl">Other Pages</p>
+      <ul class="fbar-page-links">
+        <li><a href="marketplace.html">Marketplace</a></li>
+        <li><a href="index.html#p3">Services</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="fbar-strip">
+    <div class="fbar-strip-top">
+      <nav class="fbar-legal-links">
+        <a href="privacy.html">Privacy</a>
+        <a href="terms.html">Terms &amp; Conditions</a>
+        <a href="refund.html">Refund Policy</a>
+        <a href="shipping.html">Shipping</a>
+        <a href="cancellation.html">Cancellation</a>
+      </nav>
+      <p class="fbar-co-name">ConnectDistro Inc.</p>
+      <p class="fbar-copy">© Copyright ConnectDistro 2025</p>
+    </div>
+
+    <div class="fbar-strip-rule"></div>
+
+    <div class="fbar-strip-bot">
+      <div class="fbar-social">
+        <a href="https://linkedin.com" target="_blank" rel="noopener" aria-label="LinkedIn">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M4.98 3.5C4.98 4.88 3.87 6 2.5 6S.02 4.88.02 3.5C.02 2.12 1.13 1 2.5 1S4.98 2.12 4.98 3.5zM.5 8.5H4.5V24H.5V8.5zM8.5 8.5H12.3V10.3h.05c.53-1 1.83-2.05 3.77-2.05 4.03 0 4.78 2.65 4.78 6.1V24H16.9V15.2c0-2.12-.04-4.85-2.96-4.85-2.97 0-3.42 2.32-3.42 4.7V24H6.5V8.5h2z"/>
+          </svg>
+        </a>
+      </div>
+
+      <div class="fbar-contact">
+        <div class="fbar-contact-item">
+          <span class="fbar-contact-label">Telefax</span>
+          <span class="fbar-contact-val">+234 814 401 2453</span>
+        </div>
+        <div class="fbar-contact-item">
+          <span class="fbar-contact-label">Telephone</span>
+          <span class="fbar-contact-val">+234 814 401 2453</span>
+        </div>
+      </div>
+
+      <div class="fbar-address">
+        <div class="fbar-address-pin">📍</div>
+        <div>
+          <p class="fbar-address-label">Head Office</p>
+          <p class="fbar-address-val">1209 Mountain Road Pl NE, STE R<br/>Albuquerque, NM 87110, USA</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+'use strict';
+
+/* ════════════════════════════════════════
+   MENU TOGGLE — identical logic to index.html
+════════════════════════════════════════ */
+const burger = document.getElementById('burger');
+const menu   = document.getElementById('menu');
+let menuOpen = false;
+
+window.toggleMenu = function() {
+  menuOpen = !menuOpen;
+  burger.classList.toggle('open', menuOpen);
+
+  if (menuOpen) {
+    menu.classList.remove('closing');
+    menu.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  } else {
+    menu.classList.add('closing');
+    document.body.style.overflow = '';
+    setTimeout(() => {
+      menu.classList.remove('open');
+      menu.classList.remove('closing');
+    }, 380);
+  }
+};
+
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && menuOpen) toggleMenu(); });
+
+/* ════════════════════════════════════════
+   THEME TOGGLE — identical logic to index.html
+════════════════════════════════════════ */
+const THEME_KEY = 'cd-theme';
+function getTheme() { return localStorage.getItem(THEME_KEY) || 'dark'; }
+function applyTheme(t) {
+  document.documentElement.setAttribute('data-theme', t);
+  localStorage.setItem(THEME_KEY, t);
+}
+window.toggleTheme = function() { applyTheme(getTheme() === 'dark' ? 'light' : 'dark'); };
+applyTheme(getTheme());
+
+/* ════════════════════════════════════════
+   FADE-UP ON SCROLL — identical mechanism
+════════════════════════════════════════ */
+function onScroll() {
+  document.querySelectorAll('.fade-up:not(.in)').forEach(el => {
+    const r = el.getBoundingClientRect();
+    if (r.top < innerHeight * 0.92) el.classList.add('in');
+  });
+}
+window.addEventListener('scroll', onScroll, { passive: true });
+setTimeout(onScroll, 100);
+
+/* Auth modal hook (nexus-nav.js), kept for consistency */
+window.openAuth = function(mode) {
+  if (window.NxModal) NxModal.open(mode);
+  else if (window.AuthModal) AuthModal.open(mode);
+};
+
+/* ════════════════════════════════════════
+   INFINITY BACKGROUND ANIMATION
+   Identical Three.js scene to index.html so
+   the canvas feels continuous across pages.
+════════════════════════════════════════ */
+(function() {
+  const canvas = document.getElementById('c');
+  if (!window.THREE) { canvas.style.display = 'none'; return; }
+
+  const mobile = window.innerWidth <= 768;
+
+  const R = new THREE.WebGLRenderer({ canvas, antialias: !mobile, alpha: false });
+  R.setPixelRatio(Math.min(devicePixelRatio, mobile ? 1.5 : 2));
+  R.setSize(innerWidth, innerHeight);
+  R.setClearColor(0x020e07, 1);
+
+  const scene = new THREE.Scene();
+  scene.background = new THREE.Color(0x020e07);
+  const cam = new THREE.PerspectiveCamera(52, innerWidth / innerHeight, 0.01, 500);
+  cam.position.set(0, 0, 10);
+
+  function lemniscate(t, a) {
+    const denom = 1 + Math.sin(t) * Math.sin(t);
+    const x = a * Math.cos(t) / denom;
+    const y = a * Math.sin(t) * Math.cos(t) / denom;
+    return { x, y };
+  }
+
+  function buildLemniscatePts(a, numPts) {
+    const pts = [];
+    for (let i = 0; i <= numPts; i++) {
+      const t = (i / numPts) * Math.PI * 2;
+      const p = lemniscate(t, a);
+      pts.push(new THREE.Vector3(p.x, p.y, 0));
+    }
+    return pts;
+  }
+
+  const RIBBON_LAYERS = mobile ? 3 : 6;
+  const RIBBON_PTS    = mobile ? 800 : 2200;
+  const ribbonObjs    = [];
+
+  const COLS = [
+    [0.427, 0.769, 0.294],
+    [0.133, 0.561, 0.494],
+    [0.227, 0.698, 0.494],
+    [0.008, 0.345, 0.639],
+    [0.094, 0.655, 0.525],
+    [0.42,  0.769, 0.29 ],
+  ];
+
+  for (let layer = 0; layer < RIBBON_LAYERS; layer++) {
+    const scale = 3.0 + layer * 0.65;
+    const zOff  = layer * 0.18 - (RIBBON_LAYERS * 0.09);
+    const N     = RIBBON_PTS;
+
+    const geo   = new THREE.BufferGeometry();
+    const pos   = new Float32Array(N * 3);
+    const col   = new Float32Array(N * 3);
+    const phase = new Float32Array(N);
+    const speed = new Float32Array(N);
+
+    for (let i = 0; i < N; i++) {
+      phase[i] = Math.random() * Math.PI * 2;
+      speed[i] = 0.004 + Math.random() * 0.004;
+
+      const p = lemniscate(phase[i], scale);
+      pos[i*3]   = p.x + (Math.random() - 0.5) * 0.06;
+      pos[i*3+1] = p.y + (Math.random() - 0.5) * 0.06;
+      pos[i*3+2] = zOff + (Math.random() - 0.5) * 0.12;
+
+      const c = COLS[layer % COLS.length];
+      const bright = 0.6 + Math.random() * 0.4;
+      col[i*3]   = c[0] * bright;
+      col[i*3+1] = c[1] * bright;
+      col[i*3+2] = c[2] * bright;
+    }
+
+    geo.setAttribute('position', new THREE.BufferAttribute(pos,   3));
+    geo.setAttribute('color',    new THREE.BufferAttribute(col,   3));
+
+    const mat = new THREE.PointsMaterial({
+      size: mobile ? 0.045 : 0.03,
+      vertexColors: true,
+      transparent: true,
+      opacity: 0.75 - layer * 0.07,
+      sizeAttenuation: true,
+    });
+
+    const pts = new THREE.Points(geo, mat);
+    scene.add(pts);
+    ribbonObjs.push({ pts, geo, pos, phase, speed, scale, zOff });
+  }
+
+  const ringScales = mobile
+    ? [2.2, 3.5, 4.8]
+    : [1.6, 2.4, 3.3, 4.4, 5.6];
+
+  ringScales.forEach((scale, idx) => {
+    const ptCount = 300;
+    const pathPts = buildLemniscatePts(scale, ptCount);
+    const curve   = new THREE.CatmullRomCurve3(pathPts, true);
+    const geo     = new THREE.TubeGeometry(curve, ptCount, 0.008 + idx * 0.002, 4, true);
+    const hue     = 0.36 + idx * 0.03;
+    const mat     = new THREE.MeshBasicMaterial({
+      color: new THREE.Color().setHSL(hue, 0.7, 0.28 - idx * 0.03),
+      transparent: true,
+      opacity: 0.35 - idx * 0.05,
+    });
+    const mesh = new THREE.Mesh(geo, mat);
+    mesh.position.z = -idx * 0.3;
+    scene.add(mesh);
+  });
+
+  const DIAMOND_COUNT = mobile ? 40 : 120;
+  const diamondMeshes = [];
+
+  function makeDiamondGeo(size) {
+    const geo = new THREE.BufferGeometry();
+    const s   = size;
+    const verts = new Float32Array([
+       0,  s,  0,
+      -s * 0.6, 0, 0,
+       0, -s, 0,
+       s * 0.6, 0, 0,
+    ]);
+    const idx = new Uint16Array([0,1,2,  0,2,3]);
+    geo.setAttribute('position', new THREE.BufferAttribute(verts, 3));
+    geo.setIndex(new THREE.BufferAttribute(idx, 1));
+    return geo;
+  }
+
+  for (let i = 0; i < DIAMOND_COUNT; i++) {
+    const size = 0.04 + Math.random() * 0.12;
+    const geo  = makeDiamondGeo(size);
+    const hue  = 0.35 + Math.random() * 0.15;
+    const mat  = new THREE.MeshBasicMaterial({
+      color: new THREE.Color().setHSL(hue, 0.6, 0.25 + Math.random() * 0.2),
+      transparent: true,
+      opacity: 0.15 + Math.random() * 0.25,
+      side: THREE.DoubleSide,
+    });
+    const mesh = new THREE.Mesh(geo, mat);
+    mesh.position.set(
+      (Math.random() - 0.5) * 24,
+      (Math.random() - 0.5) * 16,
+      -2 - Math.random() * 14
+    );
+    mesh.rotation.z = Math.random() * Math.PI;
+    scene.add(mesh);
+    diamondMeshes.push({
+      mesh,
+      rotSpeedZ: (Math.random() - 0.5) * 0.015,
+      floatSpeed: 0.3 + Math.random() * 0.5,
+      floatAmp:   0.08 + Math.random() * 0.12,
+      baseY:      mesh.position.y,
+      phase:      Math.random() * Math.PI * 2,
+    });
+  }
+
+  const AMB_N = mobile ? 400 : 1200;
+  const ambGeo = new THREE.BufferGeometry();
+  const ambPos = new Float32Array(AMB_N * 3);
+  const ambCol = new Float32Array(AMB_N * 3);
+  for (let i = 0; i < AMB_N; i++) {
+    ambPos[i*3]   = (Math.random() - 0.5) * 36;
+    ambPos[i*3+1] = (Math.random() - 0.5) * 24;
+    ambPos[i*3+2] = -4 - Math.random() * 16;
+    const c = COLS[Math.floor(Math.random() * COLS.length)];
+    ambCol[i*3]=c[0]*0.4; ambCol[i*3+1]=c[1]*0.4; ambCol[i*3+2]=c[2]*0.4;
+  }
+  ambGeo.setAttribute('position', new THREE.BufferAttribute(ambPos, 3));
+  ambGeo.setAttribute('color',    new THREE.BufferAttribute(ambCol, 3));
+  scene.add(new THREE.Points(ambGeo, new THREE.PointsMaterial({
+    size: 0.025, vertexColors: true, transparent: true, opacity: 0.45
+  })));
+
+  let rawT    = 0;
+  let smoothT = 0;
+
+  function getScrollT() {
+    const max = document.documentElement.scrollHeight - window.innerHeight;
+    return max > 0 ? window.scrollY / max : 0;
+  }
+  window.addEventListener('scroll', () => { rawT = getScrollT(); }, { passive: true });
+
+  /* Two-stage keyframes — gentle drift for a single long-scroll page */
+  const CAM_KF = [
+    { z: 10.0, y:  0.0, fov: 52, rx: 0    },
+    { z:  6.0, y:  0.6, fov: 47, rx: 0.03 },
+    { z:  4.0, y: -0.3, fov: 44, rx: 0    },
+  ];
+
+  let camZ = 10, camY = 0, camFov = 52, camRX = 0;
+  let mx = 0, my = 0;
+  if (!mobile) {
+    window.addEventListener('mousemove', e => {
+      mx = (e.clientX / innerWidth  - 0.5) * 2;
+      my = (e.clientY / innerHeight - 0.5) * 2;
+    }, { passive: true });
+  }
+  let prlX = 0, prlY = 0;
+
+  const clk = new THREE.Clock();
+  let running = true;
+  document.addEventListener('visibilitychange', () => { running = !document.hidden; });
+
+  function loop() {
+    requestAnimationFrame(loop);
+    if (!running) return;
+    const t = clk.getElapsedTime();
+
+    smoothT += (rawT - smoothT) * 0.06;
+    const panelT = smoothT * (CAM_KF.length - 1);
+    const i0 = Math.min(Math.floor(panelT), CAM_KF.length - 2);
+    const i1 = i0 + 1;
+    const f  = panelT - i0;
+    const e  = f < 0.5 ? 4*f*f*f : 1 - Math.pow(-2*f+2,3)/2;
+
+    const kA = CAM_KF[i0], kB = CAM_KF[i1];
+    const tZ   = kA.z   + (kB.z   - kA.z)   * e;
+    const tY   = kA.y   + (kB.y   - kA.y)   * e;
+    const tFov = kA.fov + (kB.fov - kA.fov) * e;
+    const tRX  = kA.rx  + (kB.rx  - kA.rx)  * e;
+
+    camZ   += (tZ   - camZ)   * 0.05;
+    camY   += (tY   - camY)   * 0.05;
+    camFov += (tFov - camFov) * 0.05;
+    camRX  += (tRX  - camRX)  * 0.05;
+
+    prlX += (mx * 0.18 - prlX) * 0.04;
+    prlY += (-my * 0.12 - prlY) * 0.04;
+
+    cam.position.set(prlX, camY + prlY, camZ);
+    cam.rotation.x = camRX;
+    cam.fov = camFov;
+    cam.aspect = innerWidth / innerHeight;
+    cam.updateProjectionMatrix();
+
+    ribbonObjs.forEach(({ geo, pos, phase, speed, scale, zOff }) => {
+      const posArr = geo.attributes.position.array;
+      const N = phase.length;
+      for (let i = 0; i < N; i++) {
+        phase[i] += speed[i];
+        if (phase[i] > Math.PI * 2) phase[i] -= Math.PI * 2;
+
+        const p = lemniscate(phase[i], scale);
+        posArr[i*3]   = p.x + (Math.random() - 0.5) * 0.03;
+        posArr[i*3+1] = p.y + (Math.random() - 0.5) * 0.03;
+        posArr[i*3+2] = zOff + (Math.random() - 0.5) * 0.08;
+      }
+      geo.attributes.position.needsUpdate = true;
+    });
+
+    const breathe = 1 + Math.sin(t * 0.4) * 0.025;
+    ribbonObjs.forEach(({ pts }) => {
+      pts.scale.set(breathe, breathe, 1);
+    });
+
+    scene.rotation.z = Math.sin(t * 0.06) * 0.04;
+
+    diamondMeshes.forEach(({ mesh, rotSpeedZ, floatSpeed, floatAmp, baseY, phase: ph }) => {
+      mesh.rotation.z += rotSpeedZ;
+      mesh.position.y  = baseY + Math.sin(t * floatSpeed + ph) * floatAmp;
+    });
+
+    R.render(scene, cam);
+  }
+
+  loop();
+
+  window.addEventListener('resize', () => {
+    R.setSize(innerWidth, innerHeight);
+    cam.aspect = innerWidth / innerHeight;
+    cam.updateProjectionMatrix();
+  }, { passive: true });
+  window.addEventListener('orientationchange', () => {
+    setTimeout(() => { R.setSize(innerWidth, innerHeight); cam.aspect = innerWidth / innerHeight; cam.updateProjectionMatrix(); }, 250);
+  });
+})();
+/* ════ SUPPORT CARD DECK — identical mechanism to index.html #p7 ════ */
+(function() {
+  const wrap = document.getElementById('ctDeckWrap');
+  const deck = document.getElementById('ctDeck');
+  if (!wrap || !deck) return;
+
+  const SPEED  = 42;
+  const CARD_H = 260;
+  const GAP    = 12;
+
+  const cards     = Array.from(deck.querySelectorAll('.ct-card'));
+  const N         = cards.length / 2;
+  const CARD_UNIT = cards[0] ? (cards[0].offsetHeight || 108) + GAP : 120;
+  const LOOP_H    = CARD_UNIT * N;
+
+  let offset = 0, paused = false, last = null;
+
+  wrap.addEventListener('mouseenter', () => { paused = true; });
+  wrap.addEventListener('mouseleave', () => { paused = false; });
+  wrap.addEventListener('touchstart', () => { paused = !paused; }, { passive: true });
+
+  function tick(ts) {
+    if (last === null) last = ts;
+    const dt = Math.min(ts - last, 50) / 1000;
+    last = ts;
+
+    if (!paused) {
+      offset += SPEED * dt;
+      if (offset >= LOOP_H) offset -= LOOP_H;
+    }
+
+    deck.style.transform = `translateY(-${offset}px)`;
+
+    const mid = CARD_H / 2;
+    cards.forEach((card, i) => {
+      const cardTop = i * CARD_UNIT - offset;
+      const cardMid = cardTop + CARD_UNIT / 2;
+      const rel     = (cardMid - mid) / (CARD_H * 0.7);
+      const clamped = Math.max(-1, Math.min(1, rel));
+      const tilt    = clamped * -8;
+      const depth   = (1 - Math.abs(clamped)) * 24;
+      const opacity = 1 - Math.abs(clamped) * 0.55;
+
+      card.style.transform = `rotateX(${tilt}deg) translateZ(${depth}px)`;
+      card.style.opacity   = opacity;
+      card.classList.toggle('ct-active', Math.abs(clamped) < 0.25);
+    });
+
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+})();
+
+/* ════ CONTACT FORM ════
+   No backend is wired up yet. On submit, this builds a
+   pre-filled mailto: link and opens the user's email client,
+   so the form works out of the box with zero server setup.
+
+   TO UPGRADE: point this at a form backend (e.g. Formspree,
+   Netlify Forms, or your own API) and POST the FormData
+   instead of using mailto — that gives you a proper inbox,
+   spam filtering, and no dependence on the visitor's mail app.
+*/
+(function() {
+  const form   = document.getElementById('contactForm');
+  const status = document.getElementById('cfStatus');
+  if (!form) return;
+
+  form.addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    const name    = document.getElementById('cfName').value.trim();
+    const email   = document.getElementById('cfEmail').value.trim();
+    const topic   = document.getElementById('cfTopic').value;
+    const order   = document.getElementById('cfOrder').value.trim();
+    const message = document.getElementById('cfMessage').value.trim();
+    const consent = document.getElementById('cfConsent').checked;
+
+    if (!name || !email || !message || !consent) {
+      status.style.color = '#e0685c';
+      status.textContent = 'Please fill in your name, email, message, and accept the privacy consent.';
+      return;
+    }
+
+    const subject = `[${topic}] Message from ${name}`;
+    const bodyLines = [
+      `Name: ${name}`,
+      `Email: ${email}`,
+      `Topic: ${topic}`,
+      order ? `Order Number: ${order}` : null,
+      '',
+      message
+    ].filter(Boolean);
+
+    const mailto = `mailto:support@connectdistro.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(bodyLines.join('\n'))}`;
+
+    window.location.href = mailto;
+
+    status.style.color = 'var(--green)';
+    status.textContent = 'Opening your email client to send this message…';
+  });
+})();
+</script>
+
+<script src="nexus-nav.js"></script>
+</body>
+</html>
